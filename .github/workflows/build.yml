@@ -2,13 +2,14 @@ name: Build APK
 on: workflow_dispatch
 jobs:
   apk:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - run: unzip -q RimaLab.zip -d proj
       - uses: actions/setup-java@v4
         with: {distribution: temurin, java-version: 17}
-      - uses: android-actions/setup-android@v3
+      - name: Aceitar licencas do Android
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
       - uses: gradle/actions/setup-gradle@v4
         with: {gradle-version: 8.7}
       - run: gradle assembleDebug
