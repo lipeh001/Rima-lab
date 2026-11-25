@@ -1,18 +1,45 @@
 name: Build APK
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/build.yml'
+      - 'RimaLab.zip'
 jobs:
   apk:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
-      - run: unzip -q RimaLab.zip -d proj
+      - name: Extrair projeto
+        run: unzip -q RimaLab.zip -d proj
+      - name: Localizar raiz Gradle
+        run: |
+          BUILD_DIR="$(find "$GITHUB_WORKSPACE/proj" -type f \\( -name settings.gradle -o -name settings.gradle.kts \\) -printf '%h\\n' | head -n 1)"
+          if [ -z "$BUILD_DIR" ]; then
+            echo "Não encontrei settings.gradle dentro de RimaLab.zip."
+            echo "Conteúdo extraído:"
+            find proj -maxdepth 4 -type f | head -n 100
+            exit 1
+          fi
+          echo "BUILD_DIR=$BUILD_DIR" >> "$GITHUB_ENV"
+          echo "Projeto Gradle encontrado em: $BUILD_DIR"
       - uses: actions/setup-java@v4
-        with: {distribution: temurin, java-version: 17}
-      - name: Aceitar licencas do Android
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Aceitar licenças do Android
         run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
       - uses: gradle/actions/setup-gradle@v4
-        with: {gradle-version: 8.7}
-      - run: gradle assembleDebug
-        working-directory: proj
+        with:
+          gradle-version: 8.7
+      - name: Compilar APK
+        run: |
+          cd "$BUILD_DIR"
+          gradle assembleDebug
+          mkdir -p "$GITHUB_WORKSPACE/out"
+          cp app/build/outputs/apk/debug/app-debug.apk "$GITHUB_WORKSPACE/out/RimaLab.apk"
       - uses: actions/upload-artifact@v4
-        with: {name: RimaLab-apk, path: proj/app/build/outputs/apk/debug/app-debug.apk}
+        with:
+          name: RimaLab-apk
+          path: out/RimaLab.apk
+          if-no-files-found: error
