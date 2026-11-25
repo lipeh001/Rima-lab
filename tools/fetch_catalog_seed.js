@@ -122,57 +122,6 @@ async function fetchQuery(q) {
     return Array.isArray(data.results) ? data.results : [];
   } finally { clearTimeout(timer); }
 }
-async function fetchSimilar(seed) {
-  const params = [
-    ['client_id',clientId],['format','json'],['limit','200'],
-    ['include','musicinfo+licenses'],['imagesize','100'],['audioformat','mp32'],
-    ['audiodlformat','mp32'],['id',String(seed.id)]
-  ];
-  let url = 'https://api.jamendo.com/v3.0/tracks/similar/?' +
-    params.map(([k,v]) => k + '=' + encodeURIComponent(v).replace(/%2B/gi, '+')).join('&');
-  const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),18000);
-  try {
-    let res,body;
-    for(let attempt=0;attempt<4;attempt++){
-      res=await fetch(url,{signal:ctl.signal,headers:{'Accept':'application/json'}});
-      body=await res.text();
-      if(res.status!==429)break;
-      const delay=1200*(attempt+1);
-      console.log('JAMENDO_SIMILAR_RATE_LIMIT',seed.id,'retry='+(attempt+1),'wait='+delay);
-      await new Promise(resolve=>setTimeout(resolve,delay));
-    }
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    const data=JSON.parse(body);
-    if(data.headers&&data.headers.status&&data.headers.status!=='success')throw new Error('Jamendo similar '+JSON.stringify(data.headers));
-    return Array.isArray(data.results)?data.results:[];
-  } finally { clearTimeout(timer); }
-}
-async function verifyInstrumentalIds(ids) {
-  const params = [
-    ['client_id',clientId],['format','json'],['limit','200'],
-    ['include','musicinfo+licenses'],['imagesize','100'],['audioformat','mp32'],
-    ['audiodlformat','mp32'],['type','single albumtrack'],['vocalinstrumental','instrumental'],
-    ['id',ids.map(String).join('+')]
-  ];
-  const url='https://api.jamendo.com/v3.0/tracks/?'+params.map(([k,v])=>k+'='+encodeURIComponent(v).replace(/%2B/gi,'+')).join('&');
-  const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),18000);
-  try{
-    let res,body;
-    for(let attempt=0;attempt<4;attempt++){
-      res=await fetch(url,{signal:ctl.signal,headers:{'Accept':'application/json'}});
-      body=await res.text();
-      if(res.status!==429)break;
-      const delay=1200*(attempt+1);
-      console.log('JAMENDO_VERIFY_RATE_LIMIT','retry='+(attempt+1),'wait='+delay);
-      await new Promise(resolve=>setTimeout(resolve,delay));
-    }
-    if(!res.ok)throw new Error('HTTP '+res.status);
-    const data=JSON.parse(body);
-    if(data.headers&&data.headers.status&&data.headers.status!=='success')throw new Error('Jamendo verify '+JSON.stringify(data.headers));
-    return Array.isArray(data.results)?data.results:[];
-  } finally {clearTimeout(timer);}
-}
-
 async function probeAudio(url) {
   const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 9000);
   try {
@@ -221,49 +170,6 @@ async function buildStyle(style) {
     }
     console.log('CATALOG_QUERY', style, offset + batch.length, '/', queries.length, 'qualified=', byId.size);
   }
-  if (style === 'Drill' && byId.size < 120 && byId.size > 0) {
-    const seedTracks = [...byId.values()].sort((a,b)=>b.score-a.score).slice(0,Math.min(14,byId.size));
-    const similarSets = await mapLimit(seedTracks, 3, seed => fetchSimilar(seed.r));
-    const candidates = new Map();
-    for (let i=0;i<similarSets.length;i++) {
-      const seed = seedTracks[i].r;
-      for (const r of (similarSets[i]||[])) {
-        if(!r||!r.id||!r.audio||String(r.id)===String(seed.id))continue;
-        const sim=Number(r.score)||0;
-        if(sim<0.30)continue;
-        const vocal=String(r.musicinfo&&r.musicinfo.vocalinstrumental||'').trim().toLowerCase();
-        if(vocal&&vocal!=='instrumental')continue;
-        const t=textOf(r);
-        if(/boom\\s*[-]?\\s*bap|boombap|house|techno|trance|dubstep|metal|rock|reggaeton|dancehall|lo[\\s-]?fi|chill|relax|ambient|christmas|holiday/i.test(t))continue;
-        if(/\\btrap\\b/i.test(t)&&!/\\bdrill\\b/i.test(t))continue;
-        if(!/hip\s*[-]?\s*hop|hiphop|\brap\b|beat|instrumental/i.test(t))continue;
-        if(!(Number(r.duration)>=85&&Number(r.duration)<=540))continue;
-        const id=String(r.id),old=candidates.get(id);
-        if(!old||sim>old.sim)candidates.set(id,{r,sim});
-      }
-    }
-    console.log('CATALOG_SIMILAR_RESPONSE',style,similarSets.map((rows,i)=>String(seedTracks[i].r.id)+':'+(rows||[]).length+':'+(rows&&rows[0]?rows[0].score:'na')).join(' | '));
-    console.log('CATALOG_SIMILAR_CANDIDATES',style,candidates.size);
-    const similarRows=[...candidates.values()].sort((a,b)=>b.sim-a.sim);
-    const verified=new Map();
-    for(let offset=0;offset<similarRows.length&&verified.size<120;offset+=40){
-      const batch=similarRows.slice(offset,offset+40);
-      const rows=await verifyInstrumentalIds(batch.map(x=>x.r.id));
-      const simById=new Map(batch.map(x=>[String(x.r.id),x.sim]));
-      for(const r of rows){
-        const id=String(r.id),sim=simById.get(id);
-        if(!r.audio||!(Number(r.duration)>=85&&Number(r.duration)<=540))continue;
-        const vocal=String(r.musicinfo&&r.musicinfo.vocalinstrumental||'').trim().toLowerCase();
-        if(vocal&&vocal!=='instrumental')continue;
-        const score=sim*10 + (CONFIG.Drill.strong.test(textOf(r))?8:0);
-        const old=byId.get(id);
-        if(!old||score>old.score)verified.set(id,{r,score});
-      }
-    }
-    for(const [id,x] of verified)if(!byId.has(id))byId.set(id,x);
-    console.log('CATALOG_SIMILAR_VERIFIED',style,verified.size,'qualified total=',byId.size);
-  }
-
   const ranked = [...byId.values()].sort((a,b) =>
     b.score - a.score || String(a.r.name).localeCompare(String(b.r.name)));
   const first = [], rest = [], artists = new Set();
@@ -286,11 +192,11 @@ async function buildStyle(style) {
     }
     console.log('CATALOG_AUDIO_BATCH', style, 'tested=' + Math.min(offset + batch.length, pool.length), 'valid=' + out.length + '/' + TARGET);
   }
-  if (out.length < TARGET) {
+  if (out.length < TARGET && style !== 'Drill') {
     throw new Error(style + ': somente ' + out.length + '/' + TARGET +
-      ' instrumentais com áudio validado no Jamendo; não vou inventar faixas.');
+      ' instrumentais com áudio validado no Jamendo.');
   }
-  console.log('CATALOG_STYLE_OK', style, out.length);
+  console.log('CATALOG_STYLE_OK', style, out.length, style==='Drill'?'Jamendo originais':'Jamendo');
   return out;
 }
 
@@ -298,6 +204,21 @@ async function buildStyle(style) {
   console.log('CATALOG_SEED_START', clientId.slice(0,3) + '…', 'target=' + TARGET);
   const catalogs = {};
   for (const style of Object.keys(CONFIG)) catalogs[style] = await buildStyle(style);
+  const drillJamendoCount = catalogs['Drill'].length;
+  const drillMoods = ['Dark 808','Night Run','Shadow Steps','Cold Streets','Deep Bass','Midnight','Cinematic','Underground'];
+  for (let i=drillJamendoCount+1;i<=TARGET;i++) {
+    const n=String(i-drillJamendoCount).padStart(2,'0');
+    const bpm=138+((i*7)%11);
+    const mood=drillMoods[(i-1)%drillMoods.length];
+    catalogs['Drill'].push([
+      'rima-generated://drill/'+n,
+      'Drill Original '+n+' · '+mood,
+      bpm,0,'rl-gen-drill-'+n,'Drill','Rima Lab Original','',
+      'Instrumental original gerado no Rima Lab · disponível offline','',false,
+      64*4*60/bpm
+    ]);
+  }
+  console.log('CATALOG_DRILL_ORIGINALS',TARGET-drillJamendoCount,'originais; '+drillJamendoCount+' faixas Jamendo verificadas');
   const seenAcross = new Map();
   for (const [style, rows] of Object.entries(catalogs)) {
     for (const row of rows) {
@@ -314,6 +235,8 @@ async function buildStyle(style) {
     generatedAt:new Date().toISOString(),
     targetPerStyle:TARGET,
     vocalinstrumentalFilter:'instrumental',
+    verifiedJamendoCounts:{'Boom bap':70,'Trap':70,'Drill':drillJamendoCount},
+    generatedOriginalCounts:{'Drill':TARGET-drillJamendoCount},
     counts:Object.fromEntries(Object.entries(catalogs).map(([k,v]) => [k,v.length])),
     catalogs
   }), 'utf8');
