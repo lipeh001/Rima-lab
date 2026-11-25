@@ -45,7 +45,7 @@ const queries=[
  ['search','boom bap freestyle beat no vocals'],['search','hardcore east coast rap instrumental']
 ];
 const strong=/boom\s*[-]?\s*bap|boombap|old\s*[-]?\s*school|golden\s*era|east\s*coast|cypher|battle|batalha|freestyle|underground|90s|sampler|breakbeat|dusty|gritty/i;
-const ban=/\btrap\b|\bdrill\b|house|techno|trance|dubstep|metal|rock|reggaeton|dancehall|country|vocal\s*[- ]?(male|female)|with\s+some\s+money|all\$?tarv/i;
+const ban=/\btrap\b|\bdrill\b|house|techno|trance|dubstep|metal|rock|reggaeton|dancehall|country|vocal\s*[- ]?(male|female)|lofi|lo-fi|chill|relax|ambient|christmas|holiday|summer\s*time|good\s*vibes|with\s+some\s+money|all\$?tarv/i;
 function textOf(r){const t=r.musicinfo&&r.musicinfo.tags||{};return [r.name,r.album_name,r.artist_name,...(t.genres||[]),...(t.instruments||[]),...(t.vartags||[])].filter(Boolean).join(' ')}
 function scoreOf(r){
  const vi=String(r.musicinfo&&r.musicinfo.vocalinstrumental||'').toLowerCase();
