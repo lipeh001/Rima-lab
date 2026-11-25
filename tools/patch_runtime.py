@@ -79,10 +79,13 @@ style = r"""
 <style id="rima-runtime-v4">
 /* Paisagem: player compacto em uma única linha e palco sempre livre para as palavras. */
 @media (orientation:landscape) and (max-height:640px) {
-  body.pl main { padding-bottom:calc(136px + env(safe-area-inset-bottom,0px))!important; }
+  body.pl main { padding-bottom:calc(122px + env(safe-area-inset-bottom,0px))!important; }
   #lv:not([hidden]) { display:grid!important; grid-template-columns:minmax(0,1.65fr) minmax(0,1fr)!important; gap:8px 12px!important; align-items:stretch!important; }
-  #lv>.stage { grid-column:1!important; grid-row:1 / span 8!important; min-height:clamp(168px,calc(100svh - 154px),340px)!important; height:100%!important; margin:0!important; align-self:stretch!important; }
-  #lv>*:not(.stage) { grid-column:2!important; min-width:0!important; }
+  #lv>.stage { grid-column:1!important; grid-row:1 / span 3!important; min-height:clamp(168px,calc(100svh - 154px),340px)!important; height:100%!important; margin:0!important; align-self:stretch!important; }
+  #lv>.bk { grid-column:2!important; grid-row:1!important; width:100%!important; }
+  #lv>.card:not(.stage) { grid-column:2!important; grid-row:2!important; min-width:0!important; }
+  #lv>.btn.w { grid-column:2!important; grid-row:3!important; width:100%!important; }
+  #lv>*:not(.stage) { min-width:0!important; }
   #pbar { left:10px!important; right:10px!important; bottom:calc(58px + env(safe-area-inset-bottom,0px))!important; width:auto!important; max-width:none!important; height:52px!important; min-height:52px!important; padding:4px 8px!important; display:flex!important; flex-direction:row!important; align-items:center!important; gap:7px!important; border-radius:14px!important; }
   #pbar .pwrow { min-width:0!important; flex:1 1 auto!important; min-height:40px!important; gap:6px!important; }
   #pbar .pw-art { display:none!important; }
@@ -98,7 +101,7 @@ style = r"""
   nav button { min-height:43px!important; }
 }
 @media (orientation:landscape) and (max-height:420px) {
-  body.pl main { padding-bottom:calc(124px + env(safe-area-inset-bottom,0px))!important; }
+  body.pl main { padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))!important; }
   #pbar { height:46px!important; min-height:46px!important; bottom:calc(52px + env(safe-area-inset-bottom,0px))!important; }
   #pbar .pw-controls button { width:23px!important; height:27px!important; }
   #pbar .pw-controls #pwb { width:30px!important; height:30px!important; }
