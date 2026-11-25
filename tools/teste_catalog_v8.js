@@ -14,7 +14,7 @@ const checks=[];
 checks.push(['Jamendo consultado com filtro oficial de instrumentais',seed.vocalinstrumentalFilter==='instrumental']);
 for(const style of styles){
   const rows=seed.catalogs&&seed.catalogs[style];
-  checks.push([style+' tem exatamente 70 instrumentais com áudio validado',Array.isArray(rows)&&rows.length===70&&rows.every(r=>r[0]&&r[1]&&r[4]&&r[5]===style&&r[10]!==undefined)]);
+  checks.push([style+' tem exatamente 70 instrumentais com áudio validado',Array.isArray(rows)&&rows.length===70&&rows.every(r=>r[0]&&r[1]&&r[4]&&r[5]===style&&r[10]!==undefined&&r[11]>=85&&r[11]<=540)]);
   if(Array.isArray(rows))for(const r of rows)allIds.add(String(r[4]));
 }
 checks.push(['210 faixas têm IDs únicos entre as três categorias',allIds.size===210]);
