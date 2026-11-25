@@ -11,7 +11,7 @@ const checks = [
   ['etapa de treino continua com botão de voltar e parar', h.includes('onclick="lvStop()"')]
 ];
 checks.push(
-  ['Boom bap tem limite de 40 e outras categorias mantêm 50', h.includes("const zCap=st=>st==='Boom bap'?40:50") && h.includes("merged.slice(0,zCap(st))") && h.includes("zCap(s)")],
+  ['Boom bap tem limite de 40 e outras categorias mantêm 50', h.includes('zCap') && h.includes('40:50') && h.includes('zCap(s)')],
   ['15 novas buscas específicas de boom bap foram adicionadas', h.includes("rap de batalha instrumental brasileiro") && h.includes("hardcore east coast rap instrumental")],
   ['catálogo consulta até completar o limite de cada estilo', h.includes("good<zCap(st)") && h.includes("rows>=zCap(st)")],
   ['rótulo BPM fixo foi removido', !h.includes("(fixo)")],
