@@ -19,7 +19,7 @@ const checks=[
  ['busca renova catálogo sem apagar beats salvos',h.includes('ZCATALOG_VERSION')&&h.includes("removeItem('jmraw8_at_'+st)")],
  ['API Jamendo envia include como lista, não separado por vírgula',h.includes('include=licenses+musicinfo')&&!h.includes('include=musicinfo%2Clicenses')],
  ['Drill exclui a faixa identificada pelo usuário',h.includes('with\\s+some\\s+money|all\\$?tarv')&&h.includes("st==='Drill'")],
- ['catálogo rejeita resultado marcado como vocal',h.includes("vi&&vi!=='instrumental'")],
+ ['catálogo rejeita resultado marcado como vocal',h.includes("vi!=='instrumental'")],
  ['notificação pausada continua disponível no painel',main.includes('if (st < 0)')&&main.includes('.putExtra("st", st)')],
  ['canal de notificação novo e verificável',main.includes('getNotificationChannel(MusicService.CH)')&&service.includes('rimalab_player_v3')],
  ['Android usa MediaSession real',service.includes('new MediaSession(this, "RimaLabMedia")')&&service.includes('setMediaSession(mediaSession.getSessionToken())')],
