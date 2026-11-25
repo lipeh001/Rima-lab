@@ -128,8 +128,6 @@ async function fetchSimilar(seed) {
     ['include','musicinfo+licenses'],['imagesize','100'],['audioformat','mp32'],
     ['audiodlformat','mp32'],['id',String(seed.id)]
   ];
-  if (seed.artist_id) params.push(['no_artist',String(seed.artist_id)]);
-  if (seed.album_id) params.push(['no_album',String(seed.album_id)]);
   let url = 'https://api.jamendo.com/v3.0/tracks/similar/?' +
     params.map(([k,v]) => k + '=' + encodeURIComponent(v).replace(/%2B/gi, '+')).join('&');
   const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),18000);
@@ -232,17 +230,19 @@ async function buildStyle(style) {
       for (const r of (similarSets[i]||[])) {
         if(!r||!r.id||!r.audio||String(r.id)===String(seed.id))continue;
         const sim=Number(r.score)||0;
-        if(sim<0.52)continue;
+        if(sim<0.30)continue;
         const vocal=String(r.musicinfo&&r.musicinfo.vocalinstrumental||'').trim().toLowerCase();
         if(vocal&&vocal!=='instrumental')continue;
         const t=textOf(r);
-        if(CONFIG.Drill.ban.test(t))continue;
+        if(/boom\\s*[-]?\\s*bap|boombap|house|techno|trance|dubstep|metal|rock|reggaeton|dancehall|lo[\\s-]?fi|chill|relax|ambient|christmas|holiday/i.test(t))continue;
+        if(/\\btrap\\b/i.test(t)&&!/\\bdrill\\b/i.test(t))continue;
         if(!/hip\s*[-]?\s*hop|hiphop|\brap\b|beat|instrumental/i.test(t))continue;
         if(!(Number(r.duration)>=85&&Number(r.duration)<=540))continue;
         const id=String(r.id),old=candidates.get(id);
         if(!old||sim>old.sim)candidates.set(id,{r,sim});
       }
     }
+    console.log('CATALOG_SIMILAR_RESPONSE',style,similarSets.map((rows,i)=>String(seedTracks[i].r.id)+':'+(rows||[]).length+':'+(rows&&rows[0]?rows[0].score:'na')).join(' | '));
     console.log('CATALOG_SIMILAR_CANDIDATES',style,candidates.size);
     const similarRows=[...candidates.values()].sort((a,b)=>b.sim-a.sim);
     const verified=new Map();
@@ -255,7 +255,7 @@ async function buildStyle(style) {
         if(!r.audio||!(Number(r.duration)>=85&&Number(r.duration)<=540))continue;
         const vocal=String(r.musicinfo&&r.musicinfo.vocalinstrumental||'').trim().toLowerCase();
         if(vocal&&vocal!=='instrumental')continue;
-        const score=sim*10;
+        const score=sim*10 + (CONFIG.Drill.strong.test(textOf(r))?8:0);
         const old=byId.get(id);
         if(!old||score>old.score)verified.set(id,{r,score});
       }
