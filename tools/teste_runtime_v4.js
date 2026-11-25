@@ -17,6 +17,7 @@ const checks=[
  ['troca de faixa não dispara dois redraws',h.includes("function zSwap(){if(play){if(!zRestartAct()){zLoad(ZS.k=='syn'?zBars():0);pk()}return}pk()}")],
  ['troca durante treino preserva scroll',h.includes('window.__rimaNoAutoScroll=1')&&h.includes('if(!window.__rimaNoAutoScroll)')],
  ['busca renova catálogo sem apagar beats salvos',h.includes('ZCATALOG_VERSION')&&h.includes("removeItem('jmraw8_at_'+st)")],
+ ['API Jamendo envia include como lista, não separado por vírgula',h.includes('include=licenses+musicinfo')&&!h.includes('include=musicinfo%2Clicenses')],
  ['Drill exclui a faixa identificada pelo usuário',h.includes('with\\s+some\\s+money|all\\$?tarv')&&h.includes("st==='Drill'")],
  ['catálogo rejeita resultado marcado como vocal',h.includes("vi&&vi!=='instrumental'")],
  ['notificação pausada continua disponível no painel',main.includes('if (st < 0)')&&main.includes('.putExtra("st", st)')],
