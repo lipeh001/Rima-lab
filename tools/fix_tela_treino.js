@@ -13,7 +13,7 @@ if (html.includes("$('#su').hidden=true")) throw new Error('A tela de treino ain
 /* Ajustes de UI, catálogo Jamendo e limites por categoria. */
 const capAnchor = "Object.keys(ZLIB).forEach(st=>{const merged=[],seen=new Set();";
 if (!html.includes(capAnchor)) throw new Error('Não encontrei o ponto de inicialização do catálogo Jamendo.');
-if (!html.includes("const zCap=st=>'Boom bap'?40:50;")) {
+if (!html.includes("const zCap=st=>st==='Boom bap'?40:50;")) {
   html = html.replace(capAnchor, "const zCap=st=>'Boom bap'?40:50;\n"+capAnchor);
 }
 const replacements = [
