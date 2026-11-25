@@ -15,21 +15,12 @@ const TARGET = 70;
 const CONFIG = {
   'Boom bap': {
     queries: [
-      ['fuzzytags','boombap+hiphop'],['fuzzytags','oldschool+hiphop'],['fuzzytags','underground+hiphop'],
-      ['fuzzytags','jazzhop+hiphop'],['fuzzytags','hiphop+instrumental'],
-      ['search','boom bap instrumental'],['search','boom bap beat'],['search','boom bap hip hop instrumental'],
-      ['search','old school hip hop instrumental'],['search','90s hip hop beat instrumental'],
-      ['search','east coast rap instrumental'],['search','battle rap instrumental beat'],
-      ['search','freestyle rap beat instrumental'],['search','cypher hip hop instrumental'],
-      ['search','underground boom bap instrumental'],['search','hard boom bap beat no vocals'],
-      ['search','jazzy boom bap instrumental'],['search','dusty drums boom bap beat'],
-      ['search','soul sample boom bap instrumental'],['search','brazilian boom bap instrumental'],
-      ['search','rap battle instrumental hip hop'],['search','old school freestyle instrumental'],
-      ['search','raw east coast hip hop beat'],['search','gritty underground rap instrumental'],
-      ['search','boom bap piano instrumental'],['search','boom bap guitar instrumental'],
-      ['search','classic hip hop beat instrumental'],['search','underground cypher rap beat'],
-      ['search','boom bap drums vinyl sample'],['search','hardcore east coast rap instrumental'],
-      ['search','boom bap battle freestyle beat'],['search','rap de batalha instrumental brasileiro']
+      ['fuzzytags','boombap+hiphop'],
+      ['fuzzytags','oldschool+hiphop'],
+      ['search','boom bap instrumental'],
+      ['search','boom bap drums vinyl sample'],
+      ['search','dusty drums boom bap instrumental'],
+      ['search','grimy east coast boom bap']
     ],
     strong: /boom\s*[-]?\s*bap|boombap|old\s*[-]?\s*school|golden\s*era|east\s*coast|cypher|battle|batalha|freestyle|underground|90s|sampler|breakbeat|dusty|gritty/i,
     ban: /\btrap\b|\bdrill\b|house|techno|trance|dubstep|metal|rock|reggaeton|dancehall|country|lo[\s-]?fi|chill|relax|ambient|christmas|holiday|summer|good\s*vibes/i,
@@ -37,17 +28,12 @@ const CONFIG = {
   },
   'Trap': {
     queries: [
-      ['fuzzytags','trap+hiphop'],['fuzzytags','trap+instrumental'],
-      ['search','trap beat instrumental'],['search','trap instrumental beat'],['search','dark trap instrumental'],
-      ['search','freestyle trap beat instrumental'],['search','brazilian trap instrumental'],
-      ['search','808 trap beat instrumental'],['search','melodic trap instrumental'],
-      ['search','hard trap instrumental no vocals'],['search','trap rap beat instrumental no vocals'],
-      ['search','trap type beat instrumental'],['search','modern trap hip hop instrumental'],
-      ['search','dark 808 instrumental beat'],['search','trap battle beat instrumental'],
-      ['search','freestyle trap instrumental beat'],['search','piano trap instrumental'],
-      ['search','orchestral trap beat instrumental'],['search','ambient dark trap instrumental'],
-      ['search','hard 808 hip hop instrumental'],['search','trap drums instrumental beat'],
-      ['search','rap trap beat no vocals'],['search','melodic 808 instrumental']
+      ['fuzzytags','trap+hiphop'],
+      ['fuzzytags','trap+instrumental'],
+      ['search','trap beat instrumental'],
+      ['search','dark trap instrumental'],
+      ['search','808 trap beat instrumental'],
+      ['search','melodic trap instrumental']
     ],
     strong: /\btrap\b|808|dark\s*trap|melodic\s*trap|trap\s*beat/i,
     ban: /boom\s*[-]?\s*bap|boombap|\bdrill\b|house|techno|trance|dubstep|metal|rock|reggaeton|dancehall|lo[\s-]?fi|chill|relax|ambient|christmas|holiday/i,
@@ -55,18 +41,12 @@ const CONFIG = {
   },
   'Drill': {
     queries: [
-      ['fuzzytags','drill+hiphop'],['fuzzytags','drill+instrumental'],
-      ['search','drill beat instrumental'],['search','drill instrumental beat'],
-      ['search','uk drill instrumental'],['search','dark drill beat instrumental'],
-      ['search','freestyle drill instrumental'],['search','brazilian drill instrumental'],
-      ['search','drill rap beat instrumental'],['search','uk drill instrumental beat no vocals'],
-      ['search','ny drill instrumental beat'],['search','dark drill rap instrumental'],
-      ['search','drill type beat no vocals'],['search','hip hop drill instrumental'],
-      ['search','drill battle beat instrumental'],['search','uk drill rap instrumental no vocals'],
-      ['search','piano drill beat instrumental'],['search','808 drill instrumental'],
-      ['search','orchestral drill instrumental'],['search','freestyle battle drill beat'],
-      ['search','dark uk drill instrumental beat'],['search','street drill instrumental beat'],
-      ['search','drill cypher beat no vocals'],['search','ny drill beat instrumental no vocals']
+      ['fuzzytags','drill+hiphop'],
+      ['fuzzytags','drill+instrumental'],
+      ['search','drill beat instrumental'],
+      ['search','uk drill instrumental'],
+      ['search','dark drill beat instrumental'],
+      ['search','ny drill instrumental beat']
     ],
     strong: /\bdrill\b|uk\s*drill|ny\s*drill|dark\s*drill|drill\s*beat/i,
     ban: /boom\s*[-]?\s*bap|boombap|\btrap\b|house|techno|trance|dubstep|metal|rock|reggaeton|dancehall|lo[\s-]?fi|chill|relax|ambient|christmas|holiday/i,
@@ -126,8 +106,15 @@ async function fetchQuery(q) {
       : encodeURIComponent(q[1]));
   const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 18000);
   try {
-    const res = await fetch(url, {signal:ctl.signal, headers:{'Accept':'application/json'}});
-    const body = await res.text();
+    let res, body;
+    for (let attempt = 0; attempt < 4; attempt++) {
+      res = await fetch(url, {signal:ctl.signal, headers:{'Accept':'application/json'}});
+      body = await res.text();
+      if (res.status !== 429) break;
+      const delay = 1200 * (attempt + 1);
+      console.log('JAMENDO_RATE_LIMIT', q[0]+'='+q[1], 'retry='+(attempt+1), 'wait=' + delay);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
     if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = JSON.parse(body);
     if (data.headers && data.headers.status && data.headers.status !== 'success')
@@ -164,7 +151,8 @@ function makeRow(style, r) {
     0, 0, String(r.id), style, String(r.artist_name || 'Artista independente'),
     String(r.shareurl || ('https://www.jamendo.com/track/' + r.id)), license,
     String(r.audiodownload || ''),
-    r.audiodownload_allowed === true && !!r.audiodownload
+    r.audiodownload_allowed === true && !!r.audiodownload,
+    Number(r.duration) || 0
   ];
 }
 async function buildStyle(style) {
@@ -172,7 +160,7 @@ async function buildStyle(style) {
   const byId = new Map();
   for (let offset = 0; offset < queries.length && byId.size < 160; offset += 5) {
     const batch = queries.slice(offset, offset + 5);
-    const resultSets = await mapLimit(batch, 5, q => fetchQuery(q));
+    const resultSets = await mapLimit(batch, 3, q => fetchQuery(q));
     for (const rows of resultSets) for (const r of (rows || [])) {
       if (!r || !r.id || !r.audio || !(Number(r.duration) >= 65 && Number(r.duration) <= 720)) continue;
       const score = scoreOf(style, r);
@@ -234,6 +222,14 @@ async function buildStyle(style) {
     vocalinstrumentalFilter:'instrumental',
     counts:Object.fromEntries(Object.entries(catalogs).map(([k,v]) => [k,v.length])),
     catalogs
+  }), 'utf8');
+  // Compatibilidade com o runtime antigo: deriva os 30 primeiros Boom bap do mesmo catálogo validado.
+  const boomExtra = catalogs['Boom bap'].slice(0,30).map(row => ({
+    id:row[4], name:row[1], audio:row[0], artist:row[6], duration:row[11],
+    shareurl:row[7], license:row[8], audiodownload:row[9], audiodownload_allowed:row[10], bpm:row[2]
+  }));
+  fs.writeFileSync(path.join(outDir,'boom-bap-extra.json'), JSON.stringify({
+    version:'rimalab-derived-boom-bap-v8', source:'Jamendo verified instrumental seed', count:boomExtra.length, tracks:boomExtra
   }), 'utf8');
   console.log('CATALOG_SEED_OK', Object.entries(catalogs).map(([k,v]) => k + '=' + v.length).join(' '));
 })().catch(e => { console.error(e); process.exit(1); });
