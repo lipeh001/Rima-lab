@@ -134,8 +134,18 @@ html_path.write_text(html, encoding="utf-8")
 # Incrementa a versão sem alterar applicationId nem a configuração de assinatura Gradle.
 gradle_path = root / "app/build.gradle"
 gradle = gradle_path.read_text(encoding="utf-8")
-gradle = replace_once(gradle, "versionCode 20", "versionCode 21", "versionCode 2.8.5")
-gradle = replace_once(gradle, "versionName '2.8.4'", "versionName '2.8.5'", "versionName 2.8.5")
+if "versionCode 19" in gradle:
+    gradle = replace_once(gradle, "versionCode 19", "versionCode 21", "versionCode 2.8.5")
+elif "versionCode 20" in gradle:
+    gradle = replace_once(gradle, "versionCode 20", "versionCode 21", "versionCode 2.8.5")
+else:
+    raise SystemExit("PATCH_FAIL: versionCode inesperado no projeto Gradle")
+if "versionName '2.8.3'" in gradle:
+    gradle = replace_once(gradle, "versionName '2.8.3'", "versionName '2.8.5'", "versionName 2.8.5")
+elif "versionName '2.8.4'" in gradle:
+    gradle = replace_once(gradle, "versionName '2.8.4'", "versionName '2.8.5'", "versionName 2.8.5")
+else:
+    raise SystemExit("PATCH_FAIL: versionName inesperado no projeto Gradle")
 gradle_path.write_text(gradle, encoding="utf-8")
 
 # 7) Notification permission/channel handling: keep the paused notification visible.
