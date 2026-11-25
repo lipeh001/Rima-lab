@@ -45,7 +45,7 @@ jobs:
           HTML_FILE="$BUILD_DIR/app/src/main/assets/rima-lab.html"
           node tools/teste_tela_treino.js "$HTML_FILE"
           node tools/teste_runtime_v4.js "$BUILD_DIR"
-          node "$BUILD_DIR/tools/teste_html_sintaxe.js" "$HTML_FILE"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
           mkdir -p "$GITHUB_WORKSPACE/review"
