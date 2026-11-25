@@ -16,6 +16,14 @@ def replace_once(text, old, new, label):
 
 html = html_path.read_text(encoding="utf-8")
 
+# Instrução clara da biblioteca: não orientar o usuário a tocar em uma seta.
+html = replace_once(
+    html,
+    "Escolha uma base para ouvir e treinar. Toque na seta para salvar no celular.",
+    "Escolha uma base para ouvir e treinar. Depois de ouvir, você pode salvar o beat no celular para usar offline.",
+    "instrução de salvamento da biblioteca"
+)
+
 # 1) Rejeita a faixa de Drill que o usuário identificou como música cantada.
 html = replace_once(
     html,
@@ -122,6 +130,13 @@ if 'id="rima-runtime-v4"' not in html:
     html = html.replace("</head>", style + "\n</head>", 1)
 
 html_path.write_text(html, encoding="utf-8")
+
+# Incrementa a versão sem alterar applicationId nem a configuração de assinatura Gradle.
+gradle_path = root / "app/build.gradle"
+gradle = gradle_path.read_text(encoding="utf-8")
+gradle = replace_once(gradle, "versionCode 20", "versionCode 21", "versionCode 2.8.5")
+gradle = replace_once(gradle, "versionName '2.8.4'", "versionName '2.8.5'", "versionName 2.8.5")
+gradle_path.write_text(gradle, encoding="utf-8")
 
 # 7) Notification permission/channel handling: keep the paused notification visible.
 main = main_path.read_text(encoding="utf-8")
