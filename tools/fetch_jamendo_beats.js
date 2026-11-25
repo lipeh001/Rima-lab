@@ -59,7 +59,7 @@ function scoreOf(r){
 }
 async function mapLimit(a,n,fn){const out=new Array(a.length);let next=0;await Promise.all(Array.from({length:Math.min(n,a.length)},async()=>{while(true){const i=next++;if(i>=a.length)return;try{out[i]=await fn(a[i],i)}catch(e){out[i]={__error:String(e)};console.error('QUERY_FAIL',a[i][0],a[i][1],String(e))}}}));return out}
 async function fetchQuery(q){
- const base=[['client_id',clientId],['format','json'],['limit','200'],['include','musicinfo,licenses'],['imagesize','100'],['audioformat','mp32'],['audiodlformat','mp32'],['type','single albumtrack'],['vocalinstrumental','instrumental'],['order','relevance'],['boost','popularity_month']];
+ const base=[['client_id',clientId],['format','json'],['limit','200'],['imagesize','100'],['audioformat','mp32'],['audiodlformat','mp32'],['type','single albumtrack'],['vocalinstrumental','instrumental'],['order','relevance'],['boost','popularity_month']];
  let url='https://api.jamendo.com/v3.0/tracks/?'+base.map(([k,v])=>k+'='+encodeURIComponent(v)).join('&');
  url+='&'+q[0]+'='+(q[0]==='fuzzytags'?encodeURIComponent(q[1]).replace(/%2B/gi,'+'):encodeURIComponent(q[1]));
  const ctl=new AbortController(),timer=setTimeout(()=>ctl.abort(),20000);
