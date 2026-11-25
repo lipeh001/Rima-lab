@@ -29,10 +29,10 @@ checks.push(['player não pula de faixa quando ocorre erro',/function zErr\(c,my
 checks.push(['repetição começa desligada por padrão',html.includes("rep:'off',dp:0")]);
 checks.push(['só avança para outra faixa quando repetir lista está selecionado',/if\(ZS\.rep==='all'\)\{zStep\(1\);return\}/.test(html)]);
 checks.push(['retomada de posição anterior foi desativada para nova reprodução',html.includes('if(!cr)return false;')]);
-checks.push(['prévia é reaproveitada ao começar o treino, sem baixar o mesmo beat duas vezes',html.includes('const ZFETCHING_V8=new Map()')&&html.includes('const preview=play&&document.body.classList.contains(\\'pv\\')')]);
+checks.push(['prévia é reaproveitada ao começar o treino, sem baixar o mesmo beat duas vezes',html.includes('const ZFETCHING_V8=new Map()')&&html.includes(`const preview=play&&document.body.classList.contains('pv')`)]);
 checks.push(['duplo clique em Começar é bloqueado',html.includes('__RIMA_LV_START_LOCK')]);
 checks.push(['sem beat selecionado, o seletor volta para a etapa inicial e ganha destaque',html.includes('Selecione um beat para começar o treino.')&&html.includes('block:\'center\'')&&html.includes('rima-select-focus')]);
-checks.push(['palco pulsa por transição suave, sem reflow nem animação de piscar',html.includes('rima-final-polish-v8')&&html.includes("e.classList.add('hit')")&&!html.includes('void e.offsetWidth;e.classList.add(\\'hit\\')')]);
+checks.push(['palco pulsa por transição suave, sem reflow nem animação de piscar',html.includes('rima-final-polish-v8')&&html.includes("e.classList.add('hit')")&&!html.includes(`void e.offsetWidth;e.classList.add('hit')`)]);
 checks.push(['cartão expandido da notificação usa a marca oficial do Rima Lab',service.includes('.setLargeIcon(appLogo())')&&service.includes('R.drawable.ic_fg')]);
 checks.push(['ícone pequeno de status é o glifo R monocromático do app',icon.includes('fillColor="#FFFFFF"')&&icon.includes('pathData=')]);
 checks.push(['APK tem versão e código novos para atualização por cima',gradle.includes('versionCode 25')&&gradle.includes("versionName '2.8.8'")]);
