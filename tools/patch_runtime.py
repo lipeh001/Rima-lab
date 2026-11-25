@@ -329,4 +329,39 @@ html = html.replace(
     ".stage.hit .word{animation:rl-word-crisp .18s cubic-bezier(.2,.75,.25,1)!important;filter:none!important}\\n@keyframes rl-word-crisp{from{opacity:.88;transform:translateY(3px) scale(.99);filter:none}to{opacity:1;transform:translateY(0) scale(1);filter:none}}",
     ".stage.hit .word{animation:none!important;filter:none!important;transform:none!important;opacity:1!important}\\n.stage.hit{animation:rl-stage-soft .52s ease-out!important}\\n@keyframes rl-stage-soft{0%{border-color:rgba(215,251,87,.58);box-shadow:inset 0 0 16px rgba(215,251,87,.045),0 0 10px rgba(215,251,87,.10)}100%{border-color:rgba(255,255,255,.08);box-shadow:inset 0 1px rgba(255,255,255,.035),0 14px 34px rgba(0,0,0,.28)}}"
 )
+
+# 12) Reaplicar e GRAVAR as correções finais depois dos blocos legados.
+html = html_path.read_text(encoding="utf-8")
+cache_fix = """const ZCATALOG_VERSION='rimalab-balanced-catalog-v6';try{if(localStorage.getItem('rima_catalog_version')!==ZCATALOG_VERSION){['jmraw7','jmraw6','jmraw7_at_Boom bap','jmraw7_at_Trap','jmraw7_at_Drill'].forEach(k=>localStorage.removeItem(k));localStorage.setItem('rima_catalog_version',ZCATALOG_VERSION)}}catch(e){}"""
+if "rimalab-balanced-catalog-v6" not in html:
+    html = html.replace("const ZCACHE_MS=12*60*60*1000;", "const ZCACHE_MS=12*60*60*1000;\n"+cache_fix, 1)
+
+html = html.replace("function zCacheFresh(st){try{const rows=Array.isArray(ZRAW[st])?ZRAW[st].length:0;return rows>=50&&Date.now()-(+localStorage.getItem('jmraw7_at_'+st)||0)<ZCACHE_MS}catch(e){return false}}",
+"function zCacheFresh(st){try{const cap=st==='Boom bap'?70:st==='Trap'?70:20,rows=Array.isArray(ZRAW[st])?ZRAW[st].length:0;return rows>=cap&&Date.now()-(+localStorage.getItem('jmraw7_at_'+st)||0)<ZCACHE_MS}catch(e){return false}}")
+html = html.replace("ZRAW[st]=merged.slice(0,50)", "ZRAW[st]=merged.slice(0,st==='Boom bap'?70:st==='Trap'?70:20)")
+html = html.replace("ZLIB[st][1]=L.slice(0,50)", "ZLIB[st][1]=L.slice(0,st==='Boom bap'?70:st==='Trap'?70:20)")
+html = html.replace("if(picked.length>=50)break", "if(picked.length>=(st==='Boom bap'?70:st==='Trap'?70:20))break")
+html = html.replace("if(picked.length<50)", "if(picked.length<(st==='Boom bap'?70:st==='Trap'?70:20))")
+html = html.replace("if(merged.length>=50)break", "if(merged.length>=(st==='Boom bap'?70:st==='Trap'?70:20))break")
+html = html.replace("\${ZLIB[s][1].length}/50", "\${ZLIB[s][1].length}/\${s==='Boom bap'?70:s==='Trap'?70:20}")
+html = html.replace("Escolha uma base para ouvir e treinar. Toque na seta para salvar no celular.", "Escolha uma base para ouvir e treinar. Na primeira vez que você ouvir, o app tenta salvar o beat automaticamente para ouvir offline, quando a licença permite.")
+html = html.replace(".stage.hit .word{animation:rl-word-crisp .18s cubic-bezier(.2,.75,.25,1)!important;filter:none!important}", ".stage.hit .word{animation:rl-word-soft .48s ease-out!important;filter:none!important}")
+html = html.replace("@keyframes rl-word-crisp{from{opacity:.88;transform:translateY(3px) scale(.99);filter:none}to{opacity:1;transform:translateY(0) scale(1);filter:none}}", "@keyframes rl-word-soft{0%{opacity:.94;transform:scale(.995)}100%{opacity:1;transform:scale(1)}}")
+html = html.replace(".stage::after{display:none!important;animation:none!important;box-shadow:none!important}", ".stage::after{display:block!important;animation:none!important;box-shadow:inset 0 0 18px rgba(215,251,87,.07)!important;opacity:.35!important}")
+html = html.replace(".stage.hit::after{display:none!important;animation:none!important}", ".stage.hit::after{display:block!important;animation:rl-stage-glow .72s ease-out!important}")
+html = html.replace("@media(prefers-reduced-motion:reduce){.stage.hit .word{animation:none!important}", "@keyframes rl-stage-glow{0%{opacity:.75;box-shadow:inset 0 0 28px rgba(215,251,87,.18),0 0 16px rgba(215,251,87,.15)}100%{opacity:.18;box-shadow:inset 0 0 8px rgba(215,251,87,.04),0 0 3px rgba(215,251,87,.02)}}\n@media(prefers-reduced-motion:reduce){.stage.hit .word{animation:none!important}")
+html_path.write_text(html, encoding="utf-8")
+
+icon_path = root / "app/src/main/res/drawable/ic_stat_beat.xml"
+icon_path.write_text('''<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="#FFFFFF" android:pathData="M5,3h8.1c4.1,0 6.4,2.1 6.4,5.6 0,2.5 -1.2,4.2 -3.4,5l3.9,7.4h-4.5l-3.4,-6.8H9v6.8H5V3zM9,6.6v4.2h4c1.7,0 2.5,-0.7 2.5,-2.1 0,-1.4 -0.8,-2.1 -2.5,-2.1H9z"/>
+</vector>''', encoding="utf-8")
+
+gradle_path = root / "app/build.gradle"
+gradle = gradle_path.read_text(encoding="utf-8")
+if "versionCode 22" in gradle: gradle = gradle.replace("versionCode 22", "versionCode 23", 1)
+if "versionName '2.8.5'" in gradle: gradle = gradle.replace("versionName '2.8.5'", "versionName '2.8.6'", 1)
+gradle_path.write_text(gradle, encoding="utf-8")
+print("RUNTIME_PATCH_OK: catalogo 70/70/20, cache limpo, icone R, texto e palco suave.")
+
 print("RUNTIME_PATCH_OK: paisagem, borda pulsante, troca sem salto, filtro de Drill e notificação MediaSession.")
