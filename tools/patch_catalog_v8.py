@@ -113,7 +113,7 @@ elif new_download not in html:
 
 # Evita downloads concorrentes da mesma faixa quando o usuário transforma uma prévia em treino ou toca duas vezes.
 beat_get_anchor = "function zBpick(live){"
-coalesce = """const ZFETCHING_V8=new Map();const zBeatGetOriginalV8=zBeatGet;zBeatGet=function(){const k=ZS.key;if(ZFETCHING_V8.has(k))return ZFETCHING_V8.get(k);const p=Promise.resolve().then(()=>zBeatGetOriginalV8());ZFETCHING_V8.set(k,p);p.finally(()=>{if(ZFETCHING_V8.get(k)===p)ZFETCHING_V8.delete(k)});return p};
+coalesce = """const ZFETCHING_V8=new Map();const zBeatGetOriginalV8=zBeatGet;zBeatGet=function(){const k=ZS.key;if(ZFETCHING_V8.has(k))return ZFETCHING_V8.get(k);const p=Promise.resolve().then(()=>zBeatGetOriginalV8());ZFETCHING_V8.set(k,p);p.then(()=>{if(ZFETCHING_V8.get(k)===p)ZFETCHING_V8.delete(k)},()=>{if(ZFETCHING_V8.get(k)===p)ZFETCHING_V8.delete(k)});return p};
 """
 if "ZFETCHING_V8" not in html:
     if beat_get_anchor not in html:
