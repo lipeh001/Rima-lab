@@ -52,7 +52,7 @@ html = replace_once(
 html = replace_once(
     html,
     "const ZCACHE_MS=12*60*60*1000;",
-    "const ZCACHE_MS=12*60*60*1000;\nconst ZCATALOG_VERSION='rimalab-verified-instrumental-v4-20261125';try{if(localStorage.getItem('rima_jamendo_search_version')!==ZCATALOG_VERSION){['Boom bap','Trap','Drill'].forEach(st=>localStorage.removeItem('jmraw8_at_'+st));localStorage.setItem('rima_jamendo_search_version',ZCATALOG_VERSION)}}catch(e){}",
+    "const ZCACHE_MS=12*60*60*1000;\nconst ZCATALOG_VERSION='rimalab-verified-instrumental-v4-20261125';try{if(localStorage.getItem('rima_jamendo_search_version')!==RIMA_BALANCED_CATALOG_VERSION){['Boom bap','Trap','Drill'].forEach(st=>localStorage.removeItem('jmraw8_at_'+st));localStorage.setItem('rima_jamendo_search_version',ZCATALOG_VERSION)}}catch(e){}",
     "versão do cache Jamendo"
 )
 
@@ -332,7 +332,7 @@ html = html.replace(
 
 # 12) Reaplicar e GRAVAR as correções finais depois dos blocos legados.
 html = html_path.read_text(encoding="utf-8")
-cache_fix = """const ZCATALOG_VERSION='rimalab-balanced-catalog-v6';try{if(localStorage.getItem('rima_catalog_version')!==ZCATALOG_VERSION){['jmraw7','jmraw6','jmraw7_at_Boom bap','jmraw7_at_Trap','jmraw7_at_Drill'].forEach(k=>localStorage.removeItem(k));localStorage.setItem('rima_catalog_version',ZCATALOG_VERSION)}}catch(e){}"""
+cache_fix = """const RIMA_BALANCED_CATALOG_VERSION='rimalab-balanced-catalog-v6';try{if(localStorage.getItem('rima_catalog_version')!==RIMA_BALANCED_CATALOG_VERSION){['jmraw7','jmraw6','jmraw7_at_Boom bap','jmraw7_at_Trap','jmraw7_at_Drill'].forEach(k=>localStorage.removeItem(k));localStorage.setItem('rima_catalog_version',RIMA_BALANCED_CATALOG_VERSION)}}catch(e){}"""
 if "rimalab-balanced-catalog-v6" not in html:
     html = html.replace("const ZCACHE_MS=12*60*60*1000;", "const ZCACHE_MS=12*60*60*1000;\n"+cache_fix, 1)
 
