@@ -36,14 +36,8 @@ html = replace_once(
 html = replace_once(
     html,
     "const ZCACHE_MS=12*60*60*1000;",
-    "const ZCACHE_MS=12*60*60*1000;\nconst ZCATALOG_VERSION='rimalab-jamendo-bb30-20261125-v1';let ZCATALOG_FORCE_REFRESH=false;try{ZCATALOG_FORCE_REFRESH=localStorage.getItem('rima_jamendo_search_version')!==ZCATALOG_VERSION;if(ZCATALOG_FORCE_REFRESH)localStorage.setItem('rima_jamendo_search_version',ZCATALOG_VERSION)}catch(e){ZCATALOG_FORCE_REFRESH=true}",
+    "const ZCACHE_MS=12*60*60*1000;\nconst ZCATALOG_VERSION='rimalab-verified-instrumental-v4-20261125';try{if(localStorage.getItem('rima_jamendo_search_version')!==ZCATALOG_VERSION){['Boom bap','Trap','Drill'].forEach(st=>localStorage.removeItem('jmraw8_at_'+st));localStorage.setItem('rima_jamendo_search_version',ZCATALOG_VERSION)}}catch(e){}",
     "versão do cache Jamendo"
-)
-html = replace_once(
-    html,
-    "if(zCacheFresh(st)&&Array.isArray(ZRAW[st])){ZJS[st]=ZRAW[st].length?'ok':'empty';",
-    "if(!ZCATALOG_FORCE_REFRESH&&zCacheFresh(st)&&Array.isArray(ZRAW[st])){ZJS[st]=ZRAW[st].length?'ok':'empty';",
-    "renovação do catálogo"
 )
 
 # 4) Carrega 30 beats extra verificados do Jamendo, empacotados durante o build.
