@@ -10,7 +10,6 @@ on:
       - 'tools/patch_runtime.py'
       - 'tools/fetch_jamendo_beats.js'
       - 'tools/teste_runtime_v4.js'
-      - 'tools/patch_catalog_v7.py'
       - 'tools/fetch_catalog_seed.js'
       - 'tools/patch_catalog_v8.py'
       - 'tools/teste_catalog_v8.js'
@@ -41,7 +40,6 @@ jobs:
           test -f "$HTML_FILE"
           node tools/fix_tela_treino.js "$HTML_FILE"
           python3 tools/patch_runtime.py "$BUILD_DIR"
-          python3 tools/patch_catalog_v7.py "$BUILD_DIR"
       - name: Buscar e validar 30 beats Boom bap no Jamendo
         run: node tools/fetch_jamendo_beats.js "$BUILD_DIR/app/src/main/assets"
       - name: Buscar 70 instrumentais reais por categoria (Boom bap, Trap e Drill)
