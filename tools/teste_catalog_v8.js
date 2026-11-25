@@ -11,6 +11,7 @@ const seed=JSON.parse(fs.readFileSync(path.join(assets,'beats/catalog-seed.json'
 const styles=['Boom bap','Trap','Drill'];
 const allIds=new Set();
 const checks=[];
+checks.push(['Jamendo consultado com filtro oficial de instrumentais',seed.vocalinstrumentalFilter==='instrumental']);
 for(const style of styles){
   const rows=seed.catalogs&&seed.catalogs[style];
   checks.push([style+' tem exatamente 70 instrumentais com áudio validado',Array.isArray(rows)&&rows.length===70&&rows.every(r=>r[0]&&r[1]&&r[4]&&r[5]===style&&r[10]!==undefined)]);
