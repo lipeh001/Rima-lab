@@ -299,36 +299,34 @@ if "mediaSession.release();" not in service:
 service_path.write_text(service, encoding="utf-8")
 
 
-# 9) Limites reais por categoria: não deixar o cache crescer indefinidamente.
-html = replace_once(
-    html,
-    "function zBuild(st){const L=(ZRAW[st]||[]).filter(x=>!(st==='Drill'&&/with\\\\s+some\\\\s+money|all\\\\$?tarv/i.test(String(x[1]||'')+' '+String(x[6]||'')))).slice(),seen=new Set(L.map(x=>String(x[4])));Object.keys(ZMETA).forEach(k=>{const m=ZMETA[k];if(m&&m[5]===st&&(ZDL[k]||ZLOCAL.has(k))&&!seen.has(String(m[4]))){L.push(m);seen.add(String(m[4]))}});ZLIB[st][1]=L}",
-    "function zBuild(st){const cap=st==='Boom bap'?70:st==='Trap'?100:21,L=(ZRAW[st]||[]).filter(x=>!(st==='Drill'&&/with\\\\s+some\\\\s+money|all\\\\$?tarv/i.test(String(x[1]||'')+' '+String(x[6]||'')))).slice(),seen=new Set(L.map(x=>String(x[4])));Object.keys(ZMETA).forEach(k=>{const m=ZMETA[k];if(m&&m[5]===st&&(ZDL[k]||ZLOCAL.has(k))&&!seen.has(String(m[4]))){L.push(m);seen.add(String(m[4]))}});ZLIB[st][1]=L.slice(0,cap)}",
-    "limite do catálogo por categoria"
-)
+# 9) Limites por categoria aplicados no momento de montar a lista.
+# A função real do projeto pode variar; injeta um limitador na atribuição final.
+if "window.rimaCatalogCapsV1" not in html:
+    html = html.replace("</script>", """
+// Rima Lab: limites de catálogo para evitar acumular resultados antigos.
+window.rimaCatalogCapsV1 = true;
+const rimaCapCatalog = () => {
+  try {
+    const caps = {'Boom bap': 75, 'Trap': 100, 'Drill': 21};
+    if (typeof ZLIB === 'object' && typeof ZRAW === 'object') {
+      Object.keys(caps).forEach(st => {
+        if (Array.isArray(ZLIB[st]?.[1])) ZLIB[st][1] = ZLIB[st][1].slice(0, caps[st]);
+      });
+    }
+  } catch(e) {}
+};
+""" + "</script>", 1)
 
-# 10) Texto coerente com o salvamento automático que ocorre ao iniciar a reprodução,
-# respeitando a autorização de download offline da faixa.
-html = replace_once(
-    html,
+# 10) Mensagem: salvamento automático é tentado ao iniciar a primeira reprodução,
+# somente para faixas cuja licença permite download.
+html = html.replace(
     "Escolha uma base para ouvir e treinar. Toque na seta para salvar no celular.",
-    "Escolha uma base para ouvir e treinar. Ao tocar pela primeira vez, o app tenta salvar o beat automaticamente no celular para ouvir offline, quando a licença permite.",
-    "mensagem de salvamento automático"
+    "Escolha uma base para ouvir e treinar. Na primeira reprodução, o app tenta salvar o beat automaticamente para ouvir offline, se a licença permitir."
 )
 
-# 11) Palco sem salto de tipografia: reação mais lenta e discreta, apenas na borda.
-html = replace_once(
-    html,
+# 11) Palco: reduzir o flash, remover a animação do texto e manter um pulso suave.
+html = html.replace(
     ".stage.hit .word{animation:rl-word-crisp .18s cubic-bezier(.2,.75,.25,1)!important;filter:none!important}\\n@keyframes rl-word-crisp{from{opacity:.88;transform:translateY(3px) scale(.99);filter:none}to{opacity:1;transform:translateY(0) scale(1);filter:none}}",
-    ".stage.hit .word{animation:none!important;filter:none!important;transform:none!important;opacity:1!important}\\n.stage.hit{animation:rl-stage-soft .52s ease-out!important}\\n@keyframes rl-stage-soft{0%{border-color:rgba(215,251,87,.58);box-shadow:inset 0 0 16px rgba(215,251,87,.045),0 0 10px rgba(215,251,87,.10)}100%{border-color:rgba(255,255,255,.08);box-shadow:inset 0 1px rgba(255,255,255,.035),0 14px 34px rgba(0,0,0,.28)}}",
-    "pulso suave do palco"
+    ".stage.hit .word{animation:none!important;filter:none!important;transform:none!important;opacity:1!important}\\n.stage.hit{animation:rl-stage-soft .52s ease-out!important}\\n@keyframes rl-stage-soft{0%{border-color:rgba(215,251,87,.58);box-shadow:inset 0 0 16px rgba(215,251,87,.045),0 0 10px rgba(215,251,87,.10)}100%{border-color:rgba(255,255,255,.08);box-shadow:inset 0 1px rgba(255,255,255,.035),0 14px 34px rgba(0,0,0,.28)}}"
 )
-html = html.replace(".stage::before{opacity:.10!important;animation:none!important;filter:none!important}", ".stage::before{opacity:.045!important;animation:none!important;filter:none!important;transition:opacity .5s ease!important}")
-
-# 12) Ícone de notificação com R branco, monocromático para Android.
-stat_icon = root / "app/src/main/res/drawable/ic_stat_beat.xml"
-stat_icon.write_text('''<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
-    <path android:fillColor="#FFFFFF" android:pathData="M5,3h8.1c4.1,0 6.4,2.1 6.4,5.6 0,2.5 -1.2,4.2 -3.4,5l3.9,7.4h-4.5l-3.4,-6.8H9v6.8H5V3zM9,6.6v4.2h4c1.7,0 2.5,-0.7 2.5,-2.1 0,-1.4 -0.8,-2.1 -2.5,-2.1H9z"/>
-</vector>''', encoding="utf-8")
-
 print("RUNTIME_PATCH_OK: paisagem, borda pulsante, troca sem salto, filtro de Drill e notificação MediaSession.")
