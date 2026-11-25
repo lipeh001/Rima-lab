@@ -362,6 +362,35 @@ gradle = gradle_path.read_text(encoding="utf-8")
 if "versionCode 22" in gradle: gradle = gradle.replace("versionCode 22", "versionCode 23", 1)
 if "versionName '2.8.5'" in gradle: gradle = gradle.replace("versionName '2.8.5'", "versionName '2.8.6'", 1)
 gradle_path.write_text(gradle, encoding="utf-8")
+
+# 13) Aplicar os limites aos trechos reais desta versão do HTML.
+html = html_path.read_text(encoding="utf-8")
+html = html.replace(
+ "function zCacheFresh(st){try{const rows=Array.isArray(ZRAW[st])?ZRAW[st].length:0;return rows>0&&Date.now()-(+localStorage.getItem('jmraw7_at_'+st)||0)<ZCACHE_MS}catch(e){return false}}",
+ "function zCacheFresh(st){try{const cap=st==='Boom bap'?70:st==='Trap'?70:20,rows=Array.isArray(ZRAW[st])?ZRAW[st].length:0;return rows>=cap&&Date.now()-(+localStorage.getItem('jmraw7_at_'+st)||0)<ZCACHE_MS}catch(e){return false}}"
+)
+html = html.replace(
+ "ZLIB[st][1]=L}",
+ "ZLIB[st][1]=L.slice(0,st==='Boom bap'?70:st==='Trap'?70:20)}"
+)
+html = html.replace(
+ "if(!artistSet.has(a)){artistSet.add(a);picked.push(o)}/* sem teto de resultados */}",
+ "if(!artistSet.has(a)){artistSet.add(a);picked.push(o);if(picked.length>=(st==='Boom bap'?70:st==='Trap'?70:20))break}}"
+)
+html = html.replace(
+ "for(const o of ranked){if(picked.some(p=>String(p.r.id)==String(o.r.id)))continue;picked.push(o)}",
+ "for(const o of ranked){if(picked.some(p=>String(p.r.id)==String(o.r.id)))continue;picked.push(o);if(picked.length>=(st==='Boom bap'?70:st==='Trap'?70:20))break}"
+)
+html = html.replace(
+ "merged.push(x);/* sem teto de resultados */}",
+ "merged.push(x);if(merged.length>=(st==='Boom bap'?70:st==='Trap'?70:20))break}"
+)
+html = html.replace(
+ "Depois de ouvir, você pode salvar o beat no celular para usar offline.",
+ "Na primeira vez que você ouvir, o app tenta salvar o beat automaticamente para ouvir offline, quando a licença permite."
+)
+html_path.write_text(html, encoding="utf-8")
+
 print("RUNTIME_PATCH_OK: catalogo 70/70/20, cache limpo, icone R, texto e palco suave.")
 
 print("RUNTIME_PATCH_OK: paisagem, borda pulsante, troca sem salto, filtro de Drill e notificação MediaSession.")
