@@ -32,6 +32,14 @@ html = replace_once(
     "validação de faixa instrumental"
 )
 
+# Jamendo aceita include como lista separada por '+', não por vírgula.
+html = replace_once(
+    html,
+    "&include=musicinfo%2Clicenses&imagesize=100",
+    "&include=licenses+musicinfo&imagesize=100",
+    "formato correto do parâmetro include do Jamendo"
+)
+
 # 3) Invalida a busca antiga uma única vez. Os beats já salvos continuam visíveis.
 html = replace_once(
     html,
