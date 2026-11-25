@@ -190,14 +190,19 @@ async function buildStyle(style) {
     if (!artists.has(key)) { artists.add(key); first.push(x); } else rest.push(x);
   }
   const pool = first.concat(rest);
-  const checked = await mapLimit(pool, 8, async x => ({x, ok:await probeAudio(x.r.audio)}));
   const out = [];
   const seen = new Set();
-  for (const p of checked) {
-    if (!p || !p.ok || seen.has(String(p.x.r.id))) continue;
-    seen.add(String(p.x.r.id));
-    out.push(makeRow(style, p.x.r));
-    if (out.length >= TARGET) break;
+  // Verifica em lotes e para assim que houver 70 streams válidos; evita testar dezenas de faixas desnecessárias.
+  for (let offset = 0; offset < pool.length && out.length < TARGET; offset += 20) {
+    const batch = pool.slice(offset, offset + 20);
+    const checked = await mapLimit(batch, 10, async x => ({x, ok:await probeAudio(x.r.audio)}));
+    for (const p of checked) {
+      if (!p || !p.ok || seen.has(String(p.x.r.id))) continue;
+      seen.add(String(p.x.r.id));
+      out.push(makeRow(style, p.x.r));
+      if (out.length >= TARGET) break;
+    }
+    console.log('CATALOG_AUDIO_BATCH', style, 'tested=' + Math.min(offset + batch.length, pool.length), 'valid=' + out.length + '/' + TARGET);
   }
   if (out.length < TARGET) {
     throw new Error(style + ': somente ' + out.length + '/' + TARGET +
