@@ -10,6 +10,10 @@ on:
       - 'tools/patch_runtime.py'
       - 'tools/fetch_jamendo_beats.js'
       - 'tools/teste_runtime_v4.js'
+      - 'tools/patch_catalog_v7.py'
+      - 'tools/fetch_catalog_seed.js'
+      - 'tools/patch_catalog_v8.py'
+      - 'tools/teste_catalog_v8.js'
 jobs:
   apk:
     runs-on: ubuntu-24.04
@@ -40,18 +44,25 @@ jobs:
           python3 tools/patch_catalog_v7.py "$BUILD_DIR"
       - name: Buscar e validar 30 beats Boom bap no Jamendo
         run: node tools/fetch_jamendo_beats.js "$BUILD_DIR/app/src/main/assets"
+      - name: Buscar 70 instrumentais reais por categoria (Boom bap, Trap e Drill)
+        run: node tools/fetch_catalog_seed.js "$BUILD_DIR/app/src/main/assets"
+      - name: Pré-carregar catálogo completo e corrigir definitivamente player e palco
+        run: python3 tools/patch_catalog_v8.py "$BUILD_DIR"
       - name: Testes de regressão
         shell: bash
         run: |
           HTML_FILE="$BUILD_DIR/app/src/main/assets/rima-lab.html"
           node tools/teste_tela_treino.js "$HTML_FILE"
           node tools/teste_runtime_v4.js "$BUILD_DIR"
+          node tools/teste_catalog_v8.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
           mkdir -p "$GITHUB_WORKSPACE/review"
           cp "$BUILD_DIR/app/src/main/assets/rima-lab.html" "$GITHUB_WORKSPACE/review/rima-lab.html"
           cp "$BUILD_DIR/app/src/main/assets/beats/boom-bap-extra.json" "$GITHUB_WORKSPACE/review/boom-bap-extra.json"
+          cp "$BUILD_DIR/app/src/main/assets/beats/catalog-seed.json" "$GITHUB_WORKSPACE/review/catalog-seed.json"
+          cp "$BUILD_DIR/CATALOGO-2.8.8-VALIDADO.txt" "$GITHUB_WORKSPACE/review/CATALOGO-2.8.8-VALIDADO.txt"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
