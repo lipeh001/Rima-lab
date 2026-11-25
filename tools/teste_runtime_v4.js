@@ -25,7 +25,8 @@ const checks=[
  ['Android usa MediaSession real',service.includes('new MediaSession(this, "RimaLabMedia")')&&service.includes('setMediaSession(mediaSession.getSessionToken())')],
  ['notification actions têm play/pause/next/previous/stop',service.includes('onSkipToNext')&&service.includes('onSkipToPrevious')&&service.includes('A_STOP')],
  ['catálogo adicionou beats reais com IDs sem duplicação',tracks.length>0&&tracks.length<=30&&manifest.count===tracks.length&&ids.size===tracks.length],
- ['cada beat extra tem áudio, título, artista e duração válida',tracks.every(x=>x.audio&&x.name&&x.artist&&x.duration>=85&&x.duration<=540)]
+ ['cada beat extra tem áudio, título, artista e duração válida',tracks.every(x=>x.audio&&x.name&&x.artist&&x.duration>=85&&x.duration<=540)],
+ ['Boom bap extra exclui lofi, chill e faixas sazonais',tracks.every(x=>!(/lofi|lo-fi|chill|relax|ambient|christmas|holiday|summer\\s*time|good\\s*vibes/i.test(x.name)))]
 ];
 let bad=0;
 for(const [name,ok] of checks){console.log((ok?'OK  ':'FAIL ')+name);if(!ok)bad++;}
