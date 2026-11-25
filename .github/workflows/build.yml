@@ -14,6 +14,11 @@ jobs:
       - uses: actions/checkout@v4
       - name: Extrair projeto
         run: unzip -q RimaLab.zip -d proj
+      - name: Exportar HTML para revisão
+        run: |
+          HTML_FILE="$(find "$GITHUB_WORKSPACE/proj" -path '*/app/src/main/assets/rima-lab.html' -print -quit)"
+          mkdir -p "$GITHUB_WORKSPACE/review"
+          cp "$HTML_FILE" "$GITHUB_WORKSPACE/review/rima-lab.html"
       - name: Corrigir tela de treino e validar
         run: |
           HTML_FILE="$(find "$GITHUB_WORKSPACE/proj" -path '*/app/src/main/assets/rima-lab.html' -print -quit)"
@@ -53,4 +58,9 @@ jobs:
         with:
           name: RimaLab-apk
           path: out/RimaLab.apk
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RimaLab-review-html
+          path: review/rima-lab.html
           if-no-files-found: error
