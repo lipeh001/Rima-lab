@@ -44,7 +44,10 @@ const queries = [
   ['search','freestyle battle beat instrumental'],
   ['search','hip hop beat no vocals 90s'],
   ['search','rap instrumental 90s sampler'],
-  ['fuzzytags','hiphop+rap+instrumental'],\n  ['fuzzytags','boom+bap+old+school'],\n  ['fuzzytags','hip+hop+drums+instrumental'],\n  ['search','Funky Old-School Hip-Hop Style Instrumental Cypher House'],
+  ['fuzzytags','hiphop+rap+instrumental'],
+  ['fuzzytags','boom+bap+old+school'],
+  ['fuzzytags','hip+hop+drums+instrumental'],
+  ['search','Funky Old-School Hip-Hop Style Instrumental Cypher House'],
   ['search','DARK BOOM BAP 08'],
   ['search','90s BOOM BAP 227'],
   ['search','Boom Bap Old School Hip Hop AVANT-BEATS'],
@@ -61,7 +64,9 @@ function textOf(r) {
 }
 function scoreOf(r) {
   const info = r.musicinfo || {};
-  const vocal = String(info.vocalinstrumental || '').toLowerCase();\n  // A API já recebe vocalinstrumental=instrumental; rejeita explicitamente apenas o que vier marcado como vocal.\n  if (vocal && vocal !== 'instrumental') return -1;
+  const vocal = String(info.vocalinstrumental || '').toLowerCase();
+  // A API já recebe vocalinstrumental=instrumental; rejeita explicitamente apenas o que vier marcado como vocal.
+  if (vocal && vocal !== 'instrumental') return -1;
   const text = textOf(r);
   if (ban.test(text) || !strong.test(text)) return -1;
   const genres = ((info.tags || {}).genres || []).join(' ');
@@ -100,7 +105,8 @@ async function fetchQuery(q) {
     });
     if (!res.ok) throw new Error('Jamendo HTTP ' + res.status);
     const data = await res.json();
-    if (data && data.headers && data.headers.status && data.headers.status !== 'success') throw new Error('Jamendo API: '+JSON.stringify(data.headers));\n    return Array.isArray(data.results) ? data.results : [];
+    if (data && data.headers && data.headers.status && data.headers.status !== 'success') throw new Error('Jamendo API: '+JSON.stringify(data.headers));
+    return Array.isArray(data.results) ? data.results : [];
   } finally { clearTimeout(timer); }
 }
 
@@ -141,7 +147,8 @@ async function probeAudio(url) {
     if (!prev || item.score > prev.score) byId.set(id, item);
   }
   const ranked = [...byId.values()].sort((a,b) => b.score-a.score || String(a.r.name).localeCompare(String(b.r.name)));
-  console.log('Candidatos instrumentais e compatíveis: ' + ranked.length);\n  if (!ranked.length) { console.error('Nenhuma consulta retornou faixa elegível. Verifique client_id e os filtros Jamendo; não serão incluídas faixas genéricas.'); process.exit(3); }
+  console.log('Candidatos instrumentais e compatíveis: ' + ranked.length);
+  if (!ranked.length) { console.error('Nenhuma consulta retornou faixa elegível. Verifique client_id e os filtros Jamendo; não serão incluídas faixas genéricas.'); process.exit(3); }
 
   // Prioriza variedade: primeiro um beat por artista, depois completa se o catálogo exigir.
   const uniqueArtists = [], artistSet = new Set(), rest = [];
