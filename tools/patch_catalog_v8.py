@@ -58,13 +58,13 @@ elif new_rows not in html:
     raise SystemExit("CATALOG_V8_FAIL: migração do catálogo não encontrada.")
 
 # Garante 70 registros no cache e marca cada estilo como pronto, sem uma chamada de rede após o primeiro paint.
-old_migration_end = "ZRAW[st]=merged.slice(0,70);"
-new_migration_end = "ZRAW[st]=merged.slice(0,70);try{localStorage.setItem('jmraw8_at_'+st,String(Date.now()))}catch(e){}ZJS[st]='ok';"
+old_migration_end = "ZRAW[st]=merged});"
+new_migration_end = "ZRAW[st]=merged.slice(0,70);try{localStorage.setItem('jmraw8_at_'+st,String(Date.now()))}catch(e){}ZJS[st]='ok'});"
 if old_migration_end in html:
     html = html.replace(old_migration_end, new_migration_end, 1)
 elif new_migration_end not in html:
     # Se o runtime não tinha cap, limita a atribuição da migração.
-    old_migration_end = "ZRAW[st]=merged;"
+    old_migration_end = "ZRAW[st]=merged});"
     if old_migration_end not in html:
         raise SystemExit("CATALOG_V8_FAIL: atribuição final do cache não encontrada.")
     html = html.replace(old_migration_end, new_migration_end, 1)
