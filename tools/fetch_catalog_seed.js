@@ -162,7 +162,7 @@ async function buildStyle(style) {
     const batch = queries.slice(offset, offset + 5);
     const resultSets = await mapLimit(batch, 3, q => fetchQuery(q));
     for (const rows of resultSets) for (const r of (rows || [])) {
-      if (!r || !r.id || !r.audio || !(Number(r.duration) >= 65 && Number(r.duration) <= 720)) continue;
+      if (!r || !r.id || !r.audio || !(Number(r.duration) >= 85 && Number(r.duration) <= 540)) continue;
       const score = scoreOf(style, r);
       if (score < CONFIG[style].minScore) continue;
       const id = String(r.id), old = byId.get(id);
@@ -224,7 +224,7 @@ async function buildStyle(style) {
     catalogs
   }), 'utf8');
   // Compatibilidade com o runtime antigo: deriva os 30 primeiros Boom bap do mesmo catálogo validado.
-  const boomExtra = catalogs['Boom bap'].slice(0,30).map(row => ({
+  const boomExtra = catalogs['Boom bap'].filter(row => row[11] >= 85 && row[11] <= 540).slice(0,30).map(row => ({
     id:row[4], name:row[1], audio:row[0], artist:row[6], duration:row[11],
     shareurl:row[7], license:row[8], audiodownload:row[9], audiodownload_allowed:row[10], bpm:row[2]
   }));
