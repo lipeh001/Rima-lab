@@ -99,6 +99,21 @@ if old_rank in html:
     html = html.replace(old_rank, new_rank, 1)
 
 # Baixar o stream para cache temporário durante a primeira audição; o armazenamento permanente ocorre só ao terminar.
+
+# Spinner de carregamento ao lado do nome de cada categoria.
+ls_anchor = "function zLS(s){ZS.s=s;if(ZJS[s]!='load'&&(!Array.isArray(ZRAW[s])||!zCacheFresh(s)))zJm(s);pk()}"
+ls_new = ls_anchor + "\nfunction zCatLoading(s){return ZJS[s]==='load'||ZJS[s]==='cached'||(ZLIB[s][1].length<70&&!['err','off','nokey','empty'].includes(ZJS[s]))}"
+if ls_anchor in html:
+    html = html.replace(ls_anchor, ls_new, 1)
+elif "function zCatLoading(s)" not in html:
+    raise SystemExit("CATALOG_V8_FAIL: função zLS não encontrada.")
+button_old = "\${s} <small>\${ZLIB[s][1].length} faixas</small>"
+button_new = "\${s} <small>\${ZLIB[s][1].length}/70</small>\${zCatLoading(s)?'<span class=\"rima-cat-spinner\" aria-label=\"Carregando\"></span>':''}"
+if button_old in html:
+    html = html.replace(button_old, button_new, 1)
+elif "zCatLoading(s)?" not in html:
+    raise SystemExit("CATALOG_V8_FAIL: contador de categoria não encontrado.")
+
 old_download = "const saved=ZLOCAL.has(k)||!!ZDL[k];const allowed=!!(it&&it[10]===true&&it[9]);const source=allowed?it[9]:String((it&&it[0])||x||'');const perm=allowed?1:0;"
 new_download = "const saved=ZLOCAL.has(k)||!!ZDL[k];const allowed=!!(it&&it[10]===true&&it[9]);const source=allowed?it[9]:String((it&&it[0])||x||'');const perm=0;"
 if old_download in html:
@@ -191,6 +206,13 @@ if 'id="rima-final-polish-v8"' not in html:
     html = html.replace("</head>", css + "\n</head>", 1)
 
 html_path.write_text(html, encoding="utf-8")
+
+
+# Ícone pequeno monocromático de status e marca de app no cartão expandido.
+icon_path = root / "app/src/main/res/drawable/ic_stat_beat.xml"
+icon_path.write_text('''<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="#FFFFFF" android:pathData="M4,2.5h9.2c4.6,0 7.3,2.4 7.3,6.4 0,2.8 -1.4,4.8 -3.9,5.7L21,21.5h-5.2l-4.1,-6.9H8.4v6.9H4V2.5zM8.4,6.5v4.1h4.5c2,0 3,-.7 3,-2.1s-1,-2 -3,-2H8.4z"/>
+</vector>''', encoding="utf-8")
 
 # Notification: keep the Android monochrome status glyph, but use the actual Rima Lab mark in the expanded card.
 service_path = root / "app/src/main/java/app/rimalab/MusicService.java"
