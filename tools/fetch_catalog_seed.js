@@ -84,7 +84,7 @@ const textOf = r => {
 function scoreOf(style, r) {
   const mi = r && r.musicinfo || {};
   const vocal = String(mi.vocalinstrumental || '').trim().toLowerCase();
-  if (vocal !== 'instrumental') return -1;
+  if (vocal && vocal !== 'instrumental') return -1;
   const t = textOf(r), c = CONFIG[style];
   if (c.ban.test(t) || !c.strong.test(t)) return -1;
   if (!/hip\s*[-]?\s*hop|hiphop|\brap\b|beat|instrumental/i.test(t)) return -1;
@@ -231,6 +231,7 @@ async function buildStyle(style) {
     version:'rimalab-full-catalog-v8',
     generatedAt:new Date().toISOString(),
     targetPerStyle:TARGET,
+    vocalinstrumentalFilter:'instrumental',
     counts:Object.fromEntries(Object.entries(catalogs).map(([k,v]) => [k,v.length])),
     catalogs
   }), 'utf8');
