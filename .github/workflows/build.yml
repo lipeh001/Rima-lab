@@ -53,6 +53,8 @@ on:
       - 'tools/teste_visual_v35.js'
       - 'tools/patch_visual_v36.py'
       - 'tools/teste_visual_v36.js'
+      - 'tools/patch_visual_v38.py'
+      - 'tools/teste_visual_v38.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -270,6 +272,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v36.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Eliminar ciclos de observadores e polling da interface v38
+        run: python3 tools/patch_visual_v38.py "$BUILD_DIR"
+      - name: Validar inicialização sem loops e barra de rolagem v38
+        shell: bash
+        run: |
+          node tools/teste_visual_v38.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
