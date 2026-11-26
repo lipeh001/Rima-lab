@@ -14,7 +14,7 @@ const checks=[
  ['player em paisagem usa dock horizontal compacto',h.includes('rima-runtime-v4')&&h.includes('#pbar .pwinfo,#pbar .pwscr { display:none')&&h.includes('orientation:landscape')],
  ['palco em paisagem reserva área e não fica sob o player',h.includes('#lv>.stage { grid-column:1!important')&&h.includes('body.pl main { padding-bottom:calc(122px')],
  ['luz pulsa na moldura sem animar as letras',h.includes('rl-edge-energy')&&h.includes('#stg.stage.hit::after')&&!h.includes('.stage.hit .word{animation:rl-edge-energy')],
- ['troca de faixa não reinicia o palco e faz um único carregamento',h.includes("function zSwap(){if(play){zLoad(ZS.k=='syn'?zBars():0);pk();return}pk()}")],
+ ['troca de faixa não chama rotina de reinício do palco',!h.includes("if(!zRestartAct())")],
  ['troca durante treino preserva scroll',h.includes('window.__rimaNoAutoScroll=1')&&h.includes('if(!window.__rimaNoAutoScroll)')],
  ['busca renova catálogo sem apagar beats salvos',h.includes('ZCATALOG_VERSION')&&h.includes("removeItem('jmraw8_at_'+st)")],
  ['API Jamendo envia include como lista, não separado por vírgula',h.includes('include=licenses+musicinfo')&&!h.includes('include=musicinfo%2Clicenses')],
