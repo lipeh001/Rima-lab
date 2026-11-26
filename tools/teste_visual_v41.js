@@ -17,7 +17,7 @@ const checks=[
  ['controles de −10s e +10s visíveis na horizontal',c.includes('.pwscr .pwm{display:grid!important')&&c.includes('width:42px!important')],
  ['barra de progresso visível na horizontal',c.includes('.pwscr .pwp{display:block!important')&&c.includes('flex:1 1 auto!important')],
  ['player horizontal em duas linhas compactas',c.includes('min-height:88px!important')&&c.includes('flex-direction:column!important')],
- ['palco horizontal reduzido sem esticar o conteúdo',stage.includes('min-height:clamp(310px,40svh,410px)')&&stage.includes('#cb{flex:0 0 auto')],
+ ['palco horizontal reduzido sem esticar o conteúdo',stage.includes('min-height:clamp(310px,40svh,410px)')&&stage.includes('#cb{')&&stage.includes('min-height:clamp(76px,15svh,112px)')],
  ['palco responsivo em celular estreito e paisagem baixa',stage.includes('@media(max-width:380px)')&&stage.includes('max-height:380px')],
  ['curvatura sutil de palavra',h.includes('Math.min(2.7,Math.max(1.1,chars.length*.12))')],
  ['versão 3.1.9 / code 61',g.includes('versionCode 61')&&g.includes("versionName '3.1.9'")]
