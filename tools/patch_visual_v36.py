@@ -271,7 +271,7 @@ stage=r"""
 #lv:not([hidden]) #stg.stage #cb{letter-spacing:.022em!important;line-height:1.08!important;white-space:nowrap!important;max-width:100%!important;box-sizing:border-box!important}
 #lv:not([hidden]) #stg.stage #rm{position:relative!important;inset:auto!important;display:flex!important;flex-wrap:wrap!important;justify-content:center!important;align-items:center!important;gap:7px!important;margin:8px auto 10px!important;padding:0 5px!important;width:100%!important;min-height:0!important;height:auto!important}
 #lv:not([hidden]) #stg.stage #rm>*{max-width:48%!important;min-width:0!important;white-space:nowrap!important;line-height:1.12!important;letter-spacing:.005em!important}
-#lv:not([hidden]) #stg.stage #v3bar{margin-top:13px!important}
+#lv:not([hidden]) #stg.stage .v3bar{margin-top:13px!important}
 @media(orientation:landscape){
  #lv:not([hidden]){gap:10px 14px!important}
  #lv:not([hidden]) #stg.stage{min-height:0!important;height:calc(100svh - 110px)!important;max-height:calc(100svh - 110px)!important;padding:12px 14px!important}
