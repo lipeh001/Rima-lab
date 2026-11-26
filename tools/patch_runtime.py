@@ -62,7 +62,7 @@ boot_new = """async function zLoadVerifiedBoomBap(){try{const r=await fetch('bea
 html = replace_once(html, boot_old, boot_new, "carregamento do catálogo extra")
 
 # Desativa o reinício do treino ao trocar de faixa; a troca deve atuar somente no player.
-html = re.sub(r"(?<!function )zRestartAct\\(\\)", "false", html)
+html = re.sub(r"(?<!function )zRestartAct\(\)", "false", html)
 
 # 5) Troca de faixa: não redesenha a lista duas vezes nem força scroll para o topo.
 html = replace_once(
