@@ -12,6 +12,8 @@ on:
       - 'tools/teste_runtime_v4.js'
       - 'tools/fetch_catalog_seed.js'
       - 'tools/patch_catalog_v8.py'
+      - 'tools/patch_quality_v9.py'
+      - 'tools/teste_quality_v9.js'
       - 'tools/teste_catalog_v8.js'
 jobs:
   apk:
@@ -57,6 +59,8 @@ jobs:
           exit 1
       - name: Pré-carregar catálogo completo e corrigir definitivamente player e palco
         run: python3 tools/patch_catalog_v8.py "$BUILD_DIR"
+      - name: Corrigir dicas, calibrador, sincronização e ícone duplicado
+        run: python3 tools/patch_quality_v9.py "$BUILD_DIR"
       - name: Testes de regressão
         shell: bash
         run: |
@@ -64,6 +68,7 @@ jobs:
           node tools/teste_tela_treino.js "$HTML_FILE"
           node tools/teste_runtime_v4.js "$BUILD_DIR"
           node tools/teste_catalog_v8.js "$BUILD_DIR"
+          node tools/teste_quality_v9.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
