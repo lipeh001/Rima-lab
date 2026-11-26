@@ -7,7 +7,7 @@ gp=root/'app/build.gradle'
 h=hp.read_text(encoding='utf-8')
 # Keep player/nav reserved area consistent in portrait and landscape; stage never gets resized by the dock.
 css=r"""
-<style id="rimalab-complete-v29">
+<style id="rimalab-complete-v30">
 :root{--rima-dock-space:154px}
 body.pl main{padding-bottom:calc(var(--rima-dock-space) + env(safe-area-inset-bottom,0px))!important}
 #pbar{bottom:calc(78px + env(safe-area-inset-bottom,0px))!important;z-index:90!important}
@@ -58,7 +58,7 @@ main,.tab,#train-step-1,#train-step-2{min-width:0!important;max-width:100%!impor
 if 'id="rimalab-complete-v29"' not in h:
  p=h.lower().rfind('</head>');h=h[:p]+css+h[p:] if p>=0 else h+css
 script=r"""
-<script id="rimalab-complete-runtime-v29">
+<script id="rimalab-complete-runtime-v30">
 (function(){
 'use strict';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
@@ -72,7 +72,7 @@ const KEY='rimalab_favorites_v29',MSG=[
 'Experimente. Erre. Ajuste. Evolua.'
 ];
 let fav=[];try{fav=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(fav))fav=[]}catch(e){}
-let favView=false,queue=null,qIndex=0,randomQueue=[],msgTimer=0,backArmed=false,backTimer=0,playingQueued=false;
+let favView=false,queue=null,qIndex=0,randomQueue=[],backArmed=false,backTimer=0,playingQueued=false,lastEntryMessage=-1;
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(fav))}catch(e){}updateCounts()};
 const keyOf=x=>String(x&&x[4]||'');
 const allTracks=()=>Object.keys(ZLIB||{}).flatMap(cat=>(ZLIB[cat]&&ZLIB[cat][1]||[]).map(x=>({cat,x})));
@@ -169,11 +169,16 @@ function installModeBanner(){
   btn.onclick=()=>{const open=!list.classList.contains('open');list.classList.toggle('open',open);btn.setAttribute('aria-expanded',String(open))};
  }
 }
-function installMessages(){
+function installMessages(forceNew=false){
  const step=$('#train-step-2');if(!step)return;
  let el=$('#rima-v29-rotator');
  if(!el){el=document.createElement('p');el.id='rima-v29-rotator';el.className='rima-v29-rotator';const banner=$('#rima-v29-mode-banner');if(banner)banner.insertAdjacentElement('afterend',el)}
- if(!el.dataset.started){el.dataset.started='1';let i=Math.floor(Math.random()*MSG.length);el.textContent=MSG[i];clearInterval(msgTimer);msgTimer=setInterval(()=>{i=(i+1)%MSG.length;el.style.opacity='0';setTimeout(()=>{el.textContent=MSG[i];el.style.opacity='1'},220)},6500)}
+ if(forceNew||!el.dataset.started){
+  let i=Math.floor(Math.random()*MSG.length);
+  if(MSG.length>1&&i===lastEntryMessage)i=(i+1+Math.floor(Math.random()*(MSG.length-1)))%MSG.length;
+  lastEntryMessage=i;el.dataset.started='1';el.style.opacity='0';
+  requestAnimationFrame(()=>{el.textContent=MSG[i];el.style.opacity='1'});
+ }
 }
 function updateModeUI(){installModeBanner();installMessages()}
 function setupBack(){
@@ -193,8 +198,8 @@ function setupBack(){
 function stabilizeStage(){const stage=$('#stg'),cb=$('#cb');if(!stage||!cb)return;cb.style.setProperty('max-width','100%','important');cb.style.setProperty('box-sizing','border-box','important');}
 function init(){
  installTools();addPlayerHeart();decorateCatalog();updateCounts();updateModeUI();setupBack();stabilizeStage();
- const root=$('#bp');if(root)new MutationObserver(()=>{decorateCatalog();installTools()}).observe(root,{childList:true,subtree:true});
- const s2=$('#train-step-2');if(s2)new MutationObserver(()=>{if(!s2.hidden)updateModeUI()}).observe(s2,{attributes:true,attributeFilter:['hidden']});
+ const root=$('#bp');if(root)new MutationObserver(()=>{decorateCatalog();installTools()}).observe(root,{childList:true,subtree:false});
+ const s2=$('#train-step-2');if(s2){let wasHidden=s2.hidden;new MutationObserver(()=>{const hidden=s2.hidden;if(wasHidden&&!hidden){updateModeUI();installMessages(true)}else if(!hidden)updateModeUI();wasHidden=hidden}).observe(s2,{attributes:true,attributeFilter:['hidden']});if(!s2.hidden)installMessages(true)}
  const modeRoot=$('#md');if(modeRoot)new MutationObserver(()=>{if(!$('#train-step-2')?.hidden)updateModeUI()}).observe(modeRoot,{childList:true,subtree:true});
  setInterval(()=>{addPlayerHeart();decorateCatalog();updateCounts()},1500);
 }
@@ -215,6 +220,6 @@ if not m:raise SystemExit('V29_FAIL: versionCode ausente')
 if int(m.group(1))<48:g=g[:m.start(1)]+'48'+g[m.end(1):]
 m=re.search(r"versionName\s+['\"]([^'\"]+)['\"]",g)
 if not m:raise SystemExit('V29_FAIL: versionName ausente')
-if m.group(1)<'3.0.6':g=g[:m.start(1)]+'3.0.6'+g[m.end(1):]
+if m.group(1)<'3.0.7':g=g[:m.start(1)]+'3.0.7'+g[m.end(1):]
 hp.write_text(h,encoding='utf-8');gp.write_text(g,encoding='utf-8')
-print('V29_OK: favoritos, fila aleatória, player heart, modo banner e seletor, mensagens rotativas, back navigation, CSS responsivo e versão 3.0.6')
+print('V29_OK: favoritos, fila aleatória, player heart, modo banner e seletor, mensagens rotativas, back navigation, CSS responsivo e versão 3.0.7')
