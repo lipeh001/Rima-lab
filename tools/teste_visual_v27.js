@@ -2,7 +2,7 @@ const fs=require('fs'),path=require('path');
 const root=path.resolve(process.argv[2]);
 const h=fs.readFileSync(path.join(root,'app/src/main/assets/rima-lab.html'),'utf8');
 const g=fs.readFileSync(path.join(root,'app/build.gradle'),'utf8');
-const m=h.match(/function pulse\\(q\\)\\{[\\s\\S]*?\\n\\}/);
+const m=h.match(/function pulse\(q\)\{[\s\S]*?\n\}/);
 const checks=[
  ['camada própria da moldura',h.includes('rima-beat-frame')],
  ['moldura absoluta fora do fluxo do layout',h.includes('position:absolute!important;')&&h.includes('inset:4px!important;')],
