@@ -207,66 +207,27 @@ jobs:
           name: RimaLab-apk
           path: out/RimaLab.apk
           if-no-files-found: error
-      - name: Gerar APK release assinado com apksigner
+      - name: Gerar APK release para assinatura de produção
         shell: bash
-        env:
-          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           set -euo pipefail
-          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
-            if [[ -z "${!name:-}" ]]; then
-              echo "::error::Secret ${name} ausente. Configure os quatro secrets de assinatura."
-              exit 1
-            fi
-          done
-
-          echo "Etapa 1/5: preparando o arquivo da chave de assinatura."
-          ANDROID_KEYSTORE_BASE64="$(printf '%s' "$ANDROID_KEYSTORE_BASE64" | tr -d '\r\n ')"
-          ANDROID_KEYSTORE_PASSWORD="$(printf '%s' "$ANDROID_KEYSTORE_PASSWORD" | tr -d '\r\n')"
-          ANDROID_KEY_ALIAS="$(printf '%s' "$ANDROID_KEY_ALIAS" | tr -d '\r\n')"
-          ANDROID_KEY_PASSWORD="$(printf '%s' "$ANDROID_KEY_PASSWORD" | tr -d '\r\n')"
-          export ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD
-          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/rimalab-release.jks"
-          test -s "$RUNNER_TEMP/rimalab-release.jks"
-
-          echo "Etapa 2/5: validando keystore e alias."
-          keytool -list -storetype JKS -keystore "$RUNNER_TEMP/rimalab-release.jks" \
-            -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$ANDROID_KEY_ALIAS"
-
-          echo "Etapa 3/5: gerando o pacote release sem assinatura automática do Gradle."
+          echo "Gerando variante release."
           cd "$BUILD_DIR"
           gradle assembleRelease
           RELEASE_APK="$(find app/build/outputs/apk/release -type f -name '*.apk' ! -name '*unaligned*' | head -n 1)"
           if [[ -z "$RELEASE_APK" ]]; then
-            echo "::error::O Gradle terminou, mas não gerou APK na pasta release."
+            echo "::error::O Gradle não gerou APK release."
             find app/build/outputs -maxdepth 5 -type f -name '*.apk' -print || true
             exit 1
           fi
-
-          echo "Etapa 4/5: assinando APK com a chave privada persistente."
-          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
-          test -x "$APKSIGNER"
           mkdir -p "$GITHUB_WORKSPACE/out"
-          "$APKSIGNER" sign \
-            --ks "$RUNNER_TEMP/rimalab-release.jks" \
-            --ks-key-alias "$ANDROID_KEY_ALIAS" \
-            --ks-pass env:ANDROID_KEYSTORE_PASSWORD \
-            --key-pass env:ANDROID_KEY_PASSWORD \
-            --out "$GITHUB_WORKSPACE/out/RimaLab-release.apk" \
-            "$RELEASE_APK"
-
-          echo "Etapa 5/5: verificando a assinatura digital."
-          "$APKSIGNER" verify --verbose --print-certs "$GITHUB_WORKSPACE/out/RimaLab-release.apk"
-          test -s "$GITHUB_WORKSPACE/out/RimaLab-release.apk"
-          echo "SUCESSO: APK release assinado e verificado."
+          cp "$RELEASE_APK" "$GITHUB_WORKSPACE/out/RimaLab-release-unsigned.apk"
+          test -s "$GITHUB_WORKSPACE/out/RimaLab-release-unsigned.apk"
+          echo "APK release gerado; será assinado localmente com a chave privada original, sem publicar a chave no repositório."
       - uses: actions/upload-artifact@v4
-        if: ${{ hashFiles('out/RimaLab-release.apk') != '' }}
         with:
-          name: RimaLab-release-assinado
-          path: out/RimaLab-release.apk
+          name: RimaLab-release-unsigned
+          path: out/RimaLab-release-unsigned.apk
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
