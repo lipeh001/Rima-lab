@@ -205,12 +205,12 @@ async function buildStyle(style) {
 }
 
 (async () => {
-  console.log('CATALOG_SEED_START', clientId.slice(0,3) + '…', 'target=' + TARGETS[style]);
+  console.log('CATALOG_SEED_START', clientId.slice(0,3) + '…', 'targets=' + JSON.stringify(TARGETS));
   const catalogs = {};
   for (const style of Object.keys(CONFIG)) catalogs[style] = await buildStyle(style);
   const drillJamendoCount = catalogs['Drill'].length;
   const drillMoods = ['Dark 808','Night Run','Shadow Steps','Cold Streets','Deep Bass','Midnight','Cinematic','Underground'];
-  for (let i=drillJamendoCount+1;i<=TARGETS[style];i++) {
+  for (let i=drillJamendoCount+1;i<=TARGETS['Drill'];i++) {
     const n=String(i-drillJamendoCount).padStart(2,'0');
     const bpm=138+((i*7)%11);
     const mood=drillMoods[(i-1)%drillMoods.length];
@@ -222,7 +222,7 @@ async function buildStyle(style) {
       64*4*60/bpm
     ]);
   }
-  console.log('CATALOG_DRILL_ORIGINALS',TARGETS[style]-drillJamendoCount,'originais; '+drillJamendoCount+' faixas Jamendo verificadas');
+  console.log('CATALOG_DRILL_ORIGINALS',TARGETS['Drill']-drillJamendoCount,'originais; '+drillJamendoCount+' faixas Jamendo verificadas');
   const seenAcross = new Map();
   for (const [style, rows] of Object.entries(catalogs)) {
     for (const row of rows) {
