@@ -93,7 +93,7 @@ html = html.replace(
 )
 
 # Um beat só é considerado instrumental quando o Jamendo declara explicitamente vocalinstrumental=instrumental.
-old_rank = "function zJmRank(st,r){const mi=r&&r.musicinfo||{},vi=String(mi.vocalinstrumental||'').toLowerCase(),t=zJmTxt(r),x=ZRX[st];if(vi&&vi!=='instrumental')return 9;if(st==='Drill'&&/with\\\\s+some\\\\s+money|all\\\\$?tarv/i.test(t))return 9;if(x.ban.test(t))return 9;return x.strong.test(t)?0:9}"
+old_rank = "function zJmRank(st,r){const mi=r&&r.musicinfo||{},vi=String(mi.vocalinstrumental||'').toLowerCase(),t=zJmTxt(r),x=ZRX[st];if(vi!=='instrumental')return 9;if(st==='Drill'&&/with\\\\s+some\\\\s+money|all\\\\$?tarv/i.test(t))return 9;if(x.ban.test(t))return 9;return x.strong.test(t)?0:9}"
 new_rank = "function zJmRank(st,r){const mi=r&&r.musicinfo||{},vi=String(mi.vocalinstrumental||'').trim().toLowerCase(),t=zJmTxt(r),x=ZRX[st];if(vi!=='instrumental')return 9;if(st==='Drill'&&/with\\\\s+some\\\\s+money|all\\\\$?tarv/i.test(t))return 9;if(x.ban.test(t))return 9;return x.strong.test(t)?0:9}"
 if old_rank in html:
     html = html.replace(old_rank, new_rank, 1)
