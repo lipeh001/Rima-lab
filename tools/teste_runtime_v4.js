@@ -27,8 +27,13 @@ const checks=[
  ['bridge envia posição e duração reais para o Android',main.includes('mediaState(int st, String title, double duration, double position)')&&main.includes('.putExtra("duration"')&&main.includes('.putExtra("position"')],
  ['MediaSession publica duração e posição da faixa',service.includes('METADATA_KEY_DURATION')&&service.includes('currentPosition, playing ? 1f : 0f')],
  ['notificação atualiza o relógio durante a reprodução e não some na troca',h.includes('RimaNative.mediaState(st,title,d,c)')&&h.includes('if(play)zMedia(true)')&&h.includes('zMedia(false)')],
- ['calibrador mede até 1200ms com sinais separados',h.includes('max="1200"')&&h.includes('N=6,W=1')&&h.includes('T+i*1.5')&&h.includes('dl<1200')],
- ['botão voltar centralizado em todas as seções',h.includes('rima-back-center-v1')&&h.includes('justify-content:center')],
+ ['calibrador mede até 1200ms com sinais separados',h.includes('max="1200"')&&h.includes('N=7,W=1')&&h.includes('T+i*1.2')&&h.includes('dl<1200')],
+ ['botão voltar centralizado em todas as seções',h.includes('rima-back-center-v2')&&h.includes('justify-content:center')&&h.includes('margin-left:0!important')],
+ ['botão Voltar permanece no canto esquerdo com texto centralizado',h.includes('rima-back-center-v2')&&h.includes('margin-left:0!important')&&h.includes('text-align:center!important')],
+ ['selo do player mostra um único R ampliado',h.includes('<span>R</span><i></i><i></i><i></i>')&&h.includes('font-size:24px!important')],
+ ['calibrador usa chirp curto, amostragem leve e pico global',h.includes('sr/4000')&&h.includes('sr*.12')&&h.includes('createScriptProcessor(512,1,1)')&&h.includes('let jj=mj;let fr=0;')],
+ ['calibrador valida mediana com pelo menos cinco detecções consistentes',h.includes('ok.length>=5')&&h.includes('Math.abs(x-md)<=8')],
+
 
  ['catálogo adicionou beats reais com IDs sem duplicação',tracks.length>0&&tracks.length<=30&&manifest.count===tracks.length&&ids.size===tracks.length],
  ['cada beat extra tem áudio, título, artista e duração válida',tracks.every(x=>x.audio&&x.name&&x.artist&&x.duration>=85&&x.duration<=540)],
