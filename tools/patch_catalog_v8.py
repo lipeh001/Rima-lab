@@ -66,7 +66,7 @@ if migration_count != 1 and migration_replacement not in html:
 
 # Preserva beats salvos localmente, mas limita o total visível de cada estilo a 70.
 zbuild_pattern = re.compile(
-    r"function zBuild\(st\)\{.*?ZLIB\[st\]\[1\]=L(?:\.slice\(0,(?:zCap\(st\)|70)\))?\}",
+    r"function zBuild\(st\)\{.*?ZLIB\[st\]\[1\]=L(?:\.slice\(0,(?:zCap\(st\)|st==='Boom bap'\?70:st==='Trap'\?70:20|70)\))?\}",
     re.S
 )
 zbuild_new = """function zBuild(st){const cap=70,L=[],seen=new Set();Object.keys(ZMETA).forEach(k=>{const m=ZMETA[k];if(m&&m[5]===st&&(ZDL[k]||ZLOCAL.has(k))&&!seen.has(String(m[4]))){L.push(m);seen.add(String(m[4]))}});for(const x of (ZRAW[st]||[])){if(!x||seen.has(String(x[4])))continue;L.push(x);seen.add(String(x[4]));if(L.length>=cap)break}ZLIB[st][1]=L.slice(0,cap)}"""
