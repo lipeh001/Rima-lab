@@ -237,6 +237,13 @@ jobs:
         run: |
           node tools/teste_visual_v30.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Polir player, favoritos sincronizados e layout horizontal v33
+        run: python3 tools/patch_visual_v33.py "$BUILD_DIR"
+      - name: Validar player e interface v33
+        shell: bash
+        run: |
+          node tools/teste_visual_v33.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
           mkdir -p "$GITHUB_WORKSPACE/review"
