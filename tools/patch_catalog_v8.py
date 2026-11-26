@@ -110,7 +110,7 @@ elif "function zCatLoading(s)" not in html:
 # O HTML tem pequenas variações no rótulo ("faixas"/"beats"); injeta o spinner sem depender do texto.
 button_pattern = re.compile(r"(\$\{s\}\s*<small>\$\{ZLIB\[s\]\[1\]\.length\}[^<]*</small>)")
 if "zCatLoading(s)?" not in html:
-    html, button_count = button_pattern.subn(r"\1\${zCatLoading(s)?'<span class=\"rima-cat-spinner\" aria-label=\"Carregando\"></span>':''}", html, count=1)
+    html, button_count = button_pattern.subn(r"\1${zCatLoading(s)?'<span class=\"rima-cat-spinner\" aria-label=\"Carregando\"></span>':''}", html, count=1)
     if button_count != 1:
         raise SystemExit("CATALOG_V8_FAIL: contador de categoria não encontrado.")
 
