@@ -24,7 +24,7 @@ const vm=require('vm');
 const calA=h.indexOf('function calChirp(sr){'),calB=h.indexOf('async function cal(){',calA);
 let micCorrelationOk=false;
 if(calA>=0&&calB>calA){
- const sandbox={};vm.runInNewContext(h.slice(calA,calB)+'\\nglobalThis.__chirp=calChirp;globalThis.__corr=calCorrelation;',sandbox);
+ const sandbox={};vm.runInNewContext(h.slice(calA,calB)+'\nglobalThis.__chirp=calChirp;globalThis.__corr=calCorrelation;',sandbox);
  const sr=48000,stride=4,template=sandbox.__chirp(sr),record=new Float32Array(sr*4),expected=sr*1,delay=sr*.250;
  for(let i=0;i<template.length;i++)record[expected+Math.round(delay)+i]=template[i];
  const dec=new Float32Array(Math.ceil(record.length/stride));
