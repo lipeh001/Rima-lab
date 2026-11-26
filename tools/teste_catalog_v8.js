@@ -43,7 +43,7 @@ checks.push(['sem beat selecionado, o seletor volta para a etapa inicial e ganha
 checks.push(['palco pulsa por transição suave, sem reflow nem animação de piscar',html.includes('rima-final-polish-v8')&&html.includes("e.classList.add('hit')")&&!html.includes(`void e.offsetWidth;e.classList.add('hit')`)]);
 checks.push(['cartão expandido da notificação usa a marca oficial do Rima Lab',service.includes('.setLargeIcon(singleRIcon())')&&service.includes('private Bitmap singleRIcon()')]);
 checks.push(['ícone pequeno de status é o glifo R monocromático do app',icon.includes('fillColor="#FFFFFF"')&&icon.includes('M3,10h2v4H3z')&&!icon.includes('M4,2.5')]);
-checks.push(['APK tem versão e código novos para atualização por cima',gradle.includes('versionCode 26')&&gradle.includes("versionName '2.8.9'")]);
+checks.push(['APK tem versão e código novos para atualização por cima',gradle.includes('versionCode 27')&&gradle.includes("versionName '2.9.0'")]);
 let bad=0;
 for(const [name,ok] of checks){console.log((ok?'OK  ':'FAIL ')+name);if(!ok)bad++;}
 console.log((checks.length-bad)+'/'+checks.length+' verificações CATALOG_V8 passaram');
