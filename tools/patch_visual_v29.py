@@ -129,7 +129,7 @@ function playQueued(k){
  const o=getTrack(k);if(!o)return;
  ZS.s=o.cat;const i=(ZLIB[o.cat][1]||[]).findIndex(x=>keyOf(x)===String(k));
  if(i<0)return;
- zLP(i,0,o.cat);ZS.shuf=0;zBarUI();
+ playingQueued=true;zLP(i,0,o.cat);playingQueued=false;ZS.shuf=0;zBarUI();
 }
 const oldStep=window.zStep;
 window.zStep=function(d){
@@ -142,8 +142,8 @@ window.zStep=function(d){
 };
 const oldLP=window.zLP;
 window.zLP=function(i,a,s){
- queue=null;qIndex=0;
- }\n const ret=oldLP.apply(this,arguments);
+ if(!playingQueued){queue=null;qIndex=0;}
+ const ret=oldLP.apply(this,arguments);
  setTimeout(()=>{const p=$('#rima-v29-player-heart');if(p)p.classList.toggle('on',!!(ZS.key&&fav.includes(String(ZS.key))))},50);
  return ret;
 };
