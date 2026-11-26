@@ -26,6 +26,8 @@ on:
       - 'tools/teste_visual_v14.js'
       - 'tools/patch_visual_v15.py'
       - 'tools/teste_visual_v15.js'
+      - 'tools/patch_visual_v16.py'
+      - 'tools/teste_visual_v16.js'
       - 'tools/teste_catalog_v8.js'
 jobs:
   apk:
@@ -115,6 +117,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v15.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Corrigir espaçamento, moldura e primeira seleção de beat v16
+        run: python3 tools/patch_visual_v16.py "$BUILD_DIR"
+      - name: Validar palco e seleção inicial v16
+        shell: bash
+        run: |
+          node tools/teste_visual_v16.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
