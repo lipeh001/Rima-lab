@@ -15,7 +15,6 @@ repls={
 }
 for a,b in repls.items(): s=s.replace(a,b)
 # Remove explicações técnicas antigas caso alguma variante do texto tenha sobrevivido.
-s=re.sub(r'[^<]{0,100}(?:WebView|Web Audio|AudioContext|microfone|latência de áudio informada)[^<]{0,220}',lambda m: m.group(0) if 'Bluetooth' in m.group(0) else '',s,flags=re.I)
 # Atualiza o cache versionado para forçar a lista nova nos aparelhos que já abriram o app.
 s=s.replace('rimalab-preloaded-87-77-74-v23','rimalab-preloaded-87-77-74-v23')
 hp.write_text(s,encoding='utf-8')
