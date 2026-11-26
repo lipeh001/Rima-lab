@@ -3,7 +3,8 @@ from pathlib import Path
 import re,sys
 root=Path(sys.argv[1]).resolve()
 hp=root/'app/src/main/assets/rima-lab.html'
-gp=root/'app/build.gradle'
+gp=next((p for p in [root/'app/build.gradle',root/'app/build.gradle.kts'] if p.exists()),None)
+if gp is None: raise SystemExit('V41_FAIL: app Gradle file missing')
 h=hp.read_text(encoding='utf-8')
 if 'rimalab-playlist-player-landscape-v41' in h: raise SystemExit('V41 already applied')
 
@@ -250,7 +251,7 @@ pos=h.lower().rfind('</body>')
 h=h[:pos]+player+'\\n'+h[pos:]
 
 g=gp.read_text(encoding='utf-8')
-m=re.search(r'\\bversionCode\\s+(\\d+)',g)
+m=re.search(r'\\bversionCode\\s*=?\\s*(\\d+)',g)
 if not m: raise SystemExit('V41_FAIL: versionCode missing')
 g=g[:m.start(1)]+'61'+g[m.end(1):]
 m=re.search(r"""versionName\\s+['"]([^'"]+)['"]""",g)
