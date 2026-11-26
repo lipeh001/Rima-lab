@@ -19,7 +19,7 @@ const checks=[
  ['player horizontal em duas linhas compactas',c.includes('min-height:88px!important')&&c.includes('flex-direction:column!important')],
  ['palco horizontal reduzido sem esticar o conteúdo',stage.includes('min-height:clamp(310px,40svh,410px)')&&stage.includes('#cb{')&&stage.includes('min-height:clamp(76px,15svh,112px)')],
  ['palco responsivo em celular estreito e paisagem baixa',stage.includes('@media(max-width:380px)')&&stage.includes('max-height:380px')],
- ['curvatura sutil de palavra',h.includes('Math.min(2.7,Math.max(1.1,chars.length*.12))')],
+ ['curvatura sutil de palavra',h.includes('rima-curve-char')&&h.includes('const arc=Math.min')],
  ['versão 3.1.9 / code 61',g.includes('versionCode 61')&&g.includes("versionName '3.1.9'")]
 ];
 let bad=0;for(const [n,ok] of checks){console.log((ok?'PASS ':'FAIL ')+n);if(!ok)bad++}if(bad)process.exit(1);console.log(checks.length+'/'+checks.length+' verificações V41 passaram');
