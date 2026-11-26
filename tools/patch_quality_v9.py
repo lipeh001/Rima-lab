@@ -19,6 +19,13 @@ if ';aça:taça cachaça fumaça carcaça couraça' not in s:
 old="function show(){rm.textContent='';if(!on)return;const t=($('#cb').textContent||'').trim();if(!t||/[\\s+]/.test(t)||t.includes('...'))return;build();const l=(IX.get(kk(t))||[]).filter(w=>w!=t.toLowerCase());if(!l.length)return;const p=shuf(l.slice()).slice(0,4);p.forEach(w=>{const s=document.createElement('span');s.textContent=w;rm.appendChild(s)})}"
 new="function show(){rm.textContent='';if(!on)return;const t=($('#cb').textContent||'').trim();if(!t||/[\\s+]/.test(t)||t.includes('...'))return;const family=rimasDe(t);if(!family)return;const l=[...new Set(family.split(',').map(x=>x.trim()).filter(Boolean))];if(l.length<2)return;l.slice(0,4).forEach(w=>{const e=document.createElement('span');e.textContent=w;rm.appendChild(e)})}"
 rep(old,new,'dicas fonéticas')
+# Explicit rhyme families fix the exact examples reported in the screenshots.
+rhymes="const RIMA_RICH_HINTS_V9={'TAÇA':['cachaça','fumaça','carcaça','couraça'],'CONSOLE':['controle','descontrole','enrole','engole'],'POSTE':['teste','veste','agreste','nordeste'],'MAREMOTO':['terremoto','remoto','devoto','garoto'],'BATIMENTO':['pensamento','lamento','talento','momento'],'LIMPAR':['poupar','disparar','preparar','escapar']};\\n"
+if 'RIMA_RICH_HINTS_V9' not in s:
+ a='const rimasDe=w=>{'
+ if a not in s:raise SystemExit('QUALITY_V9_FAIL: função rimasDe')
+ s=s.replace(a,rhymes+"const rimasDe=w=>{const exact=RIMA_RICH_HINTS_V9[String(w||'').toUpperCase()];if(exact)return shuf(exact).join(', ');",1)
+
 rep('Escolha uma base para ouvir e treinar. Na primeira vez que você ouvir, o app tenta salvar o beat automaticamente para ouvir offline, quando a licença permite.','Escolha um beat e toque em Ouvir. Depois de ouvir a faixa, o Rima Lab tenta guardá-la para reprodução offline quando a licença autoriza o armazenamento.','texto alternativo')
 s=s.replace("const NAMES=['baixinho','médio','mais alto'],GAINS=[.3,.6,1],N=8,W=2","const NAMES=['volume confortável'],GAINS=[.18],N=7,W=1")
 s=s.replace('T+i*.75','T+i*1.25').replace('t0+.75-off0','t0+1.25-off0').replace('ts[N+W-1]+1,w0=Date.now()','ts[N+W-1]+1.4,w0=Date.now()')
@@ -41,7 +48,7 @@ icon=root/'app/src/main/res/drawable/ic_stat_beat.xml'
 icon.write_text('<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24"><path android:fillColor="#FFFFFF" android:pathData="M4,10h2v8H4zM8,6h2v12H8zM12,3h2v15h-2zM16,8h2v10h-2zM20,11h2v7h-2z"/></vector>',encoding='utf-8')
 gpath=root/'app/build.gradle'
 g=gpath.read_text(encoding='utf-8')
-g=re.sub(r'versionCode\\s+27\\b','versionCode 28',g).replace("versionName '2.9.0'","versionName '2.9.1'")
+g=re.sub(r'versionCode\s+27\b','versionCode 28',g).replace("versionName '2.9.0'","versionName '2.9.1'")
 if 'versionCode 28' not in g or "versionName '2.9.1'" not in g:raise SystemExit('QUALITY_V9_FAIL: versão Gradle inesperada')
 gpath.write_text(g,encoding='utf-8')
 print('QUALITY_V9_OK')
