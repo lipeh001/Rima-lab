@@ -441,12 +441,6 @@ main = replace_once(
     "@JavascriptInterface public void mediaState(int st, String title, double duration, double position)",
     "bridge mediaState com duração/posição"
 )
-main = replace_once(
-    main,
-    'new Intent(c, MusicService.class).putExtra("st", st).putExtra("title", title)',
-    'new Intent(c, MusicService.class).putExtra("st", st).putExtra("title", title).putExtra("duration", (long)(Math.max(0, duration) * 1000d)).putExtra("position", (long)(Math.max(0, position) * 1000d))',
-    "envio da posição para o serviço"
-)
 main_path.write_text(main, encoding="utf-8")
 
 html = html_path.read_text(encoding="utf-8")
