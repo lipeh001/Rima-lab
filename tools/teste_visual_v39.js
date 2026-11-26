@@ -3,8 +3,8 @@ const fs=require('fs'),path=require('path');
 const root=path.resolve(process.argv[2]);
 const h=fs.readFileSync(path.join(root,'app/src/main/assets/rima-lab.html'),'utf8');
 const g=fs.readFileSync(path.join(root,'app/build.gradle'),'utf8');
-const m=h.match(/<script id="rimalab-complete-runtime-v31">([\\s\\S]*?)<\\/script>/);
-const guard=h.match(/<script id="rimalab-startup-observer-scope-fix-v39">([\\s\\S]*?)<\\/script>/);
+const m=h.match(/<script id="rimalab-complete-runtime-v31">([\s\S]*?)<\/script>/);
+const guard=h.match(/<script id="rimalab-startup-observer-scope-fix-v39">([\s\S]*?)<\/script>/);
 const checks=[
  ['observer do catálogo observa somente filhos diretos',!!m&&m[1].includes("observe(root,{childList:true,subtree:false})")&&!m[1].includes("observe(root,{childList:true,subtree:true})")],
  ['observer não observa mutações feitas por decorateCatalog nos descendentes',!!m&&m[1].includes('function decorateCatalog()')&&m[1].includes("observe(root,{childList:true,subtree:false})")],
