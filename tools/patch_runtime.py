@@ -393,7 +393,9 @@ html_path.write_text(html, encoding="utf-8")
 
 icon_path = root / "app/src/main/res/drawable/ic_stat_beat.xml"
 icon_path.write_text('''<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
-    <path android:fillColor="#FFFFFF" android:pathData="M5,3h8.1c4.1,0 6.4,2.1 6.4,5.6 0,2.5 -1.2,4.2 -3.4,5l3.9,7.4h-4.5l-3.4,-6.8H9v6.8H5V3zM9,6.6v4.2h4c1.7,0 2.5,-0.7 2.5,-2.1 0,-1.4 -0.8,-2.1 -2.5,-2.1H9z"/>
+    <path android:fillColor="#00000000" android:strokeColor="#FFFFFF" android:strokeWidth="1.15" android:pathData="M7,2.8h10c2.35,0 4.2,1.85 4.2,4.2v10c0,2.35 -1.85,4.2 -4.2,4.2H7c-2.35,0 -4.2,-1.85 -4.2,-4.2V7c0,-2.35 1.85,-4.2 4.2,-4.2z"/>
+    <path android:fillColor="#FFFFFF" android:pathData="M7.2,5.2h5.1c3.1,0 4.9,1.55 4.9,4.1 0,1.75 -0.85,2.95 -2.35,3.55l2.7,5.05h-3.55l-2.25,-4.5H10v4.5H7.2V5.2zM10,7.65v3.25h2.25c1.35,0 2.05,-0.55 2.05,-1.65s-.7,-1.6 -2.05,-1.6H10z"/>
+    <path android:fillColor="#FFFFFF" android:pathData="M16.5,17.7h1.1v2.1h-1.1zM18.3,16.7h1.1v3.1h-1.1z"/>
 </vector>''', encoding="utf-8")
 
 gradle_path = root / "app/build.gradle"
