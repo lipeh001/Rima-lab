@@ -230,6 +230,13 @@ jobs:
           node tools/teste_visual_v29.js "$BUILD_DIR"
 
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Reorganizar configuração de treino e lista de modos v30
+        run: python3 tools/patch_visual_v30.py "$BUILD_DIR"
+      - name: Validar configuração de treino v30
+        shell: bash
+        run: |
+          node tools/teste_visual_v30.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
           mkdir -p "$GITHUB_WORKSPACE/review"
