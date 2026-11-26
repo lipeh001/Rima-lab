@@ -20,6 +20,8 @@ on:
       - 'tools/teste_visual_v11.js'
       - 'tools/patch_visual_v12.py'
       - 'tools/teste_visual_v12.js'
+      - 'tools/patch_visual_v13.py'
+      - 'tools/teste_visual_v13.js'
       - 'tools/teste_catalog_v8.js'
 jobs:
   apk:
@@ -88,6 +90,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v12.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Restaurar pulso do beat e tipografia do palco v13
+        run: python3 tools/patch_visual_v13.py "$BUILD_DIR"
+      - name: Validar pulso, tipografia e splash v13
+        shell: bash
+        run: |
+          node tools/teste_visual_v13.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
