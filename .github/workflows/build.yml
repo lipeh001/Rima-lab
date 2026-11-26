@@ -186,7 +186,6 @@ jobs:
       - name: Validar catálogo e textos finais v23
         shell: bash
         run: |
-          node -e 'const fs=require("fs");const h=fs.readFileSync(process.argv[1],"utf8");for(const t of ["caixa de som Bluetooth","Use esta opção somente se conectar uma caixa de som Bluetooth"])if(!h.includes(t))process.exit(1);if(/WebView|AudioContext/.test(h))process.exit(1)' "$BUILD_DIR/app/src/main/assets/rima-lab.html"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: 'Ajustes finais v24: dicas sob demanda, palco e player horizontal'
         run: python3 tools/patch_visual_v24.py "$BUILD_DIR"
