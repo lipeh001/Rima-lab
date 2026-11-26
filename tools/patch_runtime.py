@@ -262,12 +262,12 @@ service = replace_once(
 service = replace_once(
     service,
     """        boolean playing = in != null && in.getIntExtra("st", 0) == 1;
-        currentDuration = in != null ? in.getLongExtra("duration", currentDuration) : currentDuration;
-        currentPosition = in != null ? in.getLongExtra("position", currentPosition) : currentPosition;
         String title = in != null ? in.getStringExtra("title") : null;
         if (title == null || title.length() == 0) title = "Rima Lab";
         Notification n = build(playing, title);""",
     """        boolean playing = in != null && in.getIntExtra("st", 0) == 1;
+        currentDuration = in != null ? in.getLongExtra("duration", currentDuration) : currentDuration;
+        currentPosition = in != null ? in.getLongExtra("position", currentPosition) : currentPosition;
         String title = in != null ? in.getStringExtra("title") : null;
         if (title == null || title.length() == 0) title = "Rima Lab";
         syncSession(playing, title);
