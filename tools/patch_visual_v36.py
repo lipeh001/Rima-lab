@@ -340,7 +340,7 @@ h=h[:pos]+stage+'\n'+h[pos:]
 g=gp.read_text(encoding='utf-8')
 m=re.search(r'\bversionCode\s+(\d+)',g)
 if not m:raise SystemExit('V36_FAIL: versionCode ausente')
-if int(m.group(1))<56:g=g[:m.start(1)]+'56'+g[m.end(1):]
+if int(m.group(1))<57:g=g[:m.start(1)]+'57'+g[m.end(1):]
 m=re.search(r"""versionName\s+['"]([^'"]+)['"]""",g)
 if not m:raise SystemExit('V36_FAIL: versionName ausente')
 g=g[:m.start(1)]+'3.1.5'+g[m.end(1):]
@@ -348,4 +348,4 @@ g=g[:m.start(1)]+'3.1.5'+g[m.end(1):]
 h=h.replace('calc(58px + env(safe-area-inset-bottom,0px))','calc(4px + env(safe-area-inset-bottom,0px))')
 h=h.replace('calc(58px + env(safe-area-inset-bottom, 0px))','calc(4px + env(safe-area-inset-bottom, 0px))')
 hp.write_text(h,encoding='utf-8');gp.write_text(g,encoding='utf-8')
-print('V37_OK: player on-demand; hide on stop/exit; microphone loopback correlation over five chirps; automatic LAT estimate; mode numbering; orientation-responsive typography; landscape player bottom dock; version 3.1.4')
+print('V37_OK: player on-demand; hide on stop/exit; microphone loopback correlation over five chirps; automatic LAT estimate; mode numbering; orientation-responsive typography; landscape player bottom dock; version 3.1.5')
