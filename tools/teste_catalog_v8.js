@@ -19,7 +19,7 @@ for(const style of styles){
 }
 checks.push(['210 faixas têm IDs únicos entre as três categorias',allIds.size===210]);
 checks.push(['catálogo de 70 por estilo está embutido no HTML',html.includes('RIMA_CATALOG_SEED_V8=')]);
-checks.push(['cache antigo é invalidado uma única vez pela versão do pré-carregamento',html.includes('RIMA_PRELOAD_VERSION_V8')&&html.includes("localStorage.removeItem('jmraw8')")]);
+checks.push(['cache antigo é invalidado uma única vez pela versão do pré-carregamento',html.includes('RIMA_PRELOAD_VERSION_V8')&&html.includes("['jmraw8','jmraw7','jmraw6'].forEach(k=>localStorage.removeItem(k))")]);
 checks.push(['cache só é considerado pronto com as 70 faixas',/function zCacheFresh\(st\).*?rows>=70/s.test(html)]);
 checks.push(['catálogo final preserva salvos e respeita teto de 70',html.includes('ZLIB[st][1]=L.slice(0,cap)')&&html.includes('const cap=70')]);
 checks.push(['seletor mostra spinner durante carregamento',html.includes('zCatLoading(s)')&&html.includes('rima-cat-spinner')]);
