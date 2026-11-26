@@ -321,6 +321,14 @@ icon_path.write_text('''<vector xmlns:android="http://schemas.android.com/apk/re
 </vector>''', encoding="utf-8")
 
 # Notification: keep the Android monochrome status glyph, but use the actual Rima Lab mark in the expanded card.
+
+# O Android sobrepõe o smallIcon à arte grande. Use uma onda neutra no smallIcon,
+# mantendo o R grande isolado no largeIcon.
+icon_path = root / "app/src/main/res/drawable/ic_stat_beat.xml"
+icon_path.write_text('''<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="#FFFFFF" android:pathData="M3,10h2v4H3zM7,6h2v12H7zM11,3h2v18h-2zM15,7h2v10h-2zM19,10h2v4h-2z"/>
+</vector>''',encoding="utf-8")
+
 service_path = root / "app/src/main/java/app/rimalab/MusicService.java"
 service = service_path.read_text(encoding="utf-8")
 service = service.replace(".setLargeIcon(art())", ".setLargeIcon(appLogo())")
@@ -346,11 +354,29 @@ service_path.write_text(service, encoding="utf-8")
 # Curadoria de rimas ricas para palavras que apareceram nos registros do usuário.
 # A substituição mantém os elementos/classes originais dos chips e troca apenas os textos.
 html = html_path.read_text(encoding="utf-8")
+# Rimas fonéticas específicas: evita correspondências apenas por vogal final.
+rima_anchor = "const nW=bag('w',W)"
+rima_patch = """RG.unshift(
+ ["-aça",["cachaça","fumaça","carcaça","couraça","vidraça"]],
+ ["-ole",["controle","descontrole","enrole","engole"]],
+ ["-oste",["teste","veste","agreste","nordeste"]],
+ ["-oto",["terremoto","remoto","devoto","garoto","foto"]],
+ ["-ante",["distante","brilhante","marcante","gigante","elegante"]],
+ ["-ivo",["ativo","cativo","altivo","esquivo","decisivo"]],
+ ["-este",["teste","veste","agreste","nordeste","celeste"]]
+);
+"""
+if rima_anchor not in html: raise SystemExit("CATALOG_V10_FAIL: banco de rimas não encontrado.")
+if '["-aça"' not in html: html=html.replace(rima_anchor,rima_patch+rima_anchor,1)
 hint_script = r"""
 <script id="rima-rich-hints-v9">
 (function(){
  const curated={
   'FITA':['irrita','acredita','limita','habita'],
+  'TAÇA':['cachaça','fumaça','carcaça','couraça'],
+  'CONSOLE':['controle','descontrole','enrole','engole'],
+  'POSTE':['teste','veste','agreste','nordeste'],
+  'MAREMOTO':['terremoto','remoto','devoto','garoto'],
   'MIRANTE':['distante','brilhante','elegante','marcante'],
   'ARQUIVO':['ativo','cativo','altivo','esquivo'],
   'ALEGRIA':['cria','varia','confia','desafia'],
@@ -377,8 +403,8 @@ html_path.write_text(html,encoding="utf-8")
 # versionCode monotonically increases so Android treats this as a proper update.
 gradle_path = root / "app/build.gradle"
 gradle = gradle_path.read_text(encoding="utf-8")
-gradle = re.sub(r"versionCode\s+\d+", "versionCode 26", gradle, count=1)
-gradle = re.sub(r"versionName\s+['\"][^'\"]+['\"]", "versionName '2.8.9'", gradle, count=1)
+gradle = re.sub(r"versionCode\s+\d+", "versionCode 27", gradle, count=1)
+gradle = re.sub(r"versionName\s+['\"][^'\"]+['\"]", "versionName '2.9.0'", gradle, count=1)
 gradle_path.write_text(gradle, encoding="utf-8")
 
 
@@ -401,9 +427,9 @@ if "private Bitmap singleRIcon()" not in service:
 service_path.write_text(service,encoding="utf-8")
 
 # Write a compact review manifest next to the build.
-review = root / "CATALOGO-2.8.8-VALIDADO.txt"
+review = root / "CATALOGO-2.9.0-VALIDADO.txt"
 review.write_text(
-    "Rima Lab 2.8.8\\n"
+    "Rima Lab 2.9.0\\n"
     "Catalogo pre-carregado: 70 Boom bap, 70 Trap, 70 Drill.\\n"
     "Todos os registros exigem instrumental declarado pelo Jamendo e stream de audio validado.\\n"
     "Reproducao: inicio no zero, sem retomada automatica, sem pular faixa em falha, repeticao desligada por padrao.\\n"
