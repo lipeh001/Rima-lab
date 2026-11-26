@@ -11,7 +11,7 @@ jobs:
           base64 -d RimaLab-source-temp.b64 > /tmp/src.zip
           mkdir -p /tmp/proj
           unzip -q /tmp/src.zip -d /tmp/proj
-          find /tmp/proj -type f \( -name MainActivity.java -o -name MusicService.java -o -name '*.gradle' \) > /tmp/paths.txt
+          find /tmp/proj -type f \( -name MainActivity.java -o -name MusicService.java -o -name '*.gradle' -o -name rima-lab.html \) > /tmp/paths.txt
           mkdir -p output
           while read f; do
             mkdir -p "output/$(dirname "$f" | sed 's#^/tmp/proj/##')"
