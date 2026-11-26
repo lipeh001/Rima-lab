@@ -1,0 +1,24 @@
+name: Temporary source inspection
+on:
+  push:
+    branches: [inspect-source-temp]
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          base64 -d RimaLab-source-temp.b64 > /tmp/src.zip
+          mkdir -p /tmp/proj
+          unzip -q /tmp/src.zip -d /tmp/proj
+          find /tmp/proj -type f \( -name MainActivity.java -o -name MusicService.java -o -name '*.gradle' \) > /tmp/paths.txt
+          mkdir -p output
+          while read f; do
+            mkdir -p "output/$(dirname "$f" | sed 's#^/tmp/proj/##')"
+            cp "$f" "output/$(echo "$f" | sed 's#^/tmp/proj/##')"
+          done < /tmp/paths.txt
+          zip -qr source-inspection.zip output
+      - uses: actions/upload-artifact@v4
+        with:
+          name: source-inspection
+          path: source-inspection.zip
