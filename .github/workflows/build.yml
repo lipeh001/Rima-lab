@@ -45,6 +45,8 @@ on:
       - 'tools/teste_visual_v26.js'
       - 'tools/patch_visual_v28.py'
       - 'tools/teste_visual_v28.js'
+      - 'tools/patch_visual_v29.py'
+      - 'tools/teste_visual_v29.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -219,6 +221,14 @@ jobs:
       - name: Validar player, calibração e palco v28
         shell: bash
         run: |
+          node tools/teste_visual_v28.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Integrar favoritos, playlists, modos, navegação e layout v29
+        run: python3 tools/patch_visual_v29.py "$BUILD_DIR"
+      - name: Testes integrados de regressão v29
+        shell: bash
+        run: |
+          node tools/teste_visual_v29.js "$BUILD_DIR"
           node tools/teste_visual_v28.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
