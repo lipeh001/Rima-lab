@@ -432,4 +432,91 @@ html_path.write_text(html, encoding="utf-8")
 
 print("RUNTIME_PATCH_OK: catalogo 70/70/20, cache limpo, icone R, texto e palco suave.")
 
+
+# 14) Sincronização definitiva: posição e duração reais no MediaSession, sem remover o player durante troca.
+main = main_path.read_text(encoding="utf-8")
+main = replace_once(
+    main,
+    "@JavascriptInterface public void mediaState(int st, String title)",
+    "@JavascriptInterface public void mediaState(int st, String title, double duration, double position)",
+    "bridge mediaState com duração/posição"
+)
+main = replace_once(
+    main,
+    'new Intent(c, MusicService.class).putExtra("st", st).putExtra("title", title)',
+    'new Intent(c, MusicService.class).putExtra("st", st).putExtra("title", title).putExtra("duration", (long)(Math.max(0, duration) * 1000d)).putExtra("position", (long)(Math.max(0, position) * 1000d))',
+    "envio da posição para o serviço"
+)
+main_path.write_text(main, encoding="utf-8")
+
+service = service_path.read_text(encoding="utf-8")
+service = replace_once(
+    service,
+    "boolean playing = in != null && in.getIntExtra(\"st\", 0) == 1;",
+    "boolean playing = in != null && in.getIntExtra(\"st\", 0) == 1;\n        currentDuration = in != null ? in.getLongExtra(\"duration\", currentDuration) : currentDuration;\n        currentPosition = in != null ? in.getLongExtra(\"position\", currentPosition) : currentPosition;",
+    "atualizar posição/duração no serviço"
+)
+service_path.write_text(service, encoding="utf-8")
+
+html = html_path.read_text(encoding="utf-8")
+html = replace_once(html,
+    "let zMK='';function zMedia(){try{const k=(play?(zPL?1:0):-1)+'|'+(ZS.name||'');if(k==zMK)return;zMK=k;if(window.RimaNative&&RimaNative.mediaState)RimaNative.mediaState(play?(zPL?1:0):-1,ZS.name||'Rima Lab')}catch(e){}}",
+    "let zMK='',zMediaAt=0;function zMedia(force){try{const st=play?(zPL?1:0):-1,c=zCur(),d=zDur(),now=performance.now();if(!force&&now-zMediaAt<900)return;zMediaAt=now;const title=ZS.name||'Rima Lab',k=st+'|'+title+'|'+Math.round(d*1000)+'|'+Math.round(c*1000);if(k===zMK)return;zMK=k;if(window.RimaNative&&RimaNative.mediaState)RimaNative.mediaState(st,title,d,c)}catch(e){}}",
+    "notificação envia posição e duração"
+)
+html = replace_once(html,
+    "function zSetPL(v){if(v&&!zPL){zPL=1;zW.splice(0).forEach(f=>f())}else if(!v)zPL=0;HOLD=zPL?0:1;if(HOLD){try{speechSynthesis.cancel()}catch(e){}}zBarUI();zMedia()}",
+    "function zSetPL(v){if(v&&!zPL){zPL=1;zW.splice(0).forEach(f=>f())}else if(!v)zPL=0;HOLD=zPL?0:1;if(HOLD){try{speechSynthesis.cancel()}catch(e){}}zBarUI();zMedia(true)}",
+    "atualização imediata do estado do player"
+)
+html = replace_once(html,
+    "zPL=0;zBarUI()}",
+    "zPL=0;zBarUI();if(play)zMedia(true)}",
+    "manter notificação viva durante carregamento do próximo beat"
+)
+html = replace_once(html,
+    "function zTick(){zR=requestAnimationFrame(zTick);zUI();if(!play||!zPL||zS||ZS.dp)return;",
+    "function zTick(){zR=requestAnimationFrame(zTick);zUI();if(play)zMedia(false);if(!play||!zPL||zS||ZS.dp)return;",
+    "atualizar posição da notificação durante reprodução"
+)
+html = replace_once(html,
+    'min="0" max="600" step="1" value="${LAT}"',
+    'min="0" max="1200" step="1" value="${LAT}"',
+    "slider de calibração até 1200ms"
+)
+html = replace_once(html,
+    "function setLat(v){LAT=v;LATSET=true;",
+    "function setLat(v){v=Math.max(0,Math.min(1200,+v||0));LAT=v;LATSET=true;",
+    "limite manual de calibração até 1200ms"
+)
+html = replace_once(html,
+    "N=8,W=2,bars=",
+    "N=6,W=1,bars=",
+    "calibração com sinais separados"
+)
+html = replace_once(html,
+    "T+i*.75",
+    "T+i*1.5",
+    "intervalo maior entre sinais de calibração"
+)
+html = replace_once(html,
+    "ts[N+W-1]+1,w0=Date.now()",
+    "ts[N+W-1]+1.4,w0=Date.now()",
+    "janela de captura da calibração"
+)
+html = replace_once(html,
+    "t0+.75-off0",
+    "t0+1.25-off0",
+    "janela de correlação de até 1250ms"
+)
+html = replace_once(html,
+    "dl<800",
+    "dl<1200",
+    "aceitar atraso acústico até 1200ms"
+)
+html = html.replace("Math.min(600,Math.round(fin.ms))","Math.min(1200,Math.round(fin.ms))")
+if "</head>" in html and "rima-back-center-v1" not in html:
+    html = html.replace("</head>", '<style id="rima-back-center-v1">#lv .bk,#bt .bk{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;margin-left:auto!important;margin-right:auto!important}</style></head>', 1)
+html_path.write_text(html, encoding="utf-8")
+
 print("RUNTIME_PATCH_OK: paisagem, borda pulsante, troca sem salto, filtro de Drill e notificação MediaSession.")
