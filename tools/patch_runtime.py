@@ -449,15 +449,6 @@ main = replace_once(
 )
 main_path.write_text(main, encoding="utf-8")
 
-service = service_path.read_text(encoding="utf-8")
-service = replace_once(
-    service,
-    "boolean playing = in != null && in.getIntExtra(\"st\", 0) == 1;",
-    "boolean playing = in != null && in.getIntExtra(\"st\", 0) == 1;\n        currentDuration = in != null ? in.getLongExtra(\"duration\", currentDuration) : currentDuration;\n        currentPosition = in != null ? in.getLongExtra(\"position\", currentPosition) : currentPosition;",
-    "atualizar posição/duração no serviço"
-)
-service_path.write_text(service, encoding="utf-8")
-
 html = html_path.read_text(encoding="utf-8")
 html = replace_once(html,
     "let zMK='';function zMedia(){try{const k=(play?(zPL?1:0):-1)+'|'+(ZS.name||'');if(k==zMK)return;zMK=k;if(window.RimaNative&&RimaNative.mediaState)RimaNative.mediaState(play?(zPL?1:0):-1,ZS.name||'Rima Lab')}catch(e){}}",
