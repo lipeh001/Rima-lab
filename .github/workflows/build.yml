@@ -38,6 +38,7 @@ on:
       - 'tools/teste_visual_v21.js'
       - 'tools/patch_visual_v22.py'
       - 'tools/patch_final_v23.py'
+      - 'tools/patch_visual_v24.py'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -69,7 +70,7 @@ jobs:
           test -f "$HTML_FILE"
           node tools/fix_tela_treino.js "$HTML_FILE"
           python3 tools/patch_runtime.py "$BUILD_DIR"
-      - name: Buscar 70 instrumentais reais por categoria (Boom bap, Trap e Drill)
+      - name: Buscar catálogo ampliado de instrumentais reais (88 Boom bap, 77 Trap, 74 Drill)
         shell: bash
         run: |
           for attempt in 1 2 3 4; do
@@ -82,7 +83,7 @@ jobs:
             echo "Usando catálogo embarcado previamente validado 88/77/74 (87/77/74 exibidos)."
             exit 0
           fi
-          echo "::error::Não foi possível validar 70 faixas por categoria após 4 tentativas e não há catálogo embarcado válido."
+          echo "::error::Não foi possível validar o catálogo ampliado 88/77/74 após 4 tentativas e não há catálogo embarcado válido."
           exit 1
       - name: Pré-carregar catálogo completo e corrigir definitivamente player e palco
         run: python3 tools/patch_catalog_v8.py "$BUILD_DIR"
@@ -186,6 +187,15 @@ jobs:
         shell: bash
         run: |
           node -e 'const fs=require("fs");const h=fs.readFileSync(process.argv[1],"utf8");for(const t of ["caixa de som Bluetooth","Use esta opção somente se conectar uma caixa de som Bluetooth"])if(!h.includes(t))process.exit(1);if(/WebView|AudioContext/.test(h))process.exit(1)' "$BUILD_DIR/app/src/main/assets/rima-lab.html"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Ajustes finais v24: dicas sob demanda, palco e player horizontal
+        run: python3 tools/patch_visual_v24.py "$BUILD_DIR"
+      - name: Validar ajustes finais v24
+        shell: bash
+        run: |
+          HTML_FILE="$BUILD_DIR/app/src/main/assets/rima-lab.html"
+          node -e 'const fs=require("fs");const h=fs.readFileSync(process.argv[1],"utf8");for(const t of ["rimalab-word-vertical-fit-v24","rimalab-landscape-player-v24","rimalab-resume-audio-v24","RIMA_NO_HINTS_V24"])if(!h.includes(t))throw new Error("Falta "+t);if(h.includes("sub:\u0027Rimas possíveis:\u0027 +r"))throw new Error("Texto de rimas ainda aparece no palco");' "$HTML_FILE"
+          node -e 'const fs=require("fs");const g=fs.readFileSync(process.argv[1],"utf8");if(!g.includes("versionCode 44")||!g.includes("versionName \'3.0.2\'"))throw new Error("Versão Android incorreta")' "$BUILD_DIR/app/build.gradle"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
