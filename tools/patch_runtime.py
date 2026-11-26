@@ -507,6 +507,19 @@ html_path.write_text(html, encoding="utf-8")
 print("RUNTIME_PATCH_OK: paisagem, borda pulsante, troca sem salto, filtro de Drill e notificação MediaSession.")
 
 
+
+# 16) Relógio interpolado do elemento de áudio: evita degraus de currentTime em WebView Android.
+html = html_path.read_text(encoding="utf-8")
+clock_old = "const zCur=()=>zA?zA.currentTime:(ZY.ps&&ZY.fz>=0?ZY.fz:(ZY.win.length?zNow()+ZY.o:zL)),zDur=()=>zA?(isFinite(zA.duration)?zA.duration:0):ZY.dur;"
+clock_new = """let zClockP=0,zClockT=0,zClockR=1;
+const zCur=()=>{if(zA){const p=performance.now()/1000,t=zA.currentTime,r=zA.playbackRate||1;if(!isFinite(t))return 0;if(zA.paused){zClockP=p;zClockT=t;zClockR=r;return t}if(!zClockP||t<zClockT-.12||t>zClockT+.5){zClockP=p;zClockT=t;zClockR=r;return t}const estimate=zClockT+(p-zClockP)*zClockR;if(t>=estimate-.025){zClockP=p;zClockT=t;zClockR=r;return t}return estimate}return ZY.ps&&ZY.fz>=0?ZY.fz:(ZY.win.length?zNow()+ZY.o:zL)},zDur=()=>zA?(isFinite(zA.duration)?zA.duration:0):ZY.dur;"""
+if clock_old in html:
+    html = html.replace(clock_old, clock_new, 1)
+elif clock_new not in html:
+    raise SystemExit("CLOCK_PATCH_FAIL: zCur anchor not found")
+html = html.replace("function zKill(){zTok++;ZS.loadingAudio=0;", "function zKill(){zTok++;zClockP=0;zClockT=0;ZS.loadingAudio=0;", 1)
+html_path.write_text(html, encoding="utf-8")
+
 # 15) Ajuste fino solicitado: botão Voltar à esquerda, texto centralizado, logo R único e calibração de baixa carga.
 html = html_path.read_text(encoding="utf-8")
 html = html.replace(
