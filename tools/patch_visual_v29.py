@@ -223,9 +223,9 @@ if not m:raise SystemExit('V29_FAIL: versionName ausente')
 if m.group(1)<'3.0.8':g=g[:m.start(1)]+'3.0.8'+g[m.end(1):]
 
 # Consolidate conflicting stage typography rules and keep hint chips out of the word layout.
-h=re.sub(r'<style id="rima-word-fit-v13">[\\s\\S]*?</style>','',h)
-h=re.sub(r'<style id="rimalab-word-vertical-fit-v24">[\\s\\S]*?</style>','',h)
-h=re.sub(r'<script id="rimalab-word-fit-v28">[\\s\\S]*?</script>','',h)
+h=re.sub(r'<style id="rima-word-fit-v13">[\s\S]*?</style>','',h)
+h=re.sub(r'<style id="rimalab-word-vertical-fit-v24">[\s\S]*?</style>','',h)
+h=re.sub(r'<script id="rimalab-word-fit-v28">[\s\S]*?</script>','',h)
 stagefix=r"""
 <style id="rimalab-stage-stability-v31">
 #module-summary{display:none!important}
@@ -282,7 +282,7 @@ stagefix=r"""
 """
 pos=h.lower().rfind('</body>')
 if pos<0:raise SystemExit('V31_FAIL: body não encontrado')
-h=h[:pos]+stagefix+'\\n'+h[pos:]
+h=h[:pos]+stagefix+'\n'+h[pos:]
 
 hp.write_text(h,encoding='utf-8');gp.write_text(g,encoding='utf-8')
 print('V29_OK: favoritos, fila aleatória, player heart, modo banner e seletor, mensagens rotativas, back navigation, CSS responsivo e versão 3.0.8')
