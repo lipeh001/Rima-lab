@@ -24,8 +24,8 @@ if 'id="rimalab-visual-v16"' not in h:
     h=h[:pos]+style+'\n'+h[pos:]
 old="function zLP(i,auto,style){if(style&&ZLIB[style])ZS.s=style;zSavePos();ZCARRY=null;if(!auto)zTries=0;const x=ZLIB[ZS.s][1][i];ZS.k=ZS.tab='lib';ZS.i=i;ZS.lid=x[0];ZS.src=x[0];ZS.key=zKey(x);ZS.name=x[1];ZS.bpm=ZS.b0=x[2]||ZLIB[ZS.s][0];ZS.off=x[3]||0;ZS.ph=0;ZS.sy=0;ZS.adj=0;try{ZS.adj=+localStorage.getItem('adj_'+ZS.key)||0}catch(e){}zSwap()}"
 new="function zLP(i,auto,style){if(style&&ZLIB[style])ZS.s=style;const list=ZLIB[ZS.s]&&ZLIB[ZS.s][1];if(!Array.isArray(list)||!list[i]){try{zBuild(ZS.s)}catch(e){}const retry=ZLIB[ZS.s]&&ZLIB[ZS.s][1];if(!Array.isArray(retry)||!retry[i]){zMsg('Carregando a lista de beats. Toque novamente em instantes.');pk();return}}try{zSavePos()}catch(e){}ZCARRY=null;if(!auto)zTries=0;const x=(ZLIB[ZS.s][1]||[])[i];if(!x)return;ZS.k=ZS.tab='lib';ZS.i=i;ZS.lid=x[0];ZS.src=x[0];ZS.key=zKey(x);ZS.name=x[1];ZS.bpm=ZS.b0=x[2]||ZLIB[ZS.s][0];ZS.off=x[3]||0;ZS.ph=0;ZS.sy=0;ZS.adj=0;try{ZS.adj=+localStorage.getItem('adj_'+ZS.key)||0}catch(e){}try{zSwap()}catch(e){}pk();requestAnimationFrame(()=>{try{pk()}catch(e){}})}"
-if h.includes(old): h=h.replace(old,new,1)
-elif not h.includes('function zLP(i,auto,style){if(style&&ZLIB[style])ZS.s=style;const list='):
+if old in h: h=h.replace(old,new,1)
+elif 'function zLP(i,auto,style){if(style&&ZLIB[style])ZS.s=style;const list=' not in h:
     raise SystemExit('V16_FAIL: função zLP original não encontrada')
 hp.write_text(h,encoding='utf-8')
 g=gp.read_text(encoding='utf-8')
