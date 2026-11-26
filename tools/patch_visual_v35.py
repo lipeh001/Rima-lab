@@ -77,7 +77,8 @@ function labels(){
  const b=$('#rima-v29-mode-banner'),strong=b&&b.querySelector('strong');if(strong)strong.textContent=strong.textContent.replace(/^\s*1\s*[·.:-]\s*/,'');
 }
 document.addEventListener('click',e=>{if(e.target.closest('#bp .tag.chip')&&favoritesMode){favoritesMode=false;setTimeout(()=>{if(typeof window.pk==='function')window.pk()},0)}});
-document.addEventListener('click',e=>{const playBtn=e.target.closest('.rima-v35-play');if(playBtn){e.preventDefault();const k=playBtn.getAttribute('data-rima-play');if(k&&typeof window.rimaV29PlayFav==='function')window.rimaV29PlayFav(k);return}const favBtn=e.target.closest('.rima-v35-heart');if(favBtn){e.preventDefault();e.stopPropagation();const k=favBtn.getAttribute('data-rima-fav');if(k&&typeof window.rimaV29ToggleFav==='function')window.rimaV29ToggleFav(k)}});\nfunction install(){bindPlayer();dock();labels();if(favoritesMode)render();sync()}
+document.addEventListener('click',e=>{const playBtn=e.target.closest('.rima-v35-play');if(playBtn){e.preventDefault();const k=playBtn.getAttribute('data-rima-play');if(k&&typeof window.rimaV29PlayFav==='function')window.rimaV29PlayFav(k);return}const favBtn=e.target.closest('.rima-v35-heart');if(favBtn){e.preventDefault();e.stopPropagation();const k=favBtn.getAttribute('data-rima-fav');if(k&&typeof window.rimaV29ToggleFav==='function')window.rimaV29ToggleFav(k)}});
+function install(){bindPlayer();dock();labels();if(favoritesMode)render();sync()}
 document.addEventListener('click',e=>{if(e.target.closest('#rima-v29-player-heart'))setTimeout(sync,30)});
 window.addEventListener('storage',e=>{if(e.key===FKEY){sync();if(favoritesMode){window.pk&&pk();render()}}});
 window.addEventListener('orientationchange',()=>setTimeout(dock,180));
