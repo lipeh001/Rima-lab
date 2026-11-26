@@ -28,6 +28,8 @@ on:
       - 'tools/teste_visual_v15.js'
       - 'tools/patch_visual_v16.py'
       - 'tools/teste_visual_v16.js'
+      - 'tools/patch_visual_v17.py'
+      - 'tools/teste_visual_v17.js'
       - 'tools/teste_catalog_v8.js'
 jobs:
   apk:
@@ -124,6 +126,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v16.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Reduzir brilho do texto e pulsar somente a moldura v17
+        run: python3 tools/patch_visual_v17.py "$BUILD_DIR"
+      - name: Validar moldura, tipografia e palco v17
+        shell: bash
+        run: |
+          node tools/teste_visual_v17.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
