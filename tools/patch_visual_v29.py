@@ -197,12 +197,7 @@ function setupBack(){
   }
  });
 }
-function stabilizeStage(){
- const stage=$('#stg'),cb=$('#cb');if(!stage||!cb)return;
- let raf=0;const fit=()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>{const text=cb.textContent.trim(),n=Array.from(text).length,cap=n<6?74:n<10?64:n<15?56:46;cb.style.setProperty('font-size',cap+'px','important');cb.style.setProperty('max-width','100%','important');cb.style.setProperty('white-space','nowrap','important')})};
- new MutationObserver(fit).observe(cb,{childList:true,subtree:true,characterData:true});if('ResizeObserver'in window)new ResizeObserver(fit).observe(stage);window.addEventListener('resize',fit);fit();
-}
-function init(){
+function stabilizeStage(){const stage=$('#stg'),cb=$('#cb');if(!stage||!cb)return;cb.style.setProperty('max-width','100%','important');cb.style.setProperty('box-sizing','border-box','important');}\nfunction init(){
  installTools();addPlayerHeart();decorateCatalog();updateCounts();updateModeUI();setupBack();stabilizeStage();
  const root=$('#bp');if(root)new MutationObserver(()=>{decorateCatalog();installTools()}).observe(root,{childList:true,subtree:true});
  const s2=$('#train-step-2');if(s2)new MutationObserver(()=>{if(!s2.hidden)updateModeUI()}).observe(s2,{attributes:true,attributeFilter:['hidden']});
