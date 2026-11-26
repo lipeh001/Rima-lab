@@ -30,7 +30,7 @@ const checks=[
  ['calibrador mede até 1200ms com sinais separados',h.includes('max="1200"')&&h.includes('N=7,W=1')&&h.includes('T+i*1.2')&&h.includes('dl<1200')],
  ['botão voltar centralizado em todas as seções',h.includes('rima-back-center-v2')&&h.includes('justify-content:center')&&h.includes('margin-left:0!important')],
  ['botão Voltar permanece no canto esquerdo com texto centralizado',h.includes('rima-back-center-v2')&&h.includes('margin-left:0!important')&&h.includes('text-align:center!important')],
- ['selo do player mostra um único R ampliado',h.includes('<span>R</span><i></i><i></i><i></i>')&&h.includes('font-size:24px!important')],
+ ['selo do player mostra um único R ampliado',h.includes('<span>RL</span><i></i><i></i><i></i>')&&h.includes('font-size:17px!important')],
  ['calibrador usa chirp curto, amostragem leve e pico global',h.includes('sr/4000')&&h.includes('sr*.12')&&h.includes('createScriptProcessor(512,1,1)')&&h.includes('let jj=mj;let fr=0;')],
  ['calibrador valida mediana com pelo menos cinco detecções consistentes',h.includes('ok.length>=5')&&h.includes('Math.abs(x-md)<=8')],
  ['palco usa relógio interpolado do áudio entre amostras do WebView',h.includes('let zClockP=0,zClockT=0,zClockR=1')&&h.includes('const estimate=zClockT+(p-zClockP)*zClockR')&&h.includes('zClockP=0;zClockT=0;')],
