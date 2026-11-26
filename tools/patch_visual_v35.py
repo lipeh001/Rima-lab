@@ -46,18 +46,18 @@ function sync(){
 }
 function favMarkup(){
  const fav=readFav(),tracks=fav.map(k=>allTracks().find(o=>trackKey(o.x)===k)).filter(Boolean);
- if(!tracks.length)return '<p class="rima-v29-note">Nenhum beat favoritado ainda. Use o coração ao lado de qualquer beat para adicioná-lo aqui.</p>';
+ if(!tracks.length)return '<div class="bsl rima-v35-favlist"><p class="rima-v29-note">Nenhum beat favoritado ainda. Use o coração ao lado de qualquer beat para adicioná-lo aqui.</p></div>';
  return '<div class="bsl rima-v35-favlist">'+tracks.map(({cat,x})=>{const k=trackKey(x);return '<div class="bi"><div class="beat-info"><button class="mc" type="button" onclick="rimaV29PlayFav(\\''+k+'\\')"><b>'+esc(x[1])+'</b></button><div class="beat-meta">'+esc(cat)+'</div></div><button class="rima-v35-heart" type="button" data-rima-fav="'+k+'" aria-pressed="true" onclick="rimaV29ToggleFav(\\''+k+'\\');event.stopPropagation()">♥</button></div>'}).join('')+'</div>';
 }
 function render(){
  const bp=$('#bp');if(!bp)return;
- const old=bp.querySelector('.rima-v35-favlist');if(old)old.remove();
+ const old=bp.querySelector('.rima-v35-favlist');if(old)return;
  const row=[...bp.children].find(e=>e.classList&&e.classList.contains('row')&&e.querySelectorAll('button.tag.chip').length>=2);if(!row)return;
  const list=bp.querySelector('.bsl:not(.rima-v35-favlist)'),attr=bp.querySelector('.catalog-attribution');
  if(list)list.hidden=favoritesMode;if(attr)attr.hidden=favoritesMode;
  const tools=bp.querySelector('.rima-v29-tools'),btn=tools&&tools.querySelector('button');
  if(btn){btn.classList.toggle('active',favoritesMode);btn.setAttribute('aria-pressed',String(favoritesMode));btn.innerHTML='♥ Favoritos <span class="rima-v29-count">'+readFav().length+'</span>'}
- if(favoritesMode){const wrap=document.createElement('div');wrap.innerHTML=favMarkup();if(wrap.firstElementChild)row.insertAdjacentElement('afterend',wrap.firstElementChild)}
+ if(favoritesMode){const wrap=document.createElement('div');wrap.innerHTML=favMarkup();const anchor=bp.querySelector('.rima-v29-tools')||row;if(wrap.firstElementChild)anchor.insertAdjacentElement('afterend',wrap.firstElementChild)}
 }
 function toggleView(){favoritesMode=!favoritesMode;if(typeof window.pk==='function')window.pk();requestAnimationFrame(()=>{render();sync()})}
 window.rimaV29ShowFavorites=toggleView;
