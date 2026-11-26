@@ -75,7 +75,7 @@ html = replace_once(
     "redesenho único na troca de beat"
 )
 wrapper_old = "(function(){['go','lvStart','lvStop','bhome','solo'].forEach(n=>{const f=window[n];if(typeof f!='function')return;window[n]=function(){const r=f.apply(this,arguments);try{window.scrollTo(0,0)}catch(e){}return r}})})();"
-wrapper_new = "(function(){['go','lvStart','lvStop','bhome','solo'].forEach(n=>{const f=window[n];if(typeof f!='function')return;window[n]=function(){const r=f.apply(this,arguments);if(!window.__rimaNoAutoScroll)try{window.scrollTo(0,0)}catch(e){}return r}})})();"
+wrapper_new = "(function(){['go','bhome','solo'].forEach(n=>{const f=window[n];if(typeof f!='function')return;window[n]=function(){const r=f.apply(this,arguments);if(!window.__rimaNoAutoScroll)try{window.scrollTo(0,0)}catch(e){}return r}})})();"
 html = replace_once(html, wrapper_old, wrapper_new, "controle de scroll")
 html = replace_once(
     html,
