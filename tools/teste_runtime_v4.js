@@ -31,7 +31,7 @@ const checks=[
  ['botão voltar centralizado em todas as seções',h.includes('rima-back-center-v2')&&h.includes('justify-content:center')&&h.includes('margin-left:0!important')],
  ['botão Voltar permanece no canto esquerdo com texto centralizado',h.includes('rima-back-center-v2')&&h.includes('margin-left:0!important')&&h.includes('text-align:center!important')],
  ['selo do player mostra um único R ampliado',h.includes('<span>RL</span><i></i><i></i><i></i>')&&h.includes('font-size:17px!important')],
- ['calibrador usa sino audível em volume confortável',h.includes('🔔')&&h.includes('GAINS=[.18]')&&h.includes('sr*.24')],
+ ['calibrador emite tom de sino com harmônicos audíveis',h.includes('Math.sin(2*Math.PI*880*t)')&&h.includes('Math.sin(2*Math.PI*1320*t)')],
  ['calibrador estabiliza a medição por mediana e tolerância de 10ms',h.includes('median')&&h.includes('Math.abs(x-md)<=10')&&h.includes('Math.round(median/5)*5')],
  ['palco usa relógio interpolado do áudio entre amostras do WebView',h.includes('let zClockP=0,zClockT=0,zClockR=1')&&h.includes('const estimate=zClockT+(p-zClockP)*zClockR')&&h.includes('zClockP=0;zClockT=0;')],
 
