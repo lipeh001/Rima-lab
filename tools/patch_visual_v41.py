@@ -201,6 +201,46 @@ h=h[:pos]+runtime+'\\n'+h[pos:]
 
 # Ensure the slight character arc remains subtle and consistent after orientation changes.
 h=h.replace('Math.min(2.25,Math.max(.9,chars.length*.11))','Math.min(2.7,Math.max(1.1,chars.length*.12))')
+player=r"""<style id="rimalab-player-landscape-dock-v41">
+@media(orientation:landscape){
+ #pbar{position:fixed!important;top:auto!important;bottom:3px!important;left:10px!important;right:10px!important;
+  inset:auto 10px 3px 10px!important;transform:none!important;width:auto!important;max-width:none!important;
+  height:auto!important;min-height:88px!important;max-height:104px!important;display:flex!important;
+  flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;
+  gap:1px!important;margin:0!important;padding:6px 10px 5px!important;overflow:visible!important;
+  z-index:12000!important;border-radius:16px!important}
+ #pbar .pwrow{display:flex!important;flex:1 1 auto!important;min-width:0!important;min-height:42px!important;gap:6px!important}
+ #pbar .pw-art{display:none!important}
+ #pbar .pw-controls{display:flex!important;flex:0 0 auto!important;align-items:center!important;gap:3px!important}
+ #pbar .pw-controls button{width:29px!important;height:31px!important}
+ #pbar .pw-controls #pwb{width:35px!important;height:35px!important}
+ #pbar .pwi{display:block!important;flex:1 1 auto!important;min-width:0!important;overflow:hidden!important}
+ #pbar #pwn{display:block!important;max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;font-size:clamp(11px,1.25vw,15px)!important}
+ #pbar #pws{display:block!important;font-size:10px!important;line-height:1.15!important}
+ #pbar button.pws,#pbar #rima-v29-player-heart{display:grid!important;width:29px!important;height:29px!important;flex:0 0 29px!important}
+ #pbar .pwinfo{display:flex!important;position:absolute!important;right:12px!important;bottom:34px!important;height:11px!important;min-height:11px!important;margin:0!important;font-size:9px!important}
+ #pbar .pwscr{display:flex!important;visibility:visible!important;position:relative!important;inset:auto!important;
+  flex:0 0 25px!important;align-items:center!important;gap:8px!important;width:100%!important;height:25px!important;
+  min-height:25px!important;margin:0!important;padding:0 2px!important;z-index:10!important}
+ #pbar .pwscr .pwm{display:grid!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+  width:42px!important;min-width:42px!important;height:23px!important;flex:0 0 42px!important;font-size:10px!important}
+ #pbar .pwscr .pwp{display:block!important;visibility:visible!important;position:relative!important;flex:1 1 auto!important;
+  min-width:20px!important;width:auto!important;height:5px!important;min-height:5px!important;margin:0!important}
+ #pbar .pwscr .pwp:before,#pbar .pwscr .pwp i{top:0!important;height:5px!important}
+ #pbar .pwscr .pwp b{top:-4px!important;width:13px!important;height:13px!important;margin-left:-6px!important}
+ body.pl main,body.pl #lv:not([hidden]){padding-bottom:100px!important}
+}
+@media(orientation:landscape) and (max-height:380px){
+ #pbar{min-height:78px!important;max-height:84px!important;padding:4px 8px 3px!important}
+ #pbar .pwrow{min-height:36px!important}
+ #pbar .pw-controls button{width:25px!important;height:27px!important}
+ #pbar .pw-controls #pwb{width:30px!important;height:30px!important}
+ #pbar .pwscr{flex-basis:23px!important;min-height:23px!important}
+ #pbar .pwinfo{bottom:30px!important}
+}
+</style>"""
+pos=h.lower().rfind('</body>')
+h=h[:pos]+player+'\\n'+h[pos:]
 g=gp.read_text(encoding='utf-8')
 m=re.search(r'\bversionCode\s*=?\s*(\d+)',g)
 if not m: raise SystemExit('V41_FAIL: versionCode missing')
