@@ -223,7 +223,24 @@ jobs:
           for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
             if [[ -z "${!name}" ]]; then echo "::error::Secret ${name} ausente. Configure os quatro secrets de assinatura."; exit 1; fi
           done
+          # Normalize pasted secrets (GitHub secrets may contain copied line breaks).
+          ANDROID_KEYSTORE_BASE64="$(printf '%s' "$ANDROID_KEYSTORE_BASE64" | tr -d '\r\n ' )"
+          ANDROID_KEYSTORE_PASSWORD="$(printf '%s' "$ANDROID_KEYSTORE_PASSWORD" | tr -d '\r\n')"
+          ANDROID_KEY_ALIAS="$(printf '%s' "$ANDROID_KEY_ALIAS" | tr -d '\r\n')"
+          ANDROID_KEY_PASSWORD="$(printf '%s' "$ANDROID_KEY_PASSWORD" | tr -d '\r\n')"
+          export ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD
           printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/rimalab-release.jks"
+          test -s "$RUNNER_TEMP/rimalab-release.jks"
+          # Validate the exact store and alias before Gradle; convert JKS to PKCS12
+          # to avoid Android Gradle's JKS private-key loading edge cases.
+          keytool -list -storetype JKS -keystore "$RUNNER_TEMP/rimalab-release.jks" -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$ANDROID_KEY_ALIAS" >/dev/null
+          keytool -importkeystore -noprompt \
+            -srckeystore "$RUNNER_TEMP/rimalab-release.jks" -srcstoretype JKS \
+            -srcstorepass "$ANDROID_KEYSTORE_PASSWORD" -srcalias "$ANDROID_KEY_ALIAS" \
+            -srckeypass "$ANDROID_KEY_PASSWORD" \
+            -destkeystore "$RUNNER_TEMP/rimalab-release.p12" -deststoretype PKCS12 \
+            -deststorepass "$ANDROID_KEYSTORE_PASSWORD" -destkeypass "$ANDROID_KEY_PASSWORD"
+          keytool -list -storetype PKCS12 -keystore "$RUNNER_TEMP/rimalab-release.p12" -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$ANDROID_KEY_ALIAS" >/dev/null
           cat > "$GITHUB_WORKSPACE/signing.init.gradle" <<'GRADLE'
           allprojects {
             afterEvaluate {
@@ -232,7 +249,7 @@ jobs:
                   signingConfigs {
                     release {
                       storeFile file(System.getenv('RIMA_KEYSTORE_PATH'))
-                      storeType 'JKS'
+                      storeType 'PKCS12'
                       storePassword System.getenv('ANDROID_KEYSTORE_PASSWORD')
                       keyAlias System.getenv('ANDROID_KEY_ALIAS')
                       keyPassword System.getenv('ANDROID_KEY_PASSWORD')
@@ -248,7 +265,7 @@ jobs:
             }
           }
           GRADLE
-          export RIMA_KEYSTORE_PATH="$RUNNER_TEMP/rimalab-release.jks"
+          export RIMA_KEYSTORE_PATH="$RUNNER_TEMP/rimalab-release.p12"
           cd "$BUILD_DIR"
           gradle -I "$GITHUB_WORKSPACE/signing.init.gradle" assembleRelease
           RELEASE_APK="$(find app/build/outputs/apk/release -maxdepth 1 -type f -name '*.apk' | head -n 1)"
