@@ -5,7 +5,7 @@ const checks=[
  ['runtime integrado v29',h.includes('rimalab-complete-runtime-v29')],
  ['configuração da etapa 2 preservada',h.includes('rimalab-step2-persistence-v28')&&h.includes('rimalab_training_config_v28')],
  ['calibrador com sinal sonoro e visual',h.includes('cal-visual')&&h.includes('exponentialRampToValueAtTime(.64')],
- ['curvatura reduzida pela metade',h.includes('Math.min(2.25,Math.max(.9,chars.length*.11))')],
+ ['curvatura reduzida pela metade',h.includes('arc=Math.min(2.25,Math.max(.9,chars.length*.11))')],
  ['favoritos persistidos localmente',h.includes('rimalab_favorites_v29')&&h.includes('localStorage.setItem(KEY,JSON.stringify(fav))')],
  ['favoritos no catálogo antes do download',h.includes('rimaV29ToggleFav')&&h.includes('data-rima-fav')],
  ['coração no player',h.includes('rima-v29-player-heart')],
