@@ -75,6 +75,8 @@ jobs:
           BUILD_DIR="$(dirname "$SETTINGS_FILE")"
           echo "BUILD_DIR=$BUILD_DIR" >> "$GITHUB_ENV"
           echo "Projeto Gradle encontrado em: $BUILD_DIR"
+      - name: Inspecionar permissões WebView e ponte do microfone
+        run: python3 tools/inspect_native_v36.py "$BUILD_DIR"
       - name: Aplicar correções de interface, player e notificações
         shell: bash
         run: |
