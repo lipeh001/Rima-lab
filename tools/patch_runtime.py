@@ -70,7 +70,7 @@ html = replace_once(
 )
 html = replace_once(
     html,
-    "function zSwap(){if(play){zLoad(ZS.k=='syn'?zBars():0);pk();return}pk()}",
+    "function zSwap(){if(play){if(!zRestartAct()){zLoad(ZS.k=='syn'?zBars():0);pk()}return}pk()}",
     "function zSwap(){if(play){zLoad(ZS.k=='syn'?zBars():0);pk();return}pk()}",
     "redesenho único na troca de beat"
 )
