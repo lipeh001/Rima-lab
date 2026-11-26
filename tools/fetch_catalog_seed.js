@@ -65,7 +65,7 @@ function scoreOf(style, r) {
   const mi = r && r.musicinfo || {};
   const vocal = String(mi.vocalinstrumental || '').trim().toLowerCase();
   if (vocal !== 'instrumental') return -1;
-  const title = String(r.name || '').trim();
+  const title = String(r.name || '').trim();\n  if (/rap\\s+boom\\s+bap\\s+gritty\\s+old\\s+school/i.test(title)) return -1;
   if (/\\b(music|burger|song|anthem|lyrics|vocal|featuring|feat\\.?|ft\\.)\\b/i.test(title) && !/beat|instrumental/i.test(title)) return -1;
   if (/^rap\\s+(?:boom\\s*[-]?\\s*bap|trap|drill)/i.test(title) && !/beat|instrumental/i.test(title)) return -1;
   const t = textOf(r), c = CONFIG[style];
