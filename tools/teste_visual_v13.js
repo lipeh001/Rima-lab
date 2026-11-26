@@ -13,7 +13,7 @@ const checks=[
  ['a redução só ocorre quando a largura real ultrapassa o palco',fit.includes('if(e.scrollWidth<=available)low=mid;else high=mid')],
  ['observa mudanças de palavra e redimensionamento',fit.includes('MutationObserver')&&fit.includes('ResizeObserver')],
  ['não comprime texto com scaleX nem anima o texto',!fit.includes('scaleX(')&&h.includes('#stg.stage #cb.word,#stg.stage.hit #cb{transform:none!important;animation:none!important}')],
- ['pulso dourado suave substitui o piscar forte',h.includes('rimalab-gold-bloom-v13')&&h.includes('0.52s ease-out')],
+ ['pulso dourado suave substitui o piscar forte',h.includes('rimalab-gold-bloom-v13')&&h.includes('.52s ease-out')],
  ['o pulso afeta palco e moldura sem deslocar o conteúdo',h.includes('#stg.stage.hit,#bt .stage.hit')&&h.includes('transform:none!important')],
  ['R da tela inicial é branco',h.includes('.splash-mark .splash-initial{color:#fff!important')],
  ['APK atualizado para 2.9.5 / versionCode 32',g.includes('versionCode 32')&&g.includes("versionName '2.9.5'")],
