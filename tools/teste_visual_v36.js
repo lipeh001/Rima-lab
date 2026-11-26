@@ -13,11 +13,12 @@ const checks=[
  ['calibrador aplica mediana e salva LAT',h.includes('values[Math.floor(values.length/2)]')&&h.includes('setLat(applied)')],
  ['calibrador mantém cancelamento e encerra microfone',h.includes('function calCancel()')&&h.includes('run.stream.getTracks().forEach(t=>t.stop())')],
  ['ajuste manual suporta Bluetooth com delay maior',h.includes('max="800"')&&h.includes('Math.min(800,+v||0)')],
- ['banner sem prefixo 1 e heading Escolha o modo',h.includes('#rima-v29-mode-banner:before{display:none')&&h.includes("h.textContent='Escolha o modo'")],
+ ['banner sem prefixo 1 e heading Escolha o modo',h.includes('#rima-v29-mode-banner:before{display:none')&&h.includes("setText(head.querySelector('h2'),'Escolha o modo')")],
+ ['observer de modo idempotente, sem loop de mutações',h.includes('rimalab-mode-number-clean-runtime-v37')&&h.includes('function setText(el,value){if(el&&el.textContent!==value)el.textContent=value}')],
  ['dificuldade e beat mantêm ordem 2 e 3',h.includes("if(n)n.textContent='2'")&&h.includes("if(n)n.textContent='3'")],
  ['dicas reajustam no resize, rotação e viewport',h.includes("window.addEventListener('orientationchange'")&&h.includes('visualViewport.addEventListener')&&h.includes('const cap=landscape?16:18')],
  ['player horizontal vai para a base',h.includes('bottom:calc(4px + env(safe-area-inset-bottom,0px))')&&!h.includes('calc(58px + env(safe-area-inset-bottom,0px))')],
- ['versão 3.1.4 / code 56',g.includes('versionCode 56')&&g.includes("versionName '3.1.4'")]
+ ['versão 3.1.5 / code 57',g.includes('versionCode 57')&&g.includes("versionName '3.1.5'")]
 ];
 // Synthetic loopback: the exact correlation function from the app must recover a 250 ms return.
 const vm=require('vm');
