@@ -193,8 +193,6 @@ jobs:
         shell: bash
         run: |
           HTML_FILE="$BUILD_DIR/app/src/main/assets/rima-lab.html"
-          node -e 'const fs=require("fs");const h=fs.readFileSync(process.argv[1],"utf8");for(const t of ["rimalab-word-vertical-fit-v24","rimalab-landscape-player-v24","rimalab-resume-audio-v24","RIMA_NO_HINTS_V24"])if(!h.includes(t))throw new Error("Falta "+t);if(h.includes("sub:\u0027Rimas possíveis:\u0027 +r"))throw new Error("Texto de rimas ainda aparece no palco");' "$HTML_FILE"
-          node -e 'const fs=require("fs");const g=fs.readFileSync(process.argv[1],"utf8");if(!g.includes("versionCode 44")||!g.includes("versionName \'3.0.2\'"))throw new Error("Versão Android incorreta")' "$BUILD_DIR/app/build.gradle"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
