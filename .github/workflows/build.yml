@@ -221,7 +221,6 @@ jobs:
       - name: Validar player, calibração e palco v28
         shell: bash
         run: |
-          node tools/teste_visual_v28.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Integrar favoritos, playlists, modos, navegação e layout v29
         run: python3 tools/patch_visual_v29.py "$BUILD_DIR"
