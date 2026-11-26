@@ -22,6 +22,8 @@ on:
       - 'tools/teste_visual_v12.js'
       - 'tools/patch_visual_v13.py'
       - 'tools/teste_visual_v13.js'
+      - 'tools/patch_visual_v14.py'
+      - 'tools/teste_visual_v14.js'
       - 'tools/teste_catalog_v8.js'
 jobs:
   apk:
@@ -97,6 +99,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v13.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Sincronizar brilho da palavra e moldura no pulso do beat v14
+        run: python3 tools/patch_visual_v14.py "$BUILD_DIR"
+      - name: Validar sincronização visual v14
+        shell: bash
+        run: |
+          node tools/teste_visual_v14.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
