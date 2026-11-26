@@ -223,7 +223,42 @@ jobs:
           mkdir -p "$GITHUB_WORKSPACE/out"
           cp "$RELEASE_APK" "$GITHUB_WORKSPACE/out/RimaLab-release-unsigned.apk"
           test -s "$GITHUB_WORKSPACE/out/RimaLab-release-unsigned.apk"
-          echo "APK release gerado; será assinado localmente com a chave privada original, sem publicar a chave no repositório."
+          echo "APK release gerado."
+      - name: Assinar APK release com chave de produção (V2/V3)
+        shell: bash
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          test -n "$ANDROID_KEYSTORE_BASE64"
+          test -n "$ANDROID_KEYSTORE_PASSWORD"
+          test -n "$ANDROID_KEY_ALIAS"
+          test -n "$ANDROID_KEY_PASSWORD"
+          KEYSTORE="$RUNNER_TEMP/rimalab-release.jks"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$KEYSTORE"
+          keytool -list -keystore "$KEYSTORE" -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$ANDROID_KEY_ALIAS" >/dev/null
+          APK="$GITHUB_WORKSPACE/out/RimaLab-release-unsigned.apk"
+          ALIGNED="$GITHUB_WORKSPACE/out/RimaLab-release-aligned.apk"
+          SIGNED="$GITHUB_WORKSPACE/out/RimaLab-release.apk"
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -n 1)"
+          test -x "$BUILD_TOOLS/zipalign"
+          test -x "$BUILD_TOOLS/apksigner"
+          "$BUILD_TOOLS/zipalign" -f -v 4 "$APK" "$ALIGNED"
+          "$BUILD_TOOLS/apksigner" sign --ks "$KEYSTORE" --ks-key-alias "$ANDROID_KEY_ALIAS" --ks-pass env:ANDROID_KEYSTORE_PASSWORD --key-pass env:ANDROID_KEY_PASSWORD --v1-signing-enabled true --v2-signing-enabled true --v3-signing-enabled true --out "$SIGNED" "$ALIGNED"
+          "$BUILD_TOOLS/apksigner" verify --verbose --print-certs "$SIGNED" | tee "$GITHUB_WORKSPACE/out/signature-verification.txt"
+          grep -q 'Verified using v2 scheme (APK Signature Scheme v2): true' "$GITHUB_WORKSPACE/out/signature-verification.txt"
+          grep -q 'Verified using v3 scheme (APK Signature Scheme v3): true' "$GITHUB_WORKSPACE/out/signature-verification.txt"
+          echo "APK release assinado e validado com V2/V3."
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RimaLab-release-signed
+          path: |
+            out/RimaLab-release.apk
+            out/signature-verification.txt
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
           name: RimaLab-release-unsigned
