@@ -39,6 +39,8 @@ on:
       - 'tools/patch_visual_v22.py'
       - 'tools/patch_final_v23.py'
       - 'tools/patch_visual_v24.py'
+      - 'tools/patch_visual_v25.py'
+      - 'tools/teste_visual_v25.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -193,6 +195,13 @@ jobs:
         shell: bash
         run: |
           HTML_FILE="$BUILD_DIR/app/src/main/assets/rima-lab.html"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Ajustar botão, dicas e curvatura da palavra principal v25
+        run: python3 tools/patch_visual_v25.py "$BUILD_DIR"
+      - name: Validar acabamento visual v25
+        shell: bash
+        run: |
+          node tools/teste_visual_v25.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
