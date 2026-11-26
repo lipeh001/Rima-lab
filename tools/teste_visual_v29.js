@@ -23,6 +23,10 @@ const checks=[
  ['layout horizontal com navegação e player',h.includes('@media(orientation:landscape) and (max-height:850px)')&&h.includes('nav{left:12px')],
  ['observer do catálogo sem recursão',h.includes('observe(root,{childList:true,subtree:false})')],
  ['scroll horizontal bloqueado',h.includes('overscroll-behavior-y:none')&&h.includes('overflow-x:hidden')],
- ['versão 3.0.8 / code 50',g.includes('versionCode 50')&&g.includes('3.0.8')]
+ ['ícone de notificação igual à marca do app',fs.existsSync(path.join(root,'app/src/main/res/drawable/ic_stat_beat.xml'))&&fs.readFileSync(path.join(root,'app/src/main/res/drawable/ic_stat_beat.xml'),'utf8').includes('viewportWidth=\"24\"')],
+ ['palco com fluxo vertical sem sobreposição',h.includes('rimalab-stage-spacing-v32')&&h.includes('#rm{')&&h.includes('order:2!important')&&h.includes('order:3!important')],
+ ['palavras com espaçamento legível e curvatura sutil',h.includes('letter-spacing:-.012em!important')&&h.includes('rima-curve-char')&&h.includes('translateY(var(--rima-curve-y,0px))')],
+ ['dicas menores que a palavra principal',h.includes('main*.30')&&h.includes('Math.min(17,main*.30)')],
+ ['versão 3.0.9 / code 51',g.includes('versionCode 51')&&g.includes('3.0.9')]
 ];
 let fails=0;for(const [n,ok] of checks){console.log((ok?'PASS ':'FAIL ')+n);if(!ok)fails++}if(fails)process.exit(1);console.log(checks.length+'/'+checks.length+' verificações v30 passaram');
