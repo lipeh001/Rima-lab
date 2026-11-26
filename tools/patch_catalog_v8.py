@@ -69,7 +69,7 @@ zbuild_pattern = re.compile(
     r"function zBuild\(st\)\{.*?ZLIB\[st\]\[1\]=.*?\}",
     re.S
 )
-zbuild_new = """function zBuild(st){const cap=70,L=[],seen=new Set();Object.keys(ZMETA).forEach(k=>{const m=ZMETA[k];if(m&&m[5]===st&&(ZDL[k]||ZLOCAL.has(k))&&!seen.has(String(m[4]))){L.push(m);seen.add(String(m[4]))}});for(const x of (ZRAW[st]||[])){if(!x||seen.has(String(x[4])))continue;L.push(x);seen.add(String(x[4]));if(L.length>=cap)break}ZLIB[st][1]=L.slice(0,cap)}"""
+zbuild_new = """function zBuild(st){const cap=70,L=[],seen=new Set();for(const x of (RIMA_CATALOG_SEED_V8[st]||[])){if(!x||seen.has(String(x[4])))continue;L.push(x);seen.add(String(x[4]));if(L.length>=cap)break}Object.keys(ZMETA).forEach(k=>{const m=ZMETA[k];if(L.length<cap&&m&&m[5]===st&&(ZDL[k]||ZLOCAL.has(k))&&!seen.has(String(m[4]))){L.push(m);seen.add(String(m[4]))}});for(const x of (ZRAW[st]||[])){if(L.length>=cap)break;if(!x||seen.has(String(x[4])))continue;L.push(x);seen.add(String(x[4]))}ZLIB[st][1]=L.slice(0,cap)}"""
 html, n = zbuild_pattern.subn(zbuild_new, html, count=1)
 if n != 1:
     raise SystemExit("CATALOG_V8_FAIL: função zBuild não encontrada.")
@@ -256,6 +256,51 @@ if 'id="rima-final-polish-v8"' not in html:
 
 html_path.write_text(html, encoding="utf-8")
 
+
+# v9: contagem determinística 70/70/70, estado de loading por categoria, palavra sem quebra e marca corrigida.
+# Garante que o seed de build seja a fonte primária da lista, independentemente de migração/cache antigo.
+if "function zBuild(st){const cap=70,L=[],seen=new Set();for(const x of (RIMA_CATALOG_SEED_V8[st]||[]))" not in html:
+    raise SystemExit("CATALOG_V9_FAIL: catálogo determinístico não foi aplicado.")
+# O spinner depende do estado real da busca, não de qual categoria está selecionada.
+html = html.replace(
+    "function zCatLoading(s){return ZJS[s]==='load'||ZJS[s]==='cached'||(ZLIB[s][1].length<70&&!['err','off','nokey','empty'].includes(ZJS[s]))}",
+    "function zCatLoading(s){return ZJS[s]==='load'||ZJS[s]==='cached'||!!(window.__rimaCatLoading&&window.__rimaCatLoading[s])}"
+)
+# O RL do player é a marca original pedida; apenas a notificação recebe um R isolado.
+html = html.replace('<span>R</span><i></i><i></i><i></i>', '<span>RL</span><i></i><i></i><i></i>')
+html = html.replace('font-size:24px!important;font-weight:900!important', 'font-size:17px!important;font-weight:900!important')
+html = html.replace('font-size:20px!important;top:2px!important', 'font-size:15px!important;top:2px!important')
+# Ajuste automático da palavra do palco: mede largura real e reduz a fonte antes de permitir quebra.
+word_fit = r"""
+<style id="rima-word-fit-v9">
+#cb{white-space:nowrap!important;word-break:keep-all!important;overflow-wrap:normal!important;hyphens:none!important;max-width:100%!important;letter-spacing:-.035em!important}
+#cb .word{white-space:nowrap!important;word-break:keep-all!important}
+</style>
+<script id="rima-word-fit-script-v9">
+(function(){
+ const fit=()=>{const e=document.getElementById('cb');if(!e)return;const raw=(e.textContent||'').trim();if(!raw)return;
+  e.style.whiteSpace='nowrap';e.style.wordBreak='keep-all';e.style.overflowWrap='normal';
+  const parent=e.parentElement;if(!parent)return;const available=Math.max(80,parent.clientWidth-32);
+  let size=96;e.style.fontSize=size+'px';
+  while(e.scrollWidth>available&&size>28){size-=2;e.style.fontSize=size+'px'}
+  if(e.scrollWidth>available)e.style.transform='scaleX('+Math.max(.58,available/e.scrollWidth)+')';
+  else e.style.transform='';
+ };
+ const start=()=>{const e=document.getElementById('cb');if(!e)return;new MutationObserver(fit).observe(e,{childList:true,subtree:true,characterData:true});window.addEventListener('resize',fit,{passive:true});fit()};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+})();
+</script>
+"""
+if 'id="rima-word-fit-script-v9"' not in html:
+    html = html.replace("</body>", word_fit + "\n</body>", 1)
+# Não deixar um ícone RR na notificação: desenhar apenas um R grande, sem reutilizar o ícone que contém duas letras.
+service_path = root / "app/src/main/java/app/rimalab/MusicService.java"
+service = service_path.read_text(encoding="utf-8")
+oldmark = "android.graphics.drawable.Drawable mark=getDrawable(R.drawable.ic_fg);\n        if(mark!=null){mark.setBounds(26,26,size-26,size-26);mark.draw(c);}"
+newmark = """p.setColor(0xFFD7FB57);p.setTypeface(android.graphics.Typeface.create("sans-serif-black",android.graphics.Typeface.BOLD));p.setTextAlign(Paint.Align.CENTER);p.setTextSize(190);c.drawText("R",128,190,p);"""
+if oldmark in service: service=service.replace(oldmark,newmark,1)
+elif 'c.drawText("R",128,190,p)' not in service: raise SystemExit("CATALOG_V9_FAIL: marca da notificação não encontrada.")
+service_path.write_text(service,encoding="utf-8")
 
 # Ícone pequeno monocromático de status e marca de app no cartão expandido.
 icon_path = root / "app/src/main/res/drawable/ic_stat_beat.xml"
