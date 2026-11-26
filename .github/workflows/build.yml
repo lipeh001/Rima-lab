@@ -61,6 +61,8 @@ on:
       - 'tools/teste_visual_v40.js'
       - 'tools/patch_visual_v41.py'
       - 'tools/teste_visual_v41.js'
+      - 'tools/patch_visual_v42.py'
+      - 'tools/teste_visual_v42.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -306,6 +308,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v41.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Unificar favoritos nos dois seletores e corrigir paisagem v42
+        run: python3 tools/patch_visual_v42.py "$BUILD_DIR"
+      - name: Validar favoritos, player e palco V42
+        shell: bash
+        run: |
+          node tools/teste_visual_v42.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
