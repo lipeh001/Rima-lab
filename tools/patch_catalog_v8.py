@@ -377,9 +377,28 @@ html_path.write_text(html,encoding="utf-8")
 # versionCode monotonically increases so Android treats this as a proper update.
 gradle_path = root / "app/build.gradle"
 gradle = gradle_path.read_text(encoding="utf-8")
-gradle = re.sub(r"versionCode\s+\d+", "versionCode 25", gradle, count=1)
-gradle = re.sub(r"versionName\s+['\"][^'\"]+['\"]", "versionName '2.8.8'", gradle, count=1)
+gradle = re.sub(r"versionCode\s+\d+", "versionCode 26", gradle, count=1)
+gradle = re.sub(r"versionName\s+['\"][^'\"]+['\"]", "versionName '2.8.9'", gradle, count=1)
 gradle_path.write_text(gradle, encoding="utf-8")
+
+
+# Última etapa: garantir que o cartão de mídia use o R isolado após todas as demais alterações do serviço.
+service = service_path.read_text(encoding="utf-8")
+service = service.replace(".setLargeIcon(appLogo())", ".setLargeIcon(singleRIcon())")
+if "private Bitmap singleRIcon()" not in service:
+    anchor = "    /** Capa do beat:"
+    single = """    private Bitmap singleRIcon() {
+        int size=256; Bitmap b=Bitmap.createBitmap(size,size,Bitmap.Config.ARGB_8888);
+        Canvas c=new Canvas(b); Paint p=new Paint(Paint.ANTI_ALIAS_FLAG);
+        p.setColor(0xFF0B0D09); c.drawRoundRect(new RectF(0,0,size,size),56,56,p);
+        p.setColor(0xFFD7FB57); p.setTypeface(android.graphics.Typeface.create("sans-serif-black",android.graphics.Typeface.BOLD));
+        p.setTextAlign(Paint.Align.CENTER); p.setTextSize(190); c.drawText("R",128,190,p);
+        return b;
+    }
+"""
+    if anchor not in service: raise SystemExit("CATALOG_V9_FAIL: ponto de inserção do ícone único não encontrado.")
+    service = service.replace(anchor,single+anchor,1)
+service_path.write_text(service,encoding="utf-8")
 
 # Write a compact review manifest next to the build.
 review = root / "CATALOGO-2.8.8-VALIDADO.txt"
