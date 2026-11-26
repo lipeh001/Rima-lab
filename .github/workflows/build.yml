@@ -48,7 +48,12 @@ jobs:
             if node tools/fetch_catalog_seed.js "$BUILD_DIR/app/src/main/assets"; then exit 0; fi
             sleep 5
           done
-          echo "::error::Não foi possível validar 70 faixas por categoria após 4 tentativas."
+          SEED="$BUILD_DIR/app/src/main/assets/beats/catalog-seed.json"
+          if [ -f "$SEED" ] && node -e 'const j=require(process.argv[1]);for(const k of ["Boom bap","Trap","Drill"])if(!Array.isArray(j.catalogs?.[k])||j.catalogs[k].length!==70)process.exit(1)' "$SEED"; then
+            echo "Usando catálogo embarcado previamente validado 70/70/70."
+            exit 0
+          fi
+          echo "::error::Não foi possível validar 70 faixas por categoria após 4 tentativas e não há catálogo embarcado válido."
           exit 1
       - name: Pré-carregar catálogo completo e corrigir definitivamente player e palco
         run: python3 tools/patch_catalog_v8.py "$BUILD_DIR"
