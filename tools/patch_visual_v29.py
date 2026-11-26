@@ -217,7 +217,7 @@ h=h.replace('arc=Math.min(4.5,Math.max(1.8,chars.length*.22))','arc=Math.min(2.2
 g=gp.read_text(encoding='utf-8')
 m=re.search(r'versionCode\s+(\d+)',g)
 if not m:raise SystemExit('V29_FAIL: versionCode ausente')
-if int(m.group(1))<48:g=g[:m.start(1)]+'48'+g[m.end(1):]
+if int(m.group(1))<49:g=g[:m.start(1)]+'49'+g[m.end(1):]
 m=re.search(r"versionName\s+['\"]([^'\"]+)['\"]",g)
 if not m:raise SystemExit('V29_FAIL: versionName ausente')
 if m.group(1)<'3.0.7':g=g[:m.start(1)]+'3.0.7'+g[m.end(1):]
