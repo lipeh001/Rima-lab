@@ -232,6 +232,7 @@ jobs:
                   signingConfigs {
                     release {
                       storeFile file(System.getenv('RIMA_KEYSTORE_PATH'))
+                      storeType 'JKS'
                       storePassword System.getenv('ANDROID_KEYSTORE_PASSWORD')
                       keyAlias System.getenv('ANDROID_KEY_ALIAS')
                       keyPassword System.getenv('ANDROID_KEY_PASSWORD')
