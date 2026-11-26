@@ -71,7 +71,7 @@ jobs:
           cp "$BUILD_DIR/app/src/main/assets/rima-lab.html" "$GITHUB_WORKSPACE/review/rima-lab.html"
           cp "$BUILD_DIR/app/src/main/assets/beats/boom-bap-extra.json" "$GITHUB_WORKSPACE/review/boom-bap-extra.json"
           cp "$BUILD_DIR/app/src/main/assets/beats/catalog-seed.json" "$GITHUB_WORKSPACE/review/catalog-seed.json"
-          cp "$BUILD_DIR/CATALOGO-2.8.8-VALIDADO.txt" "$GITHUB_WORKSPACE/review/CATALOGO-2.8.8-VALIDADO.txt"
+          cp "$BUILD_DIR/CATALOGO-2.9.0-VALIDADO.txt" "$GITHUB_WORKSPACE/review/CATALOGO-2.8.8-VALIDADO.txt"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
