@@ -27,7 +27,7 @@ const checks=[
  ['bridge envia posição e duração reais para o Android',main.includes('mediaState(int st, String title, double duration, double position)')&&main.includes('.putExtra("duration"')&&main.includes('.putExtra("position"')],
  ['MediaSession publica duração e posição da faixa',service.includes('METADATA_KEY_DURATION')&&service.includes('currentPosition, playing ? 1f : 0f')],
  ['notificação atualiza o relógio durante a reprodução e não some na troca',h.includes('RimaNative.mediaState(st,title,d,c)')&&h.includes('if(play)zMedia(true)')&&h.includes('zMedia(false)')],
- ['calibrador aceita compensação de até 1200ms e sete sinais',h.includes('max="1200"')&&h.includes('N=7,W=1')&&h.includes('LATSET=true')],
+ ['calibrador aceita ajuste manual até 1200ms e persiste o valor',h.includes('max="1200"')&&h.includes('LATSET=true')&&h.includes('ctx.baseLatency')],
  ['botão voltar centralizado em todas as seções',h.includes('rima-back-center-v2')&&h.includes('justify-content:center')&&h.includes('margin-left:0!important')],
  ['botão Voltar permanece no canto esquerdo com texto centralizado',h.includes('rima-back-center-v2')&&h.includes('margin-left:0!important')&&h.includes('text-align:center!important')],
  ['selo do player mostra um único R ampliado',h.includes('<span>RL</span><i></i><i></i><i></i>')&&h.includes('font-size:17px!important')],
