@@ -28,7 +28,7 @@ for style in styles:
             raise SystemExit(f"CATALOG_V8_FAIL: ID duplicado em {style}: {row[4]}")
         ids.add(str(row[4]))
 
-# Injeta o catálogo validado no próprio HTML para que os três contadores já abram em 70.
+# Injeta o catálogo validado no próprio HTML para que os três contadores já abram em 87/77/74.
 seed_literal = json.dumps(seed["catalogs"], ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
 zlib = "const ZLIB={'Boom bap':[92,[]],'Trap':[140,[]],'Drill':[142,[]]};"
 if "const RIMA_CATALOG_SEED_V8=" not in html:
@@ -50,7 +50,7 @@ html = html.replace(
     "localStorage.getItem('rima_jamendo_search_version')!==ZCATALOG_VERSION"
 )
 
-# O catálogo empacotado entra antes dos dados legados/cache e preenche os 70 slots de cada estilo.
+# O catálogo empacotado entra antes dos dados legados/cache e preenche os slots configurados de cada estilo.
 old_rows = "for(const row of [...(Array.isArray(ZLEGACY[st])?ZLEGACY[st]:[]),...(Array.isArray(ZRAW[st])?ZRAW[st]:[])])"
 new_rows = "for(const row of [...(Array.isArray(RIMA_CATALOG_SEED_V8[st])?RIMA_CATALOG_SEED_V8[st]:[]),...(Array.isArray(ZLEGACY[st])?ZLEGACY[st]:[]),...(Array.isArray(ZRAW[st])?ZRAW[st]:[])])"
 if old_rows in html:
@@ -58,14 +58,14 @@ if old_rows in html:
 elif new_rows not in html:
     raise SystemExit("CATALOG_V8_FAIL: migração do catálogo não encontrada.")
 
-# Garante 70 registros no cache e marca cada estilo como pronto, sem uma chamada de rede após o primeiro paint.
+# Garante os registros configurados no cache e marca cada estilo como pronto, sem uma chamada de rede após o primeiro paint.
 migration_cap_re = re.compile(r"ZRAW\[st\]=merged(?:\.slice\(0,(?:zCap\(st\)|70)\))?\}\);")
 migration_replacement = "ZRAW[st]=merged.slice(0,({'Boom bap':88,'Trap':77,'Drill':74}[st]||70));try{localStorage.setItem('jmraw8_at_'+st,String(Date.now()))}catch(e){}ZJS[st]='ok'});"
 html, migration_count = migration_cap_re.subn(migration_replacement, html, count=1)
 if migration_count != 1 and migration_replacement not in html:
     raise SystemExit("CATALOG_V8_FAIL: final da migração do catálogo não encontrado.")
 
-# Preserva beats salvos localmente, mas limita o total visível de cada estilo a 70.
+# Preserva beats salvos localmente, mas limita o total visível de cada estilo a 87/77/74.
 zbuild_pattern = re.compile(
     r"function zBuild\(st\)\{.*?ZLIB\[st\]\[1\]=.*?\}",
     re.S
@@ -258,9 +258,9 @@ if 'id="rima-final-polish-v8"' not in html:
 html_path.write_text(html, encoding="utf-8")
 
 
-# v9: contagem determinística 70/70/70, estado de loading por categoria, palavra sem quebra e marca corrigida.
+# v9: contagem determinística 87/77/74, estado de loading por categoria, palavra sem quebra e marca corrigida.
 # Garante que o seed de build seja a fonte primária da lista, independentemente de migração/cache antigo.
-if "function zBuild(st){const cap=70,L=[],seen=new Set();for(const x of (RIMA_CATALOG_SEED_V8[st]||[]))" not in html:
+if "function zBuild(st){const cap=({'Boom bap':87,'Trap':77,'Drill':74}[st]||70),L=[],seen=new Set();for(const x of (RIMA_CATALOG_SEED_V8[st]||[]))" not in html:
     raise SystemExit("CATALOG_V9_FAIL: catálogo determinístico não foi aplicado.")
 # O spinner depende do estado real da busca, não de qual categoria está selecionada.
 html = html.replace(
@@ -431,7 +431,7 @@ service_path.write_text(service,encoding="utf-8")
 review = root / "CATALOGO-2.9.0-VALIDADO.txt"
 review.write_text(
     "Rima Lab 2.9.0\\n"
-    "Catalogo pre-carregado: 70 Boom bap, 70 Trap, 70 Drill.\\n"
+    "Catalogo pre-carregado: 87 Boom bap, 77 Trap, 74 Drill.\\n"
     "Todos os registros exigem instrumental declarado pelo Jamendo e stream de audio validado.\\n"
     "Reproducao: inicio no zero, sem retomada automatica, sem pular faixa em falha, repeticao desligada por padrao.\\n"
     "Offline: cache permanente automatico somente apos a faixa terminar e quando a licenca autoriza.\\n",
