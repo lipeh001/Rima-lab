@@ -4,7 +4,7 @@ const fs=require('fs'),path=require('path'),root=path.resolve(process.argv[2]||'
 const h=fs.readFileSync(path.join(root,'app/src/main/assets/rima-lab.html'),'utf8');
 const g=fs.readFileSync(path.join(root,'app/build.gradle'),'utf8');
 const fn=(h.match(/function rimaPulseStageWord\(\)\{[\s\S]*?\n\}/)||[])[0]||'';
-const pulse=(h.match(/function pulse\(q\)\{[^\n]*\}/)||[])[0]||'';
+const pulse=(h.match(/function pulse\(q\)\{[\s\S]*?\n\}/)||[])[0]||'';
 const css=(h.match(/<style id="rimalab-visual-v21">[\s\S]*?<\/style>/)||[])[0]||'';
 const checks=[
  ['v21 aplicado',!!css],
