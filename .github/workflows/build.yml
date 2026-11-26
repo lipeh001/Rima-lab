@@ -1,4 +1,4 @@
-name: Build APK # visual v11
+name: Build APK # visual v11 - release signing build 2026-11-26
 on:
   workflow_dispatch:
   push:
