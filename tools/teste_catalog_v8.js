@@ -30,7 +30,7 @@ checks.push(['cache antigo é invalidado uma única vez pela versão do pré-car
 checks.push(['catálogo pré-carregado marca cada estilo como pronto com 70 faixas',html.includes("ZRAW[st]=merged.slice(0,70)")&&html.includes("ZJS[st]='ok'")]);
 checks.push(['catálogo final preserva salvos e respeita teto de 70',html.includes('ZLIB[st][1]=L.slice(0,cap)')&&html.includes('const cap=70')]);
 checks.push(['seletor mostra spinner durante carregamento',html.includes('zCatLoading(s)')&&html.includes('rima-cat-spinner')]);
-checks.push(['texto offline é curto e coerente',html.includes('Depois de ouvir a faixa, o Rima Lab tenta guardá-la para reprodução offline')&&!html.includes('Toque na seta para salvar no celular.')]);
+checks.push(['texto offline é curto e coerente',html.includes('Escolha um beat para ouvir e treinar.')&&!html.includes('licença')&&!html.includes('Toque na seta para salvar no celular.')]);
 checks.push(['salvamento permanente só é disparado depois do fim da faixa e quando autorizado',html.includes('function zAutoSaveFinishedBeatV8()')&&html.includes("x[10]!==true")&&html.includes("zAutoSaveFinishedBeatV8();")]);
 checks.push(['reprodução inicial usa cache temporário, não baixa permanentemente antes de ouvir',html.includes('const perm=0;')]);
 checks.push(['player não pula de faixa quando ocorre erro',/function zErr\(c,my\)\{[^}]*zFallback/.test(html)&&!html.includes('zLP(j,1)')]);
@@ -43,7 +43,7 @@ checks.push(['sem beat selecionado, o seletor volta para a etapa inicial e ganha
 checks.push(['palco pulsa por transição suave, sem reflow nem animação de piscar',html.includes('rima-final-polish-v8')&&html.includes("e.classList.add('hit')")&&!html.includes(`void e.offsetWidth;e.classList.add('hit')`)]);
 checks.push(['cartão expandido da notificação usa a marca oficial do Rima Lab',service.includes('.setLargeIcon(singleRIcon())')&&service.includes('private Bitmap singleRIcon()')]);
 checks.push(['ícone pequeno de status é o glifo R monocromático do app',icon.includes('fillColor="#FFFFFF"')&&icon.includes('M4,10h2v8H4z')&&icon.includes('M12,3h2v15h-2z')&&!icon.includes('M5,3h8.1')]);
-checks.push(['APK tem versão e código novos para atualização por cima',gradle.includes('versionCode 28')&&gradle.includes("versionName '2.9.1'")]);
+checks.push(['APK tem versão e código novos para atualização por cima',gradle.includes('versionCode 29')&&gradle.includes("versionName '2.9.2'")]);
 let bad=0;
 for(const [name,ok] of checks){console.log((ok?'OK  ':'FAIL ')+name);if(!ok)bad++;}
 console.log((checks.length-bad)+'/'+checks.length+' verificações CATALOG_V8 passaram');
