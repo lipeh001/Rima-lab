@@ -68,12 +68,12 @@ html = replace_once(
     "if($('#lv')&&!$('#lv').hidden){ZNR=1;window.__rimaNoAutoScroll=1;try{lvStart()}finally{window.__rimaNoAutoScroll=0}return true}",
     "reinício sem salto de tela"
 )
-html = replace_once(
-    html,
-    "function zSwap(){if(play){if(!zRestartAct()){zLoad(ZS.k=='syn'?zBars():0);pk()}return}pk()}",
-    "function zSwap(){if(play){zLoad(ZS.k=='syn'?zBars():0);pk();return}pk()}",
-    "redesenho único na troca de beat"
-)
+swap_old = "function zSwap(){if(play){if(!zRestartAct()){zLoad(ZS.k=='syn'?zBars():0);pk()}return}pk()}"
+swap_new = "function zSwap(){if(play){zLoad(ZS.k=='syn'?zBars():0);pk();return}pk()}"
+if swap_old in html:
+    html = html.replace(swap_old, swap_new, 1)
+elif swap_new not in html:
+    print("Aviso: zSwap não correspondeu às variantes conhecidas; mantendo implementação existente.")
 wrapper_old = "(function(){['go','lvStart','lvStop','bhome','solo'].forEach(n=>{const f=window[n];if(typeof f!='function')return;window[n]=function(){const r=f.apply(this,arguments);try{window.scrollTo(0,0)}catch(e){}return r}})})();"
 wrapper_new = "(function(){['go','bhome','solo'].forEach(n=>{const f=window[n];if(typeof f!='function')return;window[n]=function(){const r=f.apply(this,arguments);if(!window.__rimaNoAutoScroll)try{window.scrollTo(0,0)}catch(e){}return r}})})();"
 html = replace_once(html, wrapper_old, wrapper_new, "controle de scroll")
