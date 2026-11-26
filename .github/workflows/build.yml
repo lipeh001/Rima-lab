@@ -37,6 +37,7 @@ on:
       - 'tools/patch_visual_v21.py'
       - 'tools/teste_visual_v21.js'
       - 'tools/patch_visual_v22.py'
+      - 'tools/patch_final_v23.py'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -77,8 +78,8 @@ jobs:
             sleep 5
           done
           SEED="$BUILD_DIR/app/src/main/assets/beats/catalog-seed.json"
-          if [ -f "$SEED" ] && node -e 'const j=require(process.argv[1]);for(const k of ["Boom bap","Trap","Drill"])if(!Array.isArray(j.catalogs?.[k])||j.catalogs[k].length!==70)process.exit(1)' "$SEED"; then
-            echo "Usando catálogo embarcado previamente validado 70/70/70."
+          if [ -f "$SEED" ] && node -e 'const j=require(process.argv[1]);for(const k of ["Boom bap","Trap","Drill"])if(!Array.isArray(j.catalogs?.[k])||j.catalogs[k].length!==({'Boom bap':88,'Trap':77,'Drill':74}[k]))process.exit(1)' "$SEED"; then
+            echo "Usando catálogo embarcado previamente validado 88/77/74 (87/77/74 exibidos)."
             exit 0
           fi
           echo "::error::Não foi possível validar 70 faixas por categoria após 4 tentativas e não há catálogo embarcado válido."
@@ -178,6 +179,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v22.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Ajustes finais de sincronização Bluetooth e catálogo 87/77/74 v23
+        run: python3 tools/patch_final_v23.py "$BUILD_DIR"
+      - name: Validar catálogo e textos finais v23
+        shell: bash
+        run: |
+          node -e 'const fs=require("fs");const h=fs.readFileSync(process.argv[1],"utf8");for(const t of ["caixa de som Bluetooth","Use esta opção somente se conectar uma caixa de som Bluetooth"])if(!h.includes(t))process.exit(1);if(/WebView|AudioContext/.test(h))process.exit(1)' "$BUILD_DIR/app/src/main/assets/rima-lab.html"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
