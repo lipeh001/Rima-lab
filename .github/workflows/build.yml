@@ -59,6 +59,8 @@ on:
       - 'tools/teste_visual_v39.js'
       - 'tools/patch_visual_v40.py'
       - 'tools/teste_visual_v40.js'
+      - 'tools/patch_visual_v41.py'
+      - 'tools/teste_visual_v41.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
