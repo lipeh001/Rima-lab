@@ -20,7 +20,7 @@ old="function show(){rm.textContent='';if(!on)return;const t=($('#cb').textConte
 new="function show(){rm.textContent='';if(!on)return;const t=($('#cb').textContent||'').trim();if(!t||/[\\s+]/.test(t)||t.includes('...'))return;const family=rimasDe(t);if(!family)return;const l=[...new Set(family.split(',').map(x=>x.trim()).filter(Boolean))];if(l.length<2)return;l.slice(0,4).forEach(w=>{const e=document.createElement('span');e.textContent=w;rm.appendChild(e)})}"
 rep(old,new,'dicas fonéticas')
 # Explicit rhyme families fix the exact examples reported in the screenshots.
-rhymes="const RIMA_RICH_HINTS_V9={'TAÇA':['cachaça','fumaça','carcaça','couraça'],'CONSOLE':['controle','descontrole','enrole','engole'],'POSTE':['teste','veste','agreste','nordeste'],'MAREMOTO':['terremoto','remoto','devoto','garoto'],'BATIMENTO':['pensamento','lamento','talento','momento'],'LIMPAR':['poupar','disparar','preparar','escapar']};\\n"
+rhymes="/* rima-rich-hints-v9 */\nconst RIMA_RICH_HINTS_V9={'TAÇA':['cachaça','fumaça','carcaça','couraça'],'CONSOLE':['controle','descontrole','enrole','engole'],'POSTE':['teste','veste','agreste','nordeste'],'MAREMOTO':['terremoto','remoto','devoto','garoto'],'BATIMENTO':['pensamento','lamento','talento','momento'],'LIMPAR':['poupar','disparar','preparar','escapar']};\\n"
 if 'RIMA_RICH_HINTS_V9' not in s:
  a='const rimasDe=w=>{'
  if a not in s:raise SystemExit('QUALITY_V9_FAIL: função rimasDe')
