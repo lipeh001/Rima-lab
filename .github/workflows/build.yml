@@ -298,6 +298,13 @@ jobs:
         run: |
           node tools/teste_visual_v40.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Corrigir filas de favoritos, player horizontal e palco v41
+        run: python3 tools/patch_visual_v41.py "$BUILD_DIR"
+      - name: Testar playlists, player e responsividade v41
+        shell: bash
+        run: |
+          node tools/teste_visual_v41.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
           mkdir -p "$GITHUB_WORKSPACE/review"
