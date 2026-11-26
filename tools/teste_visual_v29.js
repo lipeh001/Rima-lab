@@ -13,7 +13,7 @@ const checks=[
  ['fila respeita próximo/anterior',h.includes('window.zStep=function(d)')&&h.includes('playQueued(queue[qIndex])')],
  ['seletor de modo expansível',h.includes('rima-v29-mode-toggle')&&h.includes('rima-v29-mode-list')],
  ['banner imersivo do modo',h.includes('rima-v29-mode-banner')],
- ['mensagens rotativas',h.includes('rima-v29-rotator')&&h.includes('setInterval(()=>{i=(i+1)%MSG.length}')],
+ ['mensagens rotativas',h.includes('rima-v29-rotator')&&h.includes('setInterval(()=>{i=(i+1)%MSG.length;')],
  ['voltar navega entre etapa e palco',h.includes("window.addEventListener('popstate'")&&h.includes('trainBack();history.pushState')],
  ['dupla confirmação para sair',h.includes('Pressione voltar novamente para sair')&&h.includes('Deseja realmente sair')],
  ['layout horizontal com navegação e player',h.includes('@media(orientation:landscape) and (max-height:850px)')&&h.includes('nav{left:12px')],
