@@ -31,7 +31,7 @@ if 'id="rimalab-mode-config-runtime-v30"' not in h:
 g=gp.read_text(encoding='utf-8');m=re.search(r'\bversionCode\s+(\d+)',g)
 if not m:raise SystemExit('V30_FAIL: versionCode ausente')
 if int(m.group(1))<52:g=g[:m.start(1)]+'52'+g[m.end(1):]
-m=re.search(r"versionName\s+['\"]([^'\"]+)['\"]",g)
+m=re.search(r"""versionName\s+['"]([^'"]+)['"]""",g)
 if not m:raise SystemExit('V30_FAIL: versionName ausente')
 if m.group(1)<'3.1.0':g=g[:m.start(1)]+'3.1.0'+g[m.end(1):]
 hp.write_text(h,encoding='utf-8');gp.write_text(g,encoding='utf-8')
