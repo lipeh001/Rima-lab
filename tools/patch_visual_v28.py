@@ -46,7 +46,7 @@ persist=r"""<script id="rimalab-step2-persistence-v28">
    if(typeof s.DF==='string'&&DIF[s.DF])setDF(s.DF);
    if(typeof s.fmt==='string')fmt=s.fmt;
    if(Number.isFinite(+s.LAT))setLat(+s.LAT);
-   if(s.step===2){window.__rimaTrainStep=2;$('#train-step-1').hidden=true;$('#train-step-2').hidden=false;document.body.classList.add('pl');try{zBarUI()}catch(e){}}
+   window.__rimaTrainStep=1;$('#train-step-1').hidden=false;$('#train-step-2').hidden=true;document.body.classList.remove('pl');
   }
  }catch(e){}
  restoring=false;save();
