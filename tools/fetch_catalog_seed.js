@@ -11,7 +11,7 @@ if (!clientId || clientId.length < 6 || clientId.startsWith('COLE')) {
   throw new Error('CLIENT_ID Jamendo inválido');
 }
 
-const TARGETS[style]S = {'Boom bap':88,'Trap':77,'Drill':74};
+const TARGETS = {'Boom bap':88,'Trap':77,'Drill':74};
 const CONFIG = {
   'Boom bap': {
     queries: [
