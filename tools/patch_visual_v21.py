@@ -41,7 +41,7 @@ if 'function rimaPulseStageWord()' not in h:
     if idx<0: raise SystemExit('V21_FAIL: pulse(q) não encontrado')
     h=h[:idx]+pulse_fn+h[idx:]
 
-m=re.search(r'function pulse\(q\)\{[^\n]*\}',h)
+m=re.search(r'function pulse\(q\)\{[\s\S]*?\n\}',h)
 if not m: raise SystemExit('V21_FAIL: bloco pulse(q) não encontrado')
 block=m.group(0)
 if 'rimaPulseStageWord();' not in block:
