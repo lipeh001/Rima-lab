@@ -19,6 +19,11 @@ for(const style of styles){
 }
 checks.push(['210 faixas têm IDs únicos entre as três categorias',allIds.size===210]);
 checks.push(['catálogo de 70 por estilo está embutido no HTML',html.includes('RIMA_CATALOG_SEED_V8=')]);
+checks.push(['catálogo é montado diretamente do seed para garantir 70/70/70',html.includes('for(const x of (RIMA_CATALOG_SEED_V8[st]||[]))')&&html.includes('ZLIB[st][1]=L.slice(0,cap)')]);
+checks.push(['spinner depende do estado de carregamento da categoria, não da seleção',html.includes('function zCatLoading(s){return ZJS[s]===\\'load\\'||ZJS[s]===\\'cached\\'')]);
+checks.push(['palavra do palco não quebra em uma letra isolada e ajusta a fonte',html.includes('rima-word-fit-script-v9')&&html.includes('white-space:nowrap')&&html.includes('while(e.scrollWidth>available&&size>28)')]);
+checks.push(['cartão de notificação desenha somente um R',service.includes('c.drawText("R",128,190,p)')&&!service.includes('mark.draw(c)')]);
+
 checks.push(['64 beats Drill originais geram WAV real offline, sem URL falsa',html.includes('function zBuildDrillWavV8(key)')&&html.includes('RIFF')&&html.includes('rima-generated://drill/')&&html.includes('zBuildDrillWavV8(k)')]);
 checks.push(['cache antigo é invalidado uma única vez pela versão do pré-carregamento',html.includes('RIMA_PRELOAD_VERSION_V8')&&html.includes("['jmraw8','jmraw7','jmraw6'].forEach(k=>localStorage.removeItem(k))")]);
 checks.push(['catálogo pré-carregado marca cada estilo como pronto com 70 faixas',html.includes("ZRAW[st]=merged.slice(0,70)")&&html.includes("ZJS[st]='ok'")]);
