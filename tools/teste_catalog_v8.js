@@ -30,7 +30,7 @@ checks.push(['cache antigo é invalidado uma única vez pela versão do pré-car
 checks.push(['catálogo pré-carregado marca cada estilo como pronto com 70 faixas',html.includes("ZRAW[st]=merged.slice(0,70)")&&html.includes("ZJS[st]='ok'")]);
 checks.push(['catálogo final preserva salvos e respeita teto de 70',html.includes('ZLIB[st][1]=L.slice(0,cap)')&&html.includes('const cap=70')]);
 checks.push(['seletor mostra spinner durante carregamento',html.includes('zCatLoading(s)')&&html.includes('rima-cat-spinner')]);
-checks.push(['texto offline é curto e coerente',html.includes('Escolha um beat para ouvir e treinar.')&&!html.includes('licença')&&!html.includes('Toque na seta para salvar no celular.')]);
+checks.push(['texto offline é curto e coerente',html.includes('Escolha um beat para ouvir e treinar.')&&!html.includes('Quando a licença permitir, o beat será salvo automaticamente')&&!html.includes('Toque na seta para salvar no celular.')]);
 checks.push(['salvamento permanente só é disparado depois do fim da faixa e quando autorizado',html.includes('function zAutoSaveFinishedBeatV8()')&&html.includes("x[10]!==true")&&html.includes("zAutoSaveFinishedBeatV8();")]);
 checks.push(['reprodução inicial usa cache temporário, não baixa permanentemente antes de ouvir',html.includes('const perm=0;')]);
 checks.push(['player não pula de faixa quando ocorre erro',/function zErr\(c,my\)\{[^}]*zFallback/.test(html)&&!html.includes('zLP(j,1)')]);
