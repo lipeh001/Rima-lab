@@ -124,7 +124,55 @@ elif new_download not in html:
 
 # Evita downloads concorrentes da mesma faixa quando o usuário transforma uma prévia em treino ou toca duas vezes.
 beat_get_anchor = "function zBpick(live){"
-coalesce = """const ZFETCHING_V8=new Map();const zBeatGetOriginalV8=zBeatGet;zBeatGet=function(){const k=ZS.key;if(ZFETCHING_V8.has(k))return ZFETCHING_V8.get(k);const p=Promise.resolve().then(()=>zBeatGetOriginalV8());ZFETCHING_V8.set(k,p);p.then(()=>{if(ZFETCHING_V8.get(k)===p)ZFETCHING_V8.delete(k)},()=>{if(ZFETCHING_V8.get(k)===p)ZFETCHING_V8.delete(k)});return p};
+coalesce = """const ZFETCHING_V8=new Map();const ZDRILL_WAV_V8=new Map();
+function zBuildDrillWavV8(key){
+  if(ZDRILL_WAV_V8.has(key))return Promise.resolve(ZDRILL_WAV_V8.get(key));
+  const rows=(RIMA_CATALOG_SEED_V8&&RIMA_CATALOG_SEED_V8['Drill'])||[];
+  const row=rows.find(x=>String(x[4])===String(key));
+  if(!row||!String(row[0]).startsWith('rima-generated://drill/'))return null;
+  const bpm=Math.max(130,Math.min(155,Number(row[2])||142));
+  const sr=22050,beats=64,seconds=beats*60/bpm,total=Math.ceil(seconds*sr);
+  const out=new Float32Array(total),seed=Array.from(String(key)).reduce((a,c)=>((a*31+c.charCodeAt(0))>>>0),2166136261);
+  let rnd=seed>>>0;const random=()=>{rnd=(1664525*rnd+1013904223)>>>0;return rnd/4294967296};
+  const add=(at,dur,fn,level)=>{const start=Math.max(0,Math.floor(at*sr)),end=Math.min(total,Math.ceil((at+dur)*sr));for(let i=start;i<end;i++){const t=(i-start)/sr;out[i]+=fn(t)*level}};
+  const beatSec=60/bpm;
+  for(let b=0;b<beats;b++){
+    const bar=b>>2,step=b&3,base=b*beatSec;
+    const kick=(step===0||step===2||(step===3&&random()>.48)||(step===1&&bar%4===3&&random()>.55));
+    if(kick){
+      add(base,.34,t=>{const f=48+105*Math.exp(-t*24);return Math.sin(2*Math.PI*f*t)*Math.exp(-t*12)},.92);
+      add(base,.19,t=>Math.sin(2*Math.PI*(38+18*Math.exp(-t*18))*t)*Math.exp(-t*15),.34);
+    }
+    if(step===1||step===3){
+      add(base,.20,t=>{const n=(random()-.5)*2;return n*Math.exp(-t*22)},.22);
+      add(base,.16,t=>Math.sin(2*Math.PI*185*t)*Math.exp(-t*24),.22);
+    } else if(step===2&&bar%2===1&&random()>.35){
+      add(base,.10,t=>(random()-.5)*2*Math.exp(-t*35),.09);
+    }
+    for(let h=0;h<2;h++){
+      const t=base+h*beatSec/2;
+      if(random()>(h===0?.08:.22)){
+        const amp=(h===0?.13:.085)*(random()>.88?1.8:1);
+        add(t,.035,x=>(random()-.5)*2*Math.exp(-x*105),amp);
+      }
+    }
+    if((bar%4===3)&&step===3){
+      for(let r=1;r<=3;r++)add(base+r*beatSec/8,.025,t=>(random()-.5)*2*Math.exp(-t*140),.07);
+    }
+    if(kick||step===2&&bar%2===0){
+      const notes=[36.71,41.20,43.65,32.70],freq=notes[(bar+Math.floor(random()*2))%notes.length];
+      add(base,.42,t=>Math.sin(2*Math.PI*(freq+4*Math.exp(-t*7))*t)*Math.exp(-t*3.8),.42);
+    }
+  }
+  for(let i=0;i<total;i++){const x=out[i];out[i]=Math.tanh(x*1.35)*.82}
+  const bytes=new ArrayBuffer(44+total*2),v=new DataView(bytes);
+  const str=(p,t)=>{for(let i=0;i<t.length;i++)v.setUint8(p+i,t.charCodeAt(i))};
+  str(0,'RIFF');v.setUint32(4,36+total*2,true);str(8,'WAVE');str(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);str(36,'data');v.setUint32(40,total*2,true);
+  for(let i=0;i<total;i++){const x=Math.max(-1,Math.min(1,out[i]));v.setInt16(44+i*2,x<0?x*32768:x*32767,true)}
+  const blob=bytes;ZDRILL_WAV_V8.set(key,blob);if(ZDRILL_WAV_V8.size>3)ZDRILL_WAV_V8.delete(ZDRILL_WAV_V8.keys().next().value);
+  return Promise.resolve(blob);
+}
+const zBeatGetOriginalV8=zBeatGet;zBeatGet=function(){const k=ZS.key;if(ZFETCHING_V8.has(k))return ZFETCHING_V8.get(k);const generated=zBuildDrillWavV8(k);const p=Promise.resolve(generated===null?zBeatGetOriginalV8():generated);ZFETCHING_V8.set(k,p);p.then(()=>{if(ZFETCHING_V8.get(k)===p)ZFETCHING_V8.delete(k)},()=>{if(ZFETCHING_V8.get(k)===p)ZFETCHING_V8.delete(k)});return p};
 """
 if "ZFETCHING_V8" not in html:
     if beat_get_anchor not in html:
