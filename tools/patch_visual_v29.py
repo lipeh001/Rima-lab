@@ -72,7 +72,7 @@ const KEY='rimalab_favorites_v29',MSG=[
 'Experimente. Erre. Ajuste. Evolua.'
 ];
 let fav=[];try{fav=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(fav))fav=[]}catch(e){}
-let favView=false,queue=null,qIndex=0,randomQueue=[],msgTimer=0,backArmed=false,backTimer=0;
+let favView=false,queue=null,qIndex=0,randomQueue=[],msgTimer=0,backArmed=false,backTimer=0,playingQueued=false;
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(fav))}catch(e){}updateCounts()};
 const keyOf=x=>String(x&&x[4]||'');
 const allTracks=()=>Object.keys(ZLIB||{}).flatMap(cat=>(ZLIB[cat]&&ZLIB[cat][1]||[]).map(x=>({cat,x})));
@@ -143,7 +143,7 @@ window.zStep=function(d){
 const oldLP=window.zLP;
 window.zLP=function(i,a,s){
  queue=null;qIndex=0;
- const ret=oldLP.apply(this,arguments);
+ }\n const ret=oldLP.apply(this,arguments);
  setTimeout(()=>{const p=$('#rima-v29-player-heart');if(p)p.classList.toggle('on',!!(ZS.key&&fav.includes(String(ZS.key))))},50);
  return ret;
 };
