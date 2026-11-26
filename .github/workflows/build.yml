@@ -51,6 +51,8 @@ on:
       - 'tools/teste_visual_v34.js'
       - 'tools/patch_visual_v35.py'
       - 'tools/teste_visual_v35.js'
+      - 'tools/patch_visual_v36.py'
+      - 'tools/teste_visual_v36.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -75,8 +77,6 @@ jobs:
           BUILD_DIR="$(dirname "$SETTINGS_FILE")"
           echo "BUILD_DIR=$BUILD_DIR" >> "$GITHUB_ENV"
           echo "Projeto Gradle encontrado em: $BUILD_DIR"
-      - name: Inspecionar permissões WebView e ponte do microfone
-        run: python3 tools/inspect_native_v36.py "$BUILD_DIR"
       - name: Aplicar correções de interface, player e notificações
         shell: bash
         run: |
@@ -263,6 +263,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v35.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Player sob demanda, calibração acústica pelo microfone e palco responsivo v36
+        run: python3 tools/patch_visual_v36.py "$BUILD_DIR"
+      - name: Validar correções do player, calibrador e orientação v36
+        shell: bash
+        run: |
+          node tools/teste_visual_v36.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
