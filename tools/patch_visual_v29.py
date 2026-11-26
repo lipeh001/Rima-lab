@@ -197,7 +197,8 @@ function setupBack(){
   }
  });
 }
-function stabilizeStage(){const stage=$('#stg'),cb=$('#cb');if(!stage||!cb)return;cb.style.setProperty('max-width','100%','important');cb.style.setProperty('box-sizing','border-box','important');}\nfunction init(){
+function stabilizeStage(){const stage=$('#stg'),cb=$('#cb');if(!stage||!cb)return;cb.style.setProperty('max-width','100%','important');cb.style.setProperty('box-sizing','border-box','important');}
+function init(){
  installTools();addPlayerHeart();decorateCatalog();updateCounts();updateModeUI();setupBack();stabilizeStage();
  const root=$('#bp');if(root)new MutationObserver(()=>{decorateCatalog();installTools()}).observe(root,{childList:true,subtree:true});
  const s2=$('#train-step-2');if(s2)new MutationObserver(()=>{if(!s2.hidden)updateModeUI()}).observe(s2,{attributes:true,attributeFilter:['hidden']});
