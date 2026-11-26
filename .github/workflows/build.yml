@@ -34,6 +34,8 @@ on:
       - 'tools/teste_visual_v19.js'
       - 'tools/patch_visual_v20.py'
       - 'tools/teste_visual_v20.js'
+      - 'tools/patch_visual_v21.py'
+      - 'tools/teste_visual_v21.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
       - 'tools/teste_catalog_v8.js'
@@ -160,6 +162,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v20.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Ajustar espaço da dica e brilho sutil da palavra no beat v21
+        run: python3 tools/patch_visual_v21.py "$BUILD_DIR"
+      - name: Validar palco, dica e brilho sincronizado v21
+        shell: bash
+        run: |
+          node tools/teste_visual_v21.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
