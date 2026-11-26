@@ -505,3 +505,48 @@ if "</head>" in html and "rima-back-center-v1" not in html:
 html_path.write_text(html, encoding="utf-8")
 
 print("RUNTIME_PATCH_OK: paisagem, borda pulsante, troca sem salto, filtro de Drill e notificação MediaSession.")
+
+
+# 15) Ajuste fino solicitado: botão Voltar à esquerda, texto centralizado, logo R único e calibração de baixa carga.
+html = html_path.read_text(encoding="utf-8")
+html = html.replace(
+    '<style id="rima-back-center-v1">#lv .bk,#bt .bk{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;margin-left:auto!important;margin-right:auto!important}</style>',
+    '<style id="rima-back-center-v2">#lv .bk,#bt .bk{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;margin-left:0!important;margin-right:auto!important}</style>'
+)
+if "rima-back-center-v2" not in html and "</head>" in html:
+    html = html.replace("</head>", '<style id="rima-back-center-v2">#lv .bk,#bt .bk{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;margin-left:0!important;margin-right:auto!important}</style></head>', 1)
+
+# O selo do player deve ter somente um R, maior; as barras continuam como equalizador.
+html = html.replace('<span>RL</span><i></i><i></i><i></i>', '<span>R</span><i></i><i></i><i></i>')
+html = html.replace('#pbar .pw-art span{position:absolute!important;z-index:2!important;top:5px!important;left:5px!important;right:auto!important;bottom:auto!important;display:block!important;line-height:1!important;white-space:nowrap!important;text-shadow:0 1px 3px rgba(0,0,0,.35)!important}',
+                    '#pbar .pw-art span{position:absolute!important;z-index:2!important;top:2px!important;left:5px!important;right:auto!important;bottom:auto!important;display:block!important;font-size:24px!important;font-weight:900!important;line-height:1!important;white-space:nowrap!important;text-shadow:0 1px 3px rgba(0,0,0,.35)!important}')
+html = html.replace('@media(max-width:370px){#pbar .pw-art span{font-size:11px!important;top:5px!important;left:4px!important}',
+                    '@media(max-width:370px){#pbar .pw-art span{font-size:20px!important;top:2px!important;left:4px!important}')
+
+# Calibração acústica: chirp mais curto e banda segura para 4 kHz, captura mais rápida e correlação menos custosa.
+html = html.replace(
+    'd=Math.max(1,Math.floor(sr/9000)),fs=sr/d,L=Math.round(sr*.22),dur=L/sr,f0=800,f1=3400',
+    'd=Math.max(1,Math.ceil(sr/4000)),fs=sr/d,L=Math.round(sr*.12),dur=L/sr,f0=600,f1=1700'
+)
+html = html.replace('createScriptProcessor(2048,1,1)', 'createScriptProcessor(512,1,1)')
+html = html.replace('N=6,W=1,bars=', 'N=7,W=1,bars=')
+html = html.replace('T+i*1.5', 'T+i*1.2')
+html = html.replace('ts[N+W-1]+1.4,w0=Date.now()', 'ts[N+W-1]+1.3,w0=Date.now()')
+html = html.replace('t0+1.25-off0', 't0+1.2-off0')
+html = html.replace('if(mx>=.1&&mx>=rr*5)', 'if(mx>=.06&&mx>=rr*4.5)')
+# Escolhe o pico de correlação global; não aceita um pico lateral anterior só por ultrapassar 55%.
+html = html.replace(
+    'let jj=mj;for(let j=lo+1;j<hi-1;j++){const y=va[j-lo];if(y>=.55*mx&&y>=va[j-lo-1]&&y>=va[j-lo+1]){jj=j;break}}let fr=0;',
+    'let jj=mj;let fr=0;'
+)
+html = html.replace(
+    'if(ok.length>=4){fin={ms:ok.reduce((u,v)=>u+v,0)/ok.length,n:ok.length};break}',
+    'if(ok.length>=5){ok.sort((x,y)=>x-y);fin={ms:ok[Math.floor(ok.length/2)],n:ok.length};break}'
+)
+html = html.replace('Math.abs(x-md)<=12', 'Math.abs(x-md)<=8')
+# A animação do palco termina junto do pulso, sem ficar acesa muito depois da batida.
+html = html.replace('setTimeout(()=>e.classList.remove(\'hit\'),145)', 'setTimeout(()=>e.classList.remove(\'hit\'),180)')
+html = html.replace('animation:rl-stage-glow .72s ease-out!important', 'animation:rl-stage-glow .18s ease-out!important')
+html_path.write_text(html, encoding="utf-8")
+
+print("RUNTIME_PATCH_OK: voltar à esquerda, R único ampliado, calibração acústica otimizada e pulso de palco alinhado.")
