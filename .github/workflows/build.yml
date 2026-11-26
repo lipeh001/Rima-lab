@@ -30,6 +30,8 @@ on:
       - 'tools/teste_visual_v16.js'
       - 'tools/patch_visual_v17.py'
       - 'tools/teste_visual_v17.js'
+      - 'tools/patch_visual_v19.py'
+      - 'tools/teste_visual_v19.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
       - 'tools/teste_catalog_v8.js'
@@ -142,6 +144,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v18.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Corrigir palco, pulso real e transição de treino v19
+        run: python3 tools/patch_visual_v19.py "$BUILD_DIR"
+      - name: Validar palco e pulso v19
+        shell: bash
+        run: |
+          node tools/teste_visual_v19.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
