@@ -11,7 +11,7 @@ const checks=[
  ['palco permanece com geometria independente da palavra',h.includes('overflow:visible!important')&&h.includes('position:relative!important')],
  ['fonte adaptativa para palavras curtas, médias e longas',h.includes('length<=5?88:length<=8?98:108')],
  ['ajuste automático por mudança de palavra e tamanho',h.includes('new MutationObserver(fit)')&&h.includes('new ResizeObserver(fit)')],
- ['versão Android 2.9.9 / versionCode 36',g.includes('versionCode 36')&&g.includes("versionName '2.9.9'")]
+ ['versão Android 2.9.10 / versionCode 37',g.includes('versionCode 37')&&g.includes("versionName '2.9.10'")]
 ];
 let bad=0;for(const [name,ok] of checks){console.log((ok?'OK  ':'FAIL ')+name);if(!ok)bad++}
 console.log((checks.length-bad)+'/'+checks.length+' verificações VISUAL_V17');process.exit(bad?1:0);
