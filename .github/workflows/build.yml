@@ -49,6 +49,8 @@ on:
       - 'tools/teste_visual_v29.js'
       - 'tools/patch_visual_v34.py'
       - 'tools/teste_visual_v34.js'
+      - 'tools/patch_visual_v35.py'
+      - 'tools/teste_visual_v35.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -252,6 +254,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v34.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Corrigir sincronização de favoritos, seletor e player horizontal v35
+        run: python3 tools/patch_visual_v35.py "$BUILD_DIR"
+      - name: Validar correções v35
+        shell: bash
+        run: |
+          node tools/teste_visual_v35.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
