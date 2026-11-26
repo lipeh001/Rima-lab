@@ -21,7 +21,7 @@ s=s.replace('rimalab-preloaded-87-77-74-v23','rimalab-preloaded-87-77-74-v23')
 hp.write_text(s,encoding='utf-8')
 gp=root/'app/build.gradle'
 g=gp.read_text(encoding='utf-8')
-g=re.sub(r'\\bversionCode\\s+42\\b','versionCode 43',g,count=1)
+g=re.sub(r'\bversionCode\s+42\b','versionCode 43',g,count=1)
 g=g.replace("versionName '3.0.0'","versionName '3.0.1'",1)
 if 'versionCode 43' not in g or "versionName '3.0.1'" not in g: raise SystemExit('V23_FAIL: versão Android inesperada')
 gp.write_text(g,encoding='utf-8')
