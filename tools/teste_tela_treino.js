@@ -7,7 +7,7 @@ const checks = [
   ['lvStart não oculta o contêiner #su que contém a tela #lv', !h.includes("$('#su').hidden=true")],
   ['tela de treino contém o palco depois do início da tela', lv >= 0 && stage > lv],
   ['calibração antiga é zerada uma única vez após atualização', h.includes("rimalab_lat_reset_v1") && h.includes("localStorage.removeItem('lat')")],
-  ['calibração manual continua salvando o ajuste escolhido', h.includes("function setLat(v){v=Math.max(0,Math.min(1200,+v||0));LAT=v;LATSET=true;try{localStorage.setItem('lat',v)")],
+  ['calibração manual continua salvando o ajuste escolhido', h.includes("function setLat(v){v=Math.max(0,Math.min(300,+v||0));LAT=v;LATSET=true;try{localStorage.setItem('lat',v)")],
   ['etapa de treino continua com botão de voltar e parar', h.includes('onclick="lvStop()"')],
   ['modo Ligar duas palavras mostra somente o par, sem instrução', h.includes("big:a+' + '+b,sub:''") && h.includes("else if(m==='lig'){op.innerHTML=''}")],
   ['moldura do palco tem pulso luminoso sincronizado', h.includes('v2.8 — luz de palco') && h.includes('rl-frame-pulse') && h.includes('#stg.stage.hit::after')],
