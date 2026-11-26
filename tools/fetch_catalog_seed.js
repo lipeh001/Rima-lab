@@ -254,7 +254,7 @@ async function buildStyle(style) {
     targetPerStyle:TARGETS,
     vocalinstrumentalFilter:'instrumental',
     verifiedJamendoCounts:{'Boom bap':catalogs['Boom bap'].length,'Trap':catalogs['Trap'].length,'Drill':drillJamendoCount},
-    generatedOriginalCounts:{'Drill':TARGETS[style]-drillJamendoCount},
+    generatedOriginalCounts:{'Drill':TARGETS['Drill']-drillJamendoCount},
     counts:Object.fromEntries(Object.entries(catalogs).map(([k,v]) => [k,v.length])),
     catalogs
   }), 'utf8');
