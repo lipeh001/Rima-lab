@@ -19,4 +19,18 @@ const checks=[
  ['player horizontal vai para a base',h.includes('bottom:calc(4px + env(safe-area-inset-bottom,0px))')&&!h.includes('calc(58px + env(safe-area-inset-bottom,0px))')],
  ['versão 3.1.4 / code 56',g.includes('versionCode 56')&&g.includes("versionName '3.1.4'")]
 ];
+// Synthetic loopback: the exact correlation function from the app must recover a 250 ms return.
+const vm=require('vm');
+const calA=h.indexOf('function calChirp(sr){'),calB=h.indexOf('async function cal(){',calA);
+let micCorrelationOk=false;
+if(calA>=0&&calB>calA){
+ const sandbox={};vm.runInNewContext(h.slice(calA,calB)+'\\nglobalThis.__chirp=calChirp;globalThis.__corr=calCorrelation;',sandbox);
+ const sr=48000,stride=4,template=sandbox.__chirp(sr),record=new Float32Array(sr*4),expected=sr*1,delay=sr*.250;
+ for(let i=0;i<template.length;i++)record[expected+Math.round(delay)+i]=template[i];
+ const dec=new Float32Array(Math.ceil(record.length/stride));
+ for(let i=0,j=0;i<record.length;i+=stride,j++)dec[j]=record[i];
+ const found=sandbox.__corr(dec,template,Math.round(expected/stride),sr,stride,850);
+ micCorrelationOk=!!found&&Math.abs(found.delayMs-250)<2&&found.score>.9;
+}
+checks.push(['algoritmo de correlação recupera atraso sintético de 250 ms',micCorrelationOk]);
 let fail=0;for(const [name,ok] of checks){console.log((ok?'PASS ':'FAIL ')+name);if(!ok)fail++}if(fail)process.exit(1);
