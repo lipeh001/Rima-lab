@@ -64,7 +64,10 @@ const textOf = r => {
 function scoreOf(style, r) {
   const mi = r && r.musicinfo || {};
   const vocal = String(mi.vocalinstrumental || '').trim().toLowerCase();
-  if (vocal && vocal !== 'instrumental') return -1;
+  if (vocal !== 'instrumental') return -1;
+  const title = String(r.name || '').trim();
+  if (/\\b(music|burger|song|anthem|lyrics|vocal|featuring|feat\\.?|ft\\.)\\b/i.test(title) && !/beat|instrumental/i.test(title)) return -1;
+  if (/^rap\\s+(?:boom\\s*[-]?\\s*bap|trap|drill)/i.test(title) && !/beat|instrumental/i.test(title)) return -1;
   const t = textOf(r), c = CONFIG[style];
   if (c.ban.test(t) || !c.strong.test(t)) return -1;
   if (!/hip\s*[-]?\s*hop|hiphop|\brap\b|beat|instrumental/i.test(t)) return -1;
