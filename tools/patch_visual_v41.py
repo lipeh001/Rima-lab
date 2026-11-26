@@ -251,10 +251,10 @@ pos=h.lower().rfind('</body>')
 h=h[:pos]+player+'\\n'+h[pos:]
 
 g=gp.read_text(encoding='utf-8')
-m=re.search(r'\\bversionCode\\s*=?\\s*(\\d+)',g)
+m=re.search(r'\bversionCode\s*=?\s*(\d+)',g)
 if not m: raise SystemExit('V41_FAIL: versionCode missing')
 g=g[:m.start(1)]+'61'+g[m.end(1):]
-m=re.search(r"""versionName\\s*=?\\s*[\'"]([^\'"]+)[\'"]""",g)
+m=re.search(r"""versionName\s*=?\s*['"]([^'"]+)['"]""",g)
 if not m: raise SystemExit('V41_FAIL: versionName missing')
 g=g[:m.start(1)]+'3.1.9'+g[m.end(1):]
 hp.write_text(h,encoding='utf-8');gp.write_text(g,encoding='utf-8')
