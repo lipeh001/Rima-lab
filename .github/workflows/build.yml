@@ -228,7 +228,7 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v29.js "$BUILD_DIR"
-          node tools/teste_visual_v28.js "$BUILD_DIR"
+
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
