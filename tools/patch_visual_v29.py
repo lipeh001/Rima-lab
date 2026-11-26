@@ -114,7 +114,7 @@ function showFavorites(){
  favView=true;queue=fav.slice();qIndex=0;
  const bp=$('#bp');if(!bp)return;
  const tracks=fav.map(getTrack).filter(Boolean);
- bp.innerHTML='<div class="rima-v29-tools"><button class="active">♥ Favoritos <span class="rima-v29-count">'+fav.length+'</span></button><button id="rima-v29-backcat">Voltar às categorias</button></div><p class="mut">'+tracks.length+' beat(s) salvo(s) nos favoritos.</p><div class="bsl">'+tracks.map(({cat,x})=>{const k=keyOf(x);return '<div class="bi"><div class="beat-info"><button class="mc" onclick="rimaV29PlayFav(\\''+k+'\\')"><b>'+String(x[1]).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))+'</b></button><div class="beat-meta">'+cat+'</div></div>'+favButton(k)+'</div>'}).join('')+'</div>';
+ bp.innerHTML='<div class="rima-v29-tools"><button class="active">♥ Favoritos <span class="rima-v29-count">'+fav.length+'</span></button><button id="rima-v29-backcat">Voltar às categorias</button></div><p class="mut">'+tracks.length+' beat(s) salvo(s) nos favoritos.</p><div class="bsl">'+tracks.map(({cat,x})=>{const k=keyOf(x);return '<div class="bi"><div class="beat-info"><button class="mc" onclick="rimaV29PlayFav(\''+k+'\')"><b>'+String(x[1]).replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))+'</b></button><div class="beat-meta">'+cat+'</div></div>'+favButton(k)+'</div>'}).join('')+'</div>';
  $('#rima-v29-backcat').onclick=()=>{favView=false;pk();installTools()};
  if(!tracks.length)bp.insertAdjacentHTML('beforeend','<p class="rima-v29-note">Ainda não há beats favoritos. Toque no coração de qualquer beat para guardá-lo aqui.</p>');
 }
