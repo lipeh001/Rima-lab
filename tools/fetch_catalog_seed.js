@@ -251,7 +251,7 @@ async function buildStyle(style) {
   fs.writeFileSync(file, JSON.stringify({
     version:'rimalab-full-catalog-v9',
     generatedAt:new Date().toISOString(),
-    targetPerStyle:{'Boom bap':87,'Trap':77,'Drill':74},
+    targetPerStyle:TARGETS,
     vocalinstrumentalFilter:'instrumental',
     verifiedJamendoCounts:{'Boom bap':catalogs['Boom bap'].length,'Trap':catalogs['Trap'].length,'Drill':drillJamendoCount},
     generatedOriginalCounts:{'Drill':TARGETS[style]-drillJamendoCount},
