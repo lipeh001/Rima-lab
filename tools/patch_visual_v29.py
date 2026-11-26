@@ -153,7 +153,7 @@ if(oldPick)window.zBpick=function(live){
  out=out.replace('</div><div class="bsl">','</div><div class="rima-v29-tools"><button onclick="rimaV29Random()">⤨ Beat aleatório</button><button onclick="rimaV29ShowFavorites()">♥ Favoritos <span class="rima-v29-count">'+fav.length+'</span></button></div><div class="bsl">');
  return out;
 };
-window.rimaV29Random=playRandomMix;window.rimaV29ShowFavorites=showFavorites;
+window.rimaV29Random=playRandomMix;window.rimaV29ShowFavorites=showFavorites;window.rimaV29PlayFav=k=>{queue=fav.slice();qIndex=queue.indexOf(String(k));if(qIndex<0)qIndex=0;playQueued(queue[qIndex])};
 function addPlayerHeart(){
  const row=$('#pbar .pwrow');if(!row||$('#rima-v29-player-heart'))return;
  const b=document.createElement('button');b.id='rima-v29-player-heart';b.className='pws';b.textContent='♡';b.title='Adicionar aos favoritos';b.onclick=()=>{if(!ZS||!ZS.key)return;toggleFav(ZS.key);b.textContent=fav.includes(String(ZS.key))?'♥':'♡';b.classList.toggle('on',fav.includes(String(ZS.key)))};
