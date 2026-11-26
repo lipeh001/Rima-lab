@@ -41,6 +41,8 @@ on:
       - 'tools/patch_visual_v24.py'
       - 'tools/patch_visual_v25.py'
       - 'tools/teste_visual_v25.js'
+      - 'tools/patch_visual_v26.py'
+      - 'tools/teste_visual_v26.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -202,6 +204,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v25.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Corrigir espaçamento, palco, player e calibração Bluetooth v26
+        run: python3 tools/patch_visual_v26.py "$BUILD_DIR"
+      - name: Validar correções v26
+        shell: bash
+        run: |
+          node tools/teste_visual_v26.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
