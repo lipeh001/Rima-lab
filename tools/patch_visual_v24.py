@@ -139,4 +139,4 @@ elif not re.search(r'\bversionCode\s+44\b',g):
 if "versionName '3.0.1'" in g:g=g.replace("versionName '3.0.1'","versionName '3.0.2'",1)
 elif "versionName '3.0.2'" not in g:raise SystemExit('V24_FAIL: versionName inesperado')
 gp.write_text(g,encoding='utf-8')
-print('VISUAL_V24_OK: sem texto de rimas no modo palavras; ajuste vertical; player horizontal com seekbar; retomada de áudio')
+print('VISUAL_V24_OK: modo palavras limpo; palavra sem corte; seekbar horizontal; áudio retomado')
