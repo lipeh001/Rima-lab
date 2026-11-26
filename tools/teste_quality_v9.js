@@ -15,7 +15,7 @@ const checks=[
  ['modo Palavra não gera prompts narrativos',h.includes('while(!r&&tries++<24)')&&h.includes("w='coração';r='razão, paixão, canção, ilusão'")&&!h.includes("sub:r&&Math.random()<.5?'Rimas possíveis: '+r:nP()")],
  ['calibrador mede a latência base com nove leituras',h.includes('ctx.baseLatency')&&h.includes('for(let i=0;i<9;i++)')&&h.includes('values.sort((a,b)=>a-b)')],
  ['calibrador estabiliza a latência em passos de 5 ms',h.includes('Math.round(measured/5)*5')&&h.includes('values[Math.floor(values.length/2)]')],
- ['calibrador não usa microfone nem exige volume alto',h.includes('Não precisa de microfone nem de aumentar o volume.')&&!h.slice(h.indexOf('async function cal(){'),h.indexOf('\\nconst CH=')).includes('getUserMedia')],
+ ['calibrador não usa microfone nem exige volume alto',h.includes('Não precisa de microfone nem de aumentar o volume.')&&!h.slice(h.indexOf('async function cal(){'),h.indexOf('\nconst CH=')).includes('getUserMedia')],
  ['calibrador permite ajustar até 1200 ms',h.includes('max="1200"')],
  ['sincronização usa o relógio de saída do AudioContext',h.includes('getOutputTimestamp')&&h.includes('zPerf()-performance.now()+LAT')],
  ['botão Voltar centraliza seu conteúdo',h.includes('rima-quality-v9')&&h.includes('.bk{display:flex!important;align-items:center!important;justify-content:center!important')],
