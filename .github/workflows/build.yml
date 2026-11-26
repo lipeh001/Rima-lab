@@ -43,6 +43,8 @@ on:
       - 'tools/teste_visual_v25.js'
       - 'tools/patch_visual_v26.py'
       - 'tools/teste_visual_v26.js'
+      - 'tools/patch_visual_v27.py'
+      - 'tools/teste_visual_v27.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -211,6 +213,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v26.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Separar moldura da tipografia e sincronizar pulso v27
+        run: python3 tools/patch_visual_v27.py "$BUILD_DIR"
+      - name: Validar moldura independente v27
+        shell: bash
+        run: |
+          node tools/teste_visual_v27.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
