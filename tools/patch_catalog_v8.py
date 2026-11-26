@@ -293,6 +293,8 @@ word_fit = r"""
 """
 if 'id="rima-word-fit-script-v9"' not in html:
     html = html.replace("</body>", word_fit + "\n</body>", 1)
+html_path.write_text(html, encoding="utf-8")
+
 # Não deixar um ícone RR na notificação: desenhar apenas um R grande, sem reutilizar o ícone que contém duas letras.
 service_path = root / "app/src/main/java/app/rimalab/MusicService.java"
 service = service_path.read_text(encoding="utf-8")
