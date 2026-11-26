@@ -21,7 +21,7 @@ const checks=[
  ['botão Voltar centraliza seu conteúdo',h.includes('rima-quality-v9')&&h.includes('.bk{display:flex!important;align-items:center!important;justify-content:center!important')],
  ['batida ilumina mais a moldura sem animar as letras',h.includes('rl-quality-edge-v9')&&h.includes('0 0 34px rgba(215,251,87,.42)')],
  ['ícone pequeno da notificação é uma onda, deixando o R grande sem segundo R',icon.includes('M4,10h2v8H4z')&&icon.includes('M12,3h2v15h-2z')&&!icon.includes('M5,3h8.1')],
- ['versão 2.9.3 pode atualizar a instalação anterior',gradle.includes('versionCode 30')&&gradle.includes("versionName '2.9.2'")]
+ ['versão 2.9.3 pode atualizar a instalação anterior',gradle.includes('versionCode 30')&&gradle.includes("versionName '2.9.3'")]
 ];
 let bad=0;
 for(const [name,ok] of checks){console.log((ok?'OK  ':'FAIL ')+name);if(!ok)bad++;}
