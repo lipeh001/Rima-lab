@@ -24,6 +24,8 @@ on:
       - 'tools/teste_visual_v13.js'
       - 'tools/patch_visual_v14.py'
       - 'tools/teste_visual_v14.js'
+      - 'tools/patch_visual_v15.py'
+      - 'tools/teste_visual_v15.js'
       - 'tools/teste_catalog_v8.js'
 jobs:
   apk:
@@ -106,6 +108,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v14.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Restaurar impacto do palco, fonte grande e calibração correta v15
+        run: python3 tools/patch_visual_v15.py "$BUILD_DIR"
+      - name: Validar palco, tipografia e calibrador v15
+        shell: bash
+        run: |
+          node tools/teste_visual_v15.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
