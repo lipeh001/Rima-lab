@@ -61,6 +61,9 @@ boot_old = "function zBootCatalog(){if(!navigator.onLine)return;['Boom bap','Tra
 boot_new = """async function zLoadVerifiedBoomBap(){try{const r=await fetch('beats/boom-bap-extra.json',{cache:'no-store'});if(!r.ok)return;const j=await r.json();if(!j||!Array.isArray(j.tracks))return;const L=ZRAW['Boom bap']||(ZRAW['Boom bap']=[]),seen=new Set(L.map(x=>String(x[4])));for(const t of j.tracks){if(!t||!t.id||!t.audio||seen.has(String(t.id)))continue;L.push([String(t.audio),String(t.name||'Boom bap instrumental'),Number(t.bpm)||0,0,String(t.id),'Boom bap',String(t.artist||'Artista independente'),String(t.shareurl||('https://www.jamendo.com/track/'+t.id)),String(t.license||'Ver licença'),String(t.audiodownload||''),t.audiodownload_allowed===true&&!!t.audiodownload]);seen.add(String(t.id))}zSv('jmraw8',ZRAW);zBuild('Boom bap');if(ZS.s==='Boom bap')pk();window.rimaBoomBapExtraCount=seen.size}catch(e){window.rimaBoomBapExtraError=String(e)}}\nfunction zBootCatalog(){zLoadVerifiedBoomBap();if(!navigator.onLine)return;['Boom bap','Trap','Drill'].forEach(st=>{if(ZCATALOG_FORCE_REFRESH||!ZJS[st]||ZJS[st]==='off'||ZJS[st]==='err'||ZJS[st]==='nokey')zJm(st)})}"""
 html = replace_once(html, boot_old, boot_new, "carregamento do catálogo extra")
 
+# Desativa o reinício do treino ao trocar de faixa; a troca deve atuar somente no player.
+html = re.sub(r"(?<!function )zRestartAct\\(\\)", "false", html)
+
 # 5) Troca de faixa: não redesenha a lista duas vezes nem força scroll para o topo.
 html = replace_once(
     html,
