@@ -107,12 +107,13 @@ if ls_anchor in html:
     html = html.replace(ls_anchor, ls_new, 1)
 elif "function zCatLoading(s)" not in html:
     raise SystemExit("CATALOG_V8_FAIL: função zLS não encontrada.")
-button_old = "\${s} <small>\${ZLIB[s][1].length} faixas</small>"
-button_new = "\${s} <small>\${ZLIB[s][1].length}/70</small>\${zCatLoading(s)?'<span class=\"rima-cat-spinner\" aria-label=\"Carregando\"></span>':''}"
-if button_old in html:
-    html = html.replace(button_old, button_new, 1)
-elif "zCatLoading(s)?" not in html:
-    raise SystemExit("CATALOG_V8_FAIL: contador de categoria não encontrado.")
+# O HTML tem pequenas variações no rótulo ("faixas"/"beats"); injeta o spinner sem depender do texto.
+button_pattern = re.compile(r"(\$\{s\}\s*<small>\$\{ZLIB\[s\]\[1\]\.length\}[^<]*</small>)")
+if "zCatLoading(s)?" not in html:
+    html, button_count = button_pattern.subn(r"\1\${zCatLoading(s)?'<span class=\"rima-cat-spinner\" aria-label=\"Carregando\"></span>':''}", html, count=1)
+    if button_count != 1:
+        raise SystemExit("CATALOG_V8_FAIL: contador de categoria não encontrado.")
+
 
 old_download = "const saved=ZLOCAL.has(k)||!!ZDL[k];const allowed=!!(it&&it[10]===true&&it[9]);const source=allowed?it[9]:String((it&&it[0])||x||'');const perm=allowed?1:0;"
 new_download = "const saved=ZLOCAL.has(k)||!!ZDL[k];const allowed=!!(it&&it[10]===true&&it[9]);const source=allowed?it[9]:String((it&&it[0])||x||'');const perm=0;"
