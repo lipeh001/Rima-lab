@@ -1,6 +1,6 @@
 const fs=require('fs'),path=require('path'),root=path.resolve(process.argv[2]),h=fs.readFileSync(path.join(root,'app/src/main/assets/rima-lab.html'),'utf8'),g=fs.readFileSync(path.join(root,'app/build.gradle'),'utf8');
 const checks=[
-['favoritos preservam categorias',h.includes('function render()')&&h.includes('row.insertAdjacentElement')&&h.includes('list.hidden=favoritesMode')],
+['view de favoritos não substitui o seletor de categorias',h.includes('function render()')&&h.includes('row.insertAdjacentElement')&&h.includes('list.hidden=favoritesMode')],
 ['botão favoritos alterna filtro sem substituir seletor',h.includes('function toggleView()')&&h.includes('window.rimaV29ShowFavorites=toggleView')],
 ['chave do beat igual à chave canônica jm-id',h.includes("const trackKey=x=>x&&x[4]!=null?'jm-'+String(x[4]):''")],
 ['coração do player usa a mesma ação persistente da lista',h.includes('p.onclick=function(e)')&&h.includes('window.rimaV29ToggleFav(k)')],
