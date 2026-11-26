@@ -12,8 +12,9 @@ html = html_path.read_text(encoding="utf-8")
 seed = json.loads(seed_path.read_text(encoding="utf-8"))
 
 styles = ("Boom bap", "Trap", "Drill")
-target = 70
+targets = {'Boom bap': 88, 'Trap': 77, 'Drill': 74}
 for style in styles:
+    target = targets[style]
     rows = seed.get("catalogs", {}).get(style)
     if not isinstance(rows, list) or len(rows) != target:
         raise SystemExit(f"CATALOG_V8_FAIL: {style} precisa ter {target} beats validados.")
@@ -37,7 +38,7 @@ if "const RIMA_CATALOG_SEED_V8=" not in html:
 
 # Invalida apenas o cache antigo do catálogo; os beats baixados pelo usuário ficam em ZMETA/arquivos locais.
 cache_anchor = "const ZCACHE_MS=12*60*60*1000;"
-cache_fix = """const RIMA_PRELOAD_VERSION_V8='rimalab-preloaded-70-each-v8';try{if(localStorage.getItem('rima_preload_version')!==RIMA_PRELOAD_VERSION_V8){['jmraw8','jmraw7','jmraw6'].forEach(k=>localStorage.removeItem(k));['Boom bap','Trap','Drill'].forEach(st=>localStorage.removeItem('jmraw8_at_'+st));localStorage.setItem('rima_preload_version',RIMA_PRELOAD_VERSION_V8)}}catch(e){}"""
+cache_fix = """const RIMA_PRELOAD_VERSION_V8='rimalab-preloaded-87-77-74-v23';try{if(localStorage.getItem('rima_preload_version')!==RIMA_PRELOAD_VERSION_V8){['jmraw8','jmraw7','jmraw6'].forEach(k=>localStorage.removeItem(k));['Boom bap','Trap','Drill'].forEach(st=>localStorage.removeItem('jmraw8_at_'+st));localStorage.setItem('rima_preload_version',RIMA_PRELOAD_VERSION_V8)}}catch(e){}"""
 if "RIMA_PRELOAD_VERSION_V8" not in html:
     if cache_anchor not in html:
         raise SystemExit("CATALOG_V8_FAIL: ZCACHE_MS não encontrado.")
@@ -59,7 +60,7 @@ elif new_rows not in html:
 
 # Garante 70 registros no cache e marca cada estilo como pronto, sem uma chamada de rede após o primeiro paint.
 migration_cap_re = re.compile(r"ZRAW\[st\]=merged(?:\.slice\(0,(?:zCap\(st\)|70)\))?\}\);")
-migration_replacement = "ZRAW[st]=merged.slice(0,70);try{localStorage.setItem('jmraw8_at_'+st,String(Date.now()))}catch(e){}ZJS[st]='ok'});"
+migration_replacement = "ZRAW[st]=merged.slice(0,({'Boom bap':88,'Trap':77,'Drill':74}[st]||70));try{localStorage.setItem('jmraw8_at_'+st,String(Date.now()))}catch(e){}ZJS[st]='ok'});"
 html, migration_count = migration_cap_re.subn(migration_replacement, html, count=1)
 if migration_count != 1 and migration_replacement not in html:
     raise SystemExit("CATALOG_V8_FAIL: final da migração do catálogo não encontrado.")
@@ -69,13 +70,13 @@ zbuild_pattern = re.compile(
     r"function zBuild\(st\)\{.*?ZLIB\[st\]\[1\]=.*?\}",
     re.S
 )
-zbuild_new = """function zBuild(st){const cap=70,L=[],seen=new Set();for(const x of (RIMA_CATALOG_SEED_V8[st]||[])){if(!x||seen.has(String(x[4])))continue;L.push(x);seen.add(String(x[4]));if(L.length>=cap)break}Object.keys(ZMETA).forEach(k=>{const m=ZMETA[k];if(L.length<cap&&m&&m[5]===st&&(ZDL[k]||ZLOCAL.has(k))&&!seen.has(String(m[4]))){L.push(m);seen.add(String(m[4]))}});for(const x of (ZRAW[st]||[])){if(L.length>=cap)break;if(!x||seen.has(String(x[4])))continue;L.push(x);seen.add(String(x[4]))}ZLIB[st][1]=L.slice(0,cap)}"""
+zbuild_new = """function zBuild(st){const cap=({'Boom bap':87,'Trap':77,'Drill':74}[st]||70),L=[],seen=new Set();for(const x of (RIMA_CATALOG_SEED_V8[st]||[])){if(!x||seen.has(String(x[4])))continue;L.push(x);seen.add(String(x[4]));if(L.length>=cap)break}Object.keys(ZMETA).forEach(k=>{const m=ZMETA[k];if(L.length<cap&&m&&m[5]===st&&(ZDL[k]||ZLOCAL.has(k))&&!seen.has(String(m[4]))){L.push(m);seen.add(String(m[4]))}});for(const x of (ZRAW[st]||[])){if(L.length>=cap)break;if(!x||seen.has(String(x[4])))continue;L.push(x);seen.add(String(x[4]))}ZLIB[st][1]=L.slice(0,cap)}"""
 html, n = zbuild_pattern.subn(zbuild_new, html, count=1)
 if n != 1:
     raise SystemExit("CATALOG_V8_FAIL: função zBuild não encontrada.")
 
 # A busca online é apenas contingência; nunca pode acumular mais de 70 faixas.
-html = html.replace("ZRAW[st]=merged;if(incoming.length||ok)", "ZRAW[st]=merged.slice(0,70);if(incoming.length||ok)")
+html = html.replace("ZRAW[st]=merged;if(incoming.length||ok)", "ZRAW[st]=merged.slice(0,({'Boom bap':88,'Trap':77,'Drill':74}[st]||70));if(incoming.length||ok)")
 html = html.replace("ZRAW[st]=merged.slice(0,70);if(incoming.length||ok)", "ZRAW[st]=merged.slice(0,70);if(incoming.length||ok)")
 
 # Atualização do estado visual e texto compacto/profissional.
@@ -436,4 +437,4 @@ review.write_text(
     "Offline: cache permanente automatico somente apos a faixa terminar e quando a licenca autoriza.\\n",
     encoding="utf-8"
 )
-print("CATALOG_V8_OK: 70/70/70 pré-carregados, player sem salto/auto-next, salvamento offline pós-audição, palco suave e marca oficial.")
+print("CATALOG_V8_OK: 87/77/74 pré-carregados, player sem salto/auto-next, salvamento offline pós-audição, palco suave e marca oficial.")
