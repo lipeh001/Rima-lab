@@ -56,7 +56,7 @@ service_path.write_text(service,encoding='utf-8')
 # Android update version.
 gp=root/'app/build.gradle'
 g=gp.read_text(encoding='utf-8')
-g=re.sub(r'versionCode\\s+29\\b','versionCode 30',g,count=1)
+g=g.replace('versionCode 29','versionCode 30',1)
 g=g.replace("versionName '2.9.2'","versionName '2.9.3'",1)
 if 'versionCode 30' not in g or "versionName '2.9.3'" not in g: raise SystemExit('V11_FAIL: versão')
 gp.write_text(g,encoding='utf-8')
