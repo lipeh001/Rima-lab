@@ -213,7 +213,7 @@ if 'id="rimalab-complete-runtime-v29"' not in h:
  if p<0:raise SystemExit('V29_FAIL: body não encontrado')
  h=h[:p]+script+'\n'+h[p:]
 # fix word curvature from existing curve script by halving CSS transform amount where explicit variable exists
-h=re.sub(r'(rotate\([^)]*?)deg',lambda m:m.group(0),h)
+h=h.replace('arc=Math.min(4.5,Math.max(1.8,chars.length*.22))','arc=Math.min(2.25,Math.max(.9,chars.length*.11))')
 # version bump
 g=gp.read_text(encoding='utf-8')
 m=re.search(r'versionCode\s+(\d+)',g)
