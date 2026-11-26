@@ -47,7 +47,7 @@ function sync(){
 function favMarkup(){
  const fav=readFav(),tracks=fav.map(k=>allTracks().find(o=>trackKey(o.x)===k)).filter(Boolean);
  if(!tracks.length)return '<div class="bsl rima-v35-favlist"><p class="rima-v29-note">Nenhum beat favoritado ainda. Use o coração ao lado de qualquer beat para adicioná-lo aqui.</p></div>';
- return '<div class="bsl rima-v35-favlist">'+tracks.map(({cat,x})=>{const k=trackKey(x);return '<div class="bi"><div class="beat-info"><button class="mc" type="button" onclick="rimaV29PlayFav(\\''+k+'\\')"><b>'+esc(x[1])+'</b></button><div class="beat-meta">'+esc(cat)+'</div></div><button class="rima-v35-heart" type="button" data-rima-fav="'+k+'" aria-pressed="true" onclick="rimaV29ToggleFav(\\''+k+'\\');event.stopPropagation()">♥</button></div>'}).join('')+'</div>';
+ return '<div class="bsl rima-v35-favlist">'+tracks.map(({cat,x})=>{const k=trackKey(x);return '<div class="bi"><div class="beat-info"><button class="mc rima-v35-play" type="button" data-rima-play="'+k+'"><b>'+esc(x[1])+'</b></button><div class="beat-meta">'+esc(cat)+'</div></div><button class="rima-v35-heart" type="button" data-rima-fav="'+k+'" aria-pressed="true">♥</button></div>'}).join('')+'</div>';
 }
 function render(){
  const bp=$('#bp');if(!bp)return;
@@ -76,7 +76,7 @@ function labels(){
  const s=$('#train-step-2');if(!s)return;const h=[...s.querySelectorAll('.stp')].find(e=>/ESCOLHA SEU MODO|CONFIGURE SEU MODO/i.test(e.textContent||''));if(h){const n=h.querySelector('.n');if(n)n.textContent='1'}
  const b=$('#rima-v29-mode-banner'),strong=b&&b.querySelector('strong');if(strong)strong.textContent=strong.textContent.replace(/^\s*1\s*[·.:-]\s*/,'');
 }
-function install(){bindPlayer();dock();labels();if(favoritesMode)render();sync()}
+document.addEventListener('click',e=>{const playBtn=e.target.closest('.rima-v35-play');if(playBtn){e.preventDefault();const k=playBtn.getAttribute('data-rima-play');if(k&&typeof window.rimaV29PlayFav==='function')window.rimaV29PlayFav(k);return}const favBtn=e.target.closest('.rima-v35-heart');if(favBtn){e.preventDefault();e.stopPropagation();const k=favBtn.getAttribute('data-rima-fav');if(k&&typeof window.rimaV29ToggleFav==='function')window.rimaV29ToggleFav(k)}});\nfunction install(){bindPlayer();dock();labels();if(favoritesMode)render();sync()}
 document.addEventListener('click',e=>{if(e.target.closest('#rima-v29-player-heart'))setTimeout(sync,30)});
 window.addEventListener('storage',e=>{if(e.key===FKEY){sync();if(favoritesMode){window.pk&&pk();render()}}});
 window.addEventListener('orientationchange',()=>setTimeout(dock,180));
