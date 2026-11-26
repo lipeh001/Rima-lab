@@ -298,10 +298,16 @@ html_path.write_text(html, encoding="utf-8")
 # Não deixar um ícone RR na notificação: desenhar apenas um R grande, sem reutilizar o ícone que contém duas letras.
 service_path = root / "app/src/main/java/app/rimalab/MusicService.java"
 service = service_path.read_text(encoding="utf-8")
-oldmark = "android.graphics.drawable.Drawable mark=getDrawable(R.drawable.ic_fg);\n        if(mark!=null){mark.setBounds(26,26,size-26,size-26);mark.draw(c);}"
-newmark = """p.setColor(0xFFD7FB57);p.setTypeface(android.graphics.Typeface.create("sans-serif-black",android.graphics.Typeface.BOLD));p.setTextAlign(Paint.Align.CENTER);p.setTextSize(190);c.drawText("R",128,190,p);"""
-if oldmark in service: service=service.replace(oldmark,newmark,1)
-elif 'c.drawText("R",128,190,p)' not in service: raise SystemExit("CATALOG_V9_FAIL: marca da notificação não encontrada.")
+app_logo_pattern = re.compile(r"    private Bitmap appLogo\\(\\) \\{.*?^    \\}", re.S | re.M)
+newmark = """    private Bitmap appLogo() {
+        int size=256; Bitmap b=Bitmap.createBitmap(size,size,Bitmap.Config.ARGB_8888);
+        Canvas c=new Canvas(b); Paint p=new Paint(Paint.ANTI_ALIAS_FLAG);
+        p.setColor(0xFF0B0D09); c.drawRoundRect(new RectF(0,0,size,size),56,56,p);
+        p.setColor(0xFFD7FB57);p.setTypeface(android.graphics.Typeface.create("sans-serif-black",android.graphics.Typeface.BOLD));p.setTextAlign(Paint.Align.CENTER);p.setTextSize(190);c.drawText("R",128,190,p);
+        return b;
+    }"""
+service, app_logo_count = app_logo_pattern.subn(newmark, service, count=1)
+if app_logo_count != 1: raise SystemExit("CATALOG_V9_FAIL: método appLogo não encontrado para substituir.")
 service_path.write_text(service,encoding="utf-8")
 
 # Ícone pequeno monocromático de status e marca de app no cartão expandido.
