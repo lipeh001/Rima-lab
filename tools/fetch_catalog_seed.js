@@ -20,7 +20,21 @@ const CONFIG = {
       ['search','boom bap instrumental'],
       ['search','boom bap drums vinyl sample'],
       ['search','dusty drums boom bap instrumental'],
-      ['search','grimy east coast boom bap']
+      ['search','grimy east coast boom bap'],
+      ['fuzzytags','boom+bap+instrumental'],
+      ['fuzzytags','oldschool+rap+instrumental'],
+      ['fuzzytags','east+coast+hiphop'],
+      ['search','dusty hip hop instrumental beat'],
+      ['search','90s hip hop instrumental beat'],
+      ['search','classic boom bap instrumental'],
+      ['search','jazzy boom bap instrumental'],
+      ['search','soul sample boom bap beat'],
+      ['search','vinyl boom bap hip hop instrumental'],
+      ['search','underground rap instrumental 90s'],
+      ['search','east coast rap instrumental beat'],
+      ['search','boom bap type beat drums sample'],
+      ['search','old school hip hop beat no vocals'],
+      ['search','hard boom bap instrumental beat']
     ],
     strong: /boom\s*[-]?\s*bap|boombap|old\s*[-]?\s*school|golden\s*era|east\s*coast|cypher|battle|batalha|freestyle|underground|90s|sampler|breakbeat|dusty|gritty/i,
     ban: /\btrap\b|\bdrill\b|house|techno|trance|dubstep|metal|rock|reggaeton|dancehall|country|lo[\s-]?fi|chill|relax|ambient|christmas|holiday|summer|good\s*vibes/i,
@@ -235,11 +249,11 @@ async function buildStyle(style) {
   fs.mkdirSync(outDir, {recursive:true});
   const file = path.join(outDir, 'catalog-seed.json');
   fs.writeFileSync(file, JSON.stringify({
-    version:'rimalab-full-catalog-v8',
+    version:'rimalab-full-catalog-v9',
     generatedAt:new Date().toISOString(),
-    targetPerStyle:TARGETS[style],
+    targetPerStyle:{'Boom bap':87,'Trap':77,'Drill':74},
     vocalinstrumentalFilter:'instrumental',
-    verifiedJamendoCounts:{'Boom bap':70,'Trap':70,'Drill':drillJamendoCount},
+    verifiedJamendoCounts:{'Boom bap':catalogs['Boom bap'].length,'Trap':catalogs['Trap'].length,'Drill':drillJamendoCount},
     generatedOriginalCounts:{'Drill':TARGETS[style]-drillJamendoCount},
     counts:Object.fromEntries(Object.entries(catalogs).map(([k,v]) => [k,v.length])),
     catalogs
