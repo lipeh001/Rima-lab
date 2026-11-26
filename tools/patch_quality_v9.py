@@ -9,7 +9,7 @@ def rep(a,b,label):
  if a in s:s=s.replace(a,b,1)
  elif b not in s:raise SystemExit('QUALITY_V9_FAIL: '+label)
 rep('Escolha uma base para ouvir e treinar. Ouça até o fim. Quando a licença permitir, o beat será salvo automaticamente para uso offline.','Escolha um beat e toque em Ouvir. Depois de ouvir a faixa, o Rima Lab tenta guardá-la para reprodução offline quando a licença autoriza o armazenamento.','texto do seletor')
-rep("if(m=='pal'){const w=nW(),r=rimasDe(w);return{k:'Palavra de '+cat(w).toLowerCase(),big:w,sub:r&&Math.random()<.5?'Rimas possíveis: '+r:nP()}}","if(m=='pal'){const w=nW(),r=rimasDe(w);return{k:'Palavra de '+cat(w).toLowerCase(),big:w,sub:r?'Rimas possíveis: '+r:'Explore o som final e os sentidos da palavra.'}}",'modo palavras')
+rep("if(m=='pal'){const w=nW(),r=rimasDe(w);return{k:'Palavra de '+cat(w).toLowerCase(),big:w,sub:r&&Math.random()<.5?'Rimas possíveis: '+r:nP()}}","if(m=='pal'){let w=nW(),r=rimasDe(w),tries=0;while(!r&&tries++<24){w=nW();r=rimasDe(w)}if(!r){w='coração';r='razão, paixão, canção, ilusão'}return{k:'Palavra de '+cat(w).toLowerCase(),big:w,sub:'Rimas possíveis: '+r}}",'modo palavras')
 # Famílias adicionais de rimas para palavras que antes não tinham sugestões.
 rg=';oz:voz veloz atroz feroz algoz;ai:vai cai sai trai;ei:rei lei sei achei gritei cantei mandei;ouco:pouco louco rouco troco'
 extra=';aça:taça cachaça fumaça carcaça couraça;ole:console controle descontrole enrole engole;oste:poste encoste aposte coste;oto:maremoto terremoto remoto devoto garoto piloto'
