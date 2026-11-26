@@ -55,6 +55,8 @@ on:
       - 'tools/teste_visual_v36.js'
       - 'tools/patch_visual_v38.py'
       - 'tools/teste_visual_v38.js'
+      - 'tools/patch_visual_v39.py'
+      - 'tools/teste_visual_v39.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -279,6 +281,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v38.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Corrigir loop infinito do catálogo que trava a abertura v39
+        run: python3 tools/patch_visual_v39.py "$BUILD_DIR"
+      - name: Validar inicialização e observer do catálogo v39
+        shell: bash
+        run: |
+          node tools/teste_visual_v39.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
