@@ -26,7 +26,7 @@ const checks=[
  ['texto do calibrador deixa claro que não precisa aumentar volume',h.includes('Não precisa de microfone nem aumentar o volume.')],
  ['catálogo exige classificação explícita de instrumental no Jamendo',seedScript.includes("if (vocal !== 'instrumental') return -1;")&&h.includes("if(vi!=='instrumental')return 9;")],
  ['catálogo rejeita títulos de música/som cantado sem marcação de beat',seedScript.includes('music|burger|song|anthem|lyrics|vocal')],
- ['APK terá versão 2.9.3 e atualizará a instalação anterior',gradle.includes('versionCode 29')&&gradle.includes("versionName '2.9.3'")]
+ ['APK terá versão 2.9.3 e atualizará a instalação anterior',gradle.includes('versionCode 30')&&gradle.includes("versionName '2.9.3'")]
 ];
 let bad=0;
 for(const [name,ok] of checks){console.log((ok?'OK  ':'FAIL ')+name);if(!ok)bad++;}
