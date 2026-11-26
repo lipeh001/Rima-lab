@@ -14,10 +14,10 @@ const checks=[];
 checks.push(['Jamendo consultado com filtro oficial de instrumentais',seed.vocalinstrumentalFilter==='instrumental']);
 for(const style of styles){
   const rows=seed.catalogs&&seed.catalogs[style];
-  checks.push([style+' tem exatamente 70 instrumentais com áudio validado',Array.isArray(rows)&&rows.length===({'Boom bap':88,'Trap':77,'Drill':74}[style])&&rows.every(r=>r[0]&&r[1]&&r[4]&&r[5]===style&&r[10]!==undefined&&r[11]>=85&&r[11]<=540)]);
+  checks.push([style+' tem a quantidade solicitada de instrumentais com áudio validado',Array.isArray(rows)&&rows.length===({'Boom bap':88,'Trap':77,'Drill':74}[style])&&rows.every(r=>r[0]&&r[1]&&r[4]&&r[5]===style&&r[10]!==undefined&&r[11]>=85&&r[11]<=540)]);
   if(Array.isArray(rows))for(const r of rows)allIds.add(String(r[4]));
 }
-checks.push(['210 faixas têm IDs únicos entre as três categorias',allIds.size===239]);
+checks.push(['239 faixas têm IDs únicos entre as três categorias',allIds.size===239]);
 checks.push(['catálogo 88/77/74 está embutido no HTML',html.includes('RIMA_CATALOG_SEED_V8=')]);
 checks.push(['catálogo é montado diretamente do seed para garantir 87/77/74 exibidos',html.includes('for(const x of (RIMA_CATALOG_SEED_V8[st]||[]))')&&html.includes('ZLIB[st][1]=L.slice(0,cap)')]);
 checks.push(['spinner depende do estado de carregamento da categoria, não da seleção',html.includes("function zCatLoading(s){return ZJS[s]==='load'||ZJS[s]==='cached'")]);
