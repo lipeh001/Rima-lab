@@ -14,12 +14,12 @@ const checks=[];
 checks.push(['Jamendo consultado com filtro oficial de instrumentais',seed.vocalinstrumentalFilter==='instrumental']);
 for(const style of styles){
   const rows=seed.catalogs&&seed.catalogs[style];
-  checks.push([style+' tem exatamente 70 instrumentais com áudio validado',Array.isArray(rows)&&rows.length===70&&rows.every(r=>r[0]&&r[1]&&r[4]&&r[5]===style&&r[10]!==undefined&&r[11]>=85&&r[11]<=540)]);
+  checks.push([style+' tem exatamente 70 instrumentais com áudio validado',Array.isArray(rows)&&rows.length===({'Boom bap':88,'Trap':77,'Drill':74}[style])&&rows.every(r=>r[0]&&r[1]&&r[4]&&r[5]===style&&r[10]!==undefined&&r[11]>=85&&r[11]<=540)]);
   if(Array.isArray(rows))for(const r of rows)allIds.add(String(r[4]));
 }
-checks.push(['210 faixas têm IDs únicos entre as três categorias',allIds.size===210]);
-checks.push(['catálogo de 70 por estilo está embutido no HTML',html.includes('RIMA_CATALOG_SEED_V8=')]);
-checks.push(['catálogo é montado diretamente do seed para garantir 70/70/70',html.includes('for(const x of (RIMA_CATALOG_SEED_V8[st]||[]))')&&html.includes('ZLIB[st][1]=L.slice(0,cap)')]);
+checks.push(['210 faixas têm IDs únicos entre as três categorias',allIds.size===239]);
+checks.push(['catálogo 88/77/74 está embutido no HTML',html.includes('RIMA_CATALOG_SEED_V8=')]);
+checks.push(['catálogo é montado diretamente do seed para garantir 87/77/74 exibidos',html.includes('for(const x of (RIMA_CATALOG_SEED_V8[st]||[]))')&&html.includes('ZLIB[st][1]=L.slice(0,cap)')]);
 checks.push(['spinner depende do estado de carregamento da categoria, não da seleção',html.includes("function zCatLoading(s){return ZJS[s]==='load'||ZJS[s]==='cached'")]);
 checks.push(['palavra do palco não quebra em uma letra isolada e ajusta a fonte',html.includes('rima-word-fit-script-v9')&&html.includes('white-space:nowrap')&&html.includes('while(e.scrollWidth>available&&size>28)')]);
 checks.push(['dicas de rima têm curadoria fonética para exemplos reportados',html.includes('rima-rich-hints-v9')&&html.includes("'TAÇA':['graça','raça','caça','massa']")&&html.includes("'CONSOLE':['controle','descontrole','enrole','engole']")&&html.includes("'POSTE':['goste','encoste','desgoste','aposte']")&&html.includes("'MAREMOTO':['terremoto','remoto','moto','foto']")]);
@@ -27,8 +27,8 @@ checks.push(['cartão de notificação mostra um R grande sem sobreposição de 
 
 checks.push(['64 beats Drill originais geram WAV real offline, sem URL falsa',html.includes('function zBuildDrillWavV8(key)')&&html.includes('RIFF')&&html.includes('rima-generated://drill/')&&html.includes('zBuildDrillWavV8(k)')]);
 checks.push(['cache antigo é invalidado uma única vez pela versão do pré-carregamento',html.includes('RIMA_PRELOAD_VERSION_V8')&&html.includes("['jmraw8','jmraw7','jmraw6'].forEach(k=>localStorage.removeItem(k))")]);
-checks.push(['catálogo pré-carregado marca cada estilo como pronto com 70 faixas',html.includes("ZRAW[st]=merged.slice(0,70)")&&html.includes("ZJS[st]='ok'")]);
-checks.push(['catálogo final preserva salvos e respeita teto de 70',html.includes('ZLIB[st][1]=L.slice(0,cap)')&&html.includes('const cap=70')]);
+checks.push(['catálogo pré-carregado marca cada estilo como pronto com a quantidade configurada',html.includes("ZRAW[st]=merged.slice(0,({'Boom bap':88,'Trap':77,'Drill':74}[st]||70))")&&html.includes("ZJS[st]='ok'")]);
+checks.push(['catálogo final preserva salvos e respeita teto de 87/77/74',html.includes('ZLIB[st][1]=L.slice(0,cap)')&&html.includes('const cap=({'Boom bap':87,'Trap':77,'Drill':74}[st]||70)')]);
 checks.push(['seletor mostra spinner durante carregamento',html.includes('zCatLoading(s)')&&html.includes('rima-cat-spinner')]);
 checks.push(['texto offline é curto e coerente',html.includes('Escolha um beat para ouvir e treinar.')&&!html.includes('Quando a licença permitir, o beat será salvo automaticamente')&&!html.includes('Toque na seta para salvar no celular.')]);
 checks.push(['salvamento permanente só é disparado depois do fim da faixa e quando autorizado',html.includes('function zAutoSaveFinishedBeatV8()')&&html.includes("x[10]!==true")&&html.includes("zAutoSaveFinishedBeatV8();")]);
@@ -43,7 +43,7 @@ checks.push(['sem beat selecionado, o seletor volta para a etapa inicial e ganha
 checks.push(['palco pulsa por transição suave, sem reflow nem animação de piscar',html.includes('rima-final-polish-v8')&&html.includes("e.classList.add('hit')")&&!html.includes(`void e.offsetWidth;e.classList.add('hit')`)]);
 checks.push(['cartão expandido da notificação usa a marca oficial do Rima Lab',service.includes('.setLargeIcon(singleRIcon())')&&service.includes('private Bitmap singleRIcon()')]);
 checks.push(['ícone pequeno de status é o glifo R monocromático do app',icon.includes('fillColor="#FFFFFF"')&&icon.includes('M4,10h2v8H4z')&&icon.includes('M12,3h2v15h-2z')&&!icon.includes('M5,3h8.1')]);
-checks.push(['APK tem versão e código novos para atualização por cima',gradle.includes('versionCode 30')&&gradle.includes("versionName '2.9.3'")]);
+checks.push(['APK tem versão e código novos para atualização por cima',gradle.includes('versionCode 44')&&gradle.includes("versionName '3.0.2'")]);
 let bad=0;
 for(const [name,ok] of checks){console.log((ok?'OK  ':'FAIL ')+name);if(!ok)bad++;}
 console.log((checks.length-bad)+'/'+checks.length+' verificações CATALOG_V8 passaram');
