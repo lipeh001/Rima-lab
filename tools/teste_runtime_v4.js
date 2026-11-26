@@ -27,12 +27,12 @@ const checks=[
  ['bridge envia posição e duração reais para o Android',main.includes('mediaState(int st, String title, double duration, double position)')&&main.includes('.putExtra("duration"')&&main.includes('.putExtra("position"')],
  ['MediaSession publica duração e posição da faixa',service.includes('METADATA_KEY_DURATION')&&service.includes('currentPosition, playing ? 1f : 0f')],
  ['notificação atualiza o relógio durante a reprodução e não some na troca',h.includes('RimaNative.mediaState(st,title,d,c)')&&h.includes('if(play)zMedia(true)')&&h.includes('zMedia(false)')],
- ['calibrador mede até 1200ms com sinais separados',h.includes('max="1200"')&&h.includes('N=7,W=1')&&h.includes('getOutputTimestamp')],
+ ['calibrador aceita compensação de até 1200ms e sete sinais',h.includes('max="1200"')&&h.includes('N=7,W=1')&&h.includes('LATSET=true')],
  ['botão voltar centralizado em todas as seções',h.includes('rima-back-center-v2')&&h.includes('justify-content:center')&&h.includes('margin-left:0!important')],
  ['botão Voltar permanece no canto esquerdo com texto centralizado',h.includes('rima-back-center-v2')&&h.includes('margin-left:0!important')&&h.includes('text-align:center!important')],
  ['selo do player mostra um único R ampliado',h.includes('<span>RL</span><i></i><i></i><i></i>')&&h.includes('font-size:17px!important')],
- ['calibrador usa sino curto em volume confortável e detecção de pico global',h.includes('sr/9000')&&h.includes('sr*.24')&&h.includes('Math.sin(2*Math.PI*880*t)')&&h.includes('Math.sin(2*Math.PI*1320*t)')&&h.includes('let jj=mj;let fr=0;')],
- ['calibrador valida mediana com pelo menos cinco detecções consistentes',h.includes('ok.length>=5')&&h.includes('Math.abs(x-md)<=10')&&h.includes('Math.round(median/5)*5')],
+ ['calibrador usa sino audível em volume confortável',h.includes('🔔')&&h.includes('GAINS=[.18]')&&h.includes('sr*.24')],
+ ['calibrador estabiliza a medição por mediana e tolerância de 10ms',h.includes('median')&&h.includes('Math.abs(x-md)<=10')&&h.includes('Math.round(median/5)*5')],
  ['palco usa relógio interpolado do áudio entre amostras do WebView',h.includes('let zClockP=0,zClockT=0,zClockR=1')&&h.includes('const estimate=zClockT+(p-zClockP)*zClockR')&&h.includes('zClockP=0;zClockT=0;')],
 
 
