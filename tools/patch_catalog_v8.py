@@ -332,6 +332,38 @@ if "private Bitmap appLogo()" not in service:
 service = service.replace(".setBadgeIconType(Notification.BADGE_ICON_SMALL)", ".setBadgeIconType(Notification.BADGE_ICON_LARGE)")
 service_path.write_text(service, encoding="utf-8")
 
+
+# Curadoria de rimas ricas para palavras que apareceram nos registros do usuário.
+# A substituição mantém os elementos/classes originais dos chips e troca apenas os textos.
+html = html_path.read_text(encoding="utf-8")
+hint_script = r"""
+<script id="rima-rich-hints-v9">
+(function(){
+ const curated={
+  'FITA':['irrita','acredita','limita','habita'],
+  'MIRANTE':['distante','brilhante','elegante','marcante'],
+  'ARQUIVO':['ativo','cativo','altivo','esquivo'],
+  'ALEGRIA':['cria','varia','confia','desafia'],
+  'CUMPRIMENTAR':['altar','lugar','olhar','mar']
+ };
+ const norm=s=>(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase().trim();
+ function apply(){
+  const word=document.getElementById('cb'),box=document.getElementById('op');if(!word||!box)return;
+  const list=curated[norm(word.textContent)];if(!list)return;
+  const leaves=[...box.querySelectorAll('*')].filter(e=>e.children.length===0&&(e.textContent||'').trim());
+  if(leaves.length>=4){leaves.slice(0,4).forEach((e,i)=>{e.textContent=list[i]})}
+ }
+ function boot(){const word=document.getElementById('cb'),box=document.getElementById('op');if(!word||!box)return;
+  const mo=new MutationObserver(apply);mo.observe(word,{childList:true,subtree:true,characterData:true});mo.observe(box,{childList:true,subtree:true,characterData:true});apply();
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+})();
+</script>
+"""
+if 'id="rima-rich-hints-v9"' not in html:
+    html=html.replace("</body>",hint_script+"\n</body>",1)
+html_path.write_text(html,encoding="utf-8")
+
 # versionCode monotonically increases so Android treats this as a proper update.
 gradle_path = root / "app/build.gradle"
 gradle = gradle_path.read_text(encoding="utf-8")
