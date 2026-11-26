@@ -351,7 +351,7 @@ hint_script = r"""
   const word=document.getElementById('cb'),box=document.getElementById('op');if(!word||!box)return;
   const list=curated[norm(word.textContent)];if(!list)return;
   const leaves=[...box.querySelectorAll('*')].filter(e=>e.children.length===0&&(e.textContent||'').trim());
-  if(leaves.length>=4){leaves.slice(0,4).forEach((e,i)=>{e.textContent=list[i]})}
+  if(leaves.length>=4){leaves.slice(0,4).forEach((e,i)=>{if(norm(e.textContent)!==norm(list[i]))e.textContent=list[i]})}
  }
  function boot(){const word=document.getElementById('cb'),box=document.getElementById('op');if(!word||!box)return;
   const mo=new MutationObserver(apply);mo.observe(word,{childList:true,subtree:true,characterData:true});mo.observe(box,{childList:true,subtree:true,characterData:true});apply();
