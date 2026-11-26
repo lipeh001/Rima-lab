@@ -217,10 +217,10 @@ h=h.replace('arc=Math.min(4.5,Math.max(1.8,chars.length*.22))','arc=Math.min(2.2
 g=gp.read_text(encoding='utf-8')
 m=re.search(r'versionCode\s+(\d+)',g)
 if not m:raise SystemExit('V29_FAIL: versionCode ausente')
-if int(m.group(1))<50:g=g[:m.start(1)]+'50'+g[m.end(1):]
+if int(m.group(1))<51:g=g[:m.start(1)]+'51'+g[m.end(1):]
 m=re.search(r"versionName\s+['\"]([^'\"]+)['\"]",g)
 if not m:raise SystemExit('V29_FAIL: versionName ausente')
-if m.group(1)<'3.0.8':g=g[:m.start(1)]+'3.0.8'+g[m.end(1):]
+if m.group(1)<'3.0.9':g=g[:m.start(1)]+'3.0.9'+g[m.end(1):]
 
 # Consolidate conflicting stage typography rules and keep hint chips out of the word layout.
 h=re.sub(r'<style id="rima-word-fit-v13">[\s\S]*?</style>','',h)
@@ -284,5 +284,91 @@ pos=h.lower().rfind('</body>')
 if pos<0:raise SystemExit('V31_FAIL: body não encontrado')
 h=h[:pos]+stagefix+'\n'+h[pos:]
 
+
+
+# V32: palco com hierarquia vertical real; sugestões menores e fora do cronômetro.
+stagefix2=r"""
+<style id="rimalab-stage-spacing-v32">
+#lv:not([hidden]) #stg.stage{
+ display:flex!important;flex-direction:column!important;justify-content:flex-start!important;
+ align-items:stretch!important;gap:0!important;overflow:hidden!important;min-height:0!important;
+}
+#lv:not([hidden]) #stg.stage #ck{order:0!important;flex:0 0 auto!important;margin:0 0 5px!important}
+#lv:not([hidden]) #stg.stage #cb{
+ order:1!important;flex:1 1 0!important;min-height:0!important;height:auto!important;
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ width:100%!important;max-width:100%!important;box-sizing:border-box!important;
+ padding:8px 4px!important;margin:0 auto!important;white-space:nowrap!important;
+ letter-spacing:-.012em!important;line-height:1.08!important;font-weight:900!important;
+ overflow:visible!important;transform:none!important;animation:none!important;
+}
+#lv:not([hidden]) #stg.stage #cb .rima-curve-char{
+ display:inline-block!important;white-space:pre!important;
+ transform:translateY(var(--rima-curve-y,0px))!important;
+ transform-origin:50% 100%!important;
+}
+#lv:not([hidden]) #stg.stage #rm{
+ order:2!important;position:relative!important;inset:auto!important;
+ flex:0 0 auto!important;display:flex!important;align-items:center!important;
+ justify-content:center!important;flex-wrap:wrap!important;gap:5px!important;
+ width:100%!important;min-height:0!important;height:auto!important;
+ margin:2px auto 5px!important;padding:0 4px!important;z-index:2!important;
+ pointer-events:none!important;
+}
+#lv:not([hidden]) #stg.stage #rm:empty{display:none!important;margin:0!important;padding:0!important}
+#lv:not([hidden]) #stg.stage #rm>*{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ box-sizing:border-box!important;max-width:48%!important;padding:4px 9px!important;
+ margin:0!important;border-radius:999px!important;
+ font-size:clamp(12px,2.6vw,17px)!important;line-height:1.12!important;
+ font-weight:700!important;letter-spacing:0!important;white-space:nowrap!important;
+}
+#lv:not([hidden]) #stg.stage #sg{
+ order:3!important;position:relative!important;flex:0 0 8px!important;
+ min-height:8px!important;height:8px!important;margin:4px 0 2px!important;
+}
+#lv:not([hidden]) #stg.stage #cs{
+ order:4!important;position:relative!important;flex:0 0 auto!important;
+ min-height:0!important;margin:2px 0 5px!important;line-height:1.25!important;
+}
+#lv:not([hidden]) #stg.stage #cn{
+ order:5!important;position:relative!important;flex:0 0 auto!important;
+ min-height:0!important;margin:3px auto 0!important;
+}
+#lv:not([hidden]) #stg.stage #cb.rima-word-fitting{font-size:var(--rima-fit-size,64px)!important}
+@media(orientation:landscape){
+ #lv:not([hidden]) #stg.stage #cb{padding:2px 4px!important}
+ #lv:not([hidden]) #stg.stage #rm{margin:1px auto 3px!important}
+ #lv:not([hidden]) #stg.stage #rm>*{font-size:clamp(11px,2.1vw,15px)!important;padding:3px 7px!important}
+ #lv:not([hidden]) #stg.stage #cs{margin:1px 0 3px!important}
+}
+</style>
+<script id="rimalab-stage-spacing-runtime-v32">
+(function(){
+ const run=()=>{
+  const stage=document.getElementById('stg'),word=document.getElementById('cb'),hints=document.getElementById('rm');
+  if(!stage||!word)return;
+  const sizeHints=()=>{
+   const main=parseFloat(getComputedStyle(word).fontSize)||56;
+   if(hints)hints.querySelectorAll(':scope > *').forEach(el=>{
+    el.style.setProperty('font-size',Math.max(12,Math.min(17,main*.30)).toFixed(1)+'px','important');
+    el.style.setProperty('line-height','1.12','important');
+   });
+  };
+  const settle=()=>{sizeHints();};
+  if(hints)new MutationObserver(()=>requestAnimationFrame(settle)).observe(hints,{childList:true,subtree:true,characterData:true});
+  new MutationObserver(()=>requestAnimationFrame(settle)).observe(word,{childList:true,subtree:true,characterData:true});
+  if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>requestAnimationFrame(settle)).observe(stage);
+  requestAnimationFrame(settle);
+ };
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',run,{once:true});else run();
+})();
+</script>
+"""
+if 'id="rimalab-stage-spacing-v32"' not in h:
+ pos=h.lower().rfind('</body>')
+ if pos<0:raise SystemExit('V32_FAIL: body não encontrado')
+ h=h[:pos]+stagefix2+'\n'+h[pos:]
+
 hp.write_text(h,encoding='utf-8');gp.write_text(g,encoding='utf-8')
-print('V29_OK: favoritos, fila aleatória, player heart, modo banner e seletor, mensagens rotativas, back navigation, CSS responsivo e versão 3.0.8')
+print('V29_OK: favoritos, fila aleatória, player heart, modo banner e seletor, mensagens rotativas, back navigation, CSS responsivo e versão 3.0.9')
