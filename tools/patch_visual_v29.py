@@ -102,7 +102,8 @@ function decorateCatalog(){
  if(heart)heart.classList.toggle('on',!!(window.ZS&&ZS.key&&fav.includes(String(ZS.key))));
  updateCounts();
 }
-function installTools(){updateCounts()}\nfunction showFavorites(){
+function installTools(){updateCounts()}
+function showFavorites(){
  favView=true;queue=fav.slice();qIndex=0;
  const bp=$('#bp');if(!bp)return;
  const tracks=fav.map(getTrack).filter(Boolean);
