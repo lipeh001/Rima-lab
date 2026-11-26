@@ -185,6 +185,31 @@ main = replace_once(
 )
 main_path.write_text(main, encoding="utf-8")
 
+
+# 8a) MediaSession recebe posição/duração reais e permanece ativa durante a troca de faixa.
+main = main_path.read_text(encoding="utf-8")
+main = replace_once(
+    main,
+    """        @JavascriptInterface public void mediaState(int st, String title) {
+            android.content.Context c = getApplicationContext();""",
+    """        @JavascriptInterface public void mediaState(int st, String title, double duration, double position) {
+            android.content.Context c = getApplicationContext();""",
+    "bridge com posição e duração"
+)
+main = replace_once(
+    main,
+    """            try { c.startForegroundService(new Intent(c, MusicService.class).putExtra("st", st).putExtra("title", title)); } catch (Exception e) {}""",
+    """            try {
+                Intent update = new Intent(c, MusicService.class)
+                        .putExtra("st", st).putExtra("title", title)
+                        .putExtra("duration", (long)(Math.max(0, duration) * 1000d))
+                        .putExtra("position", (long)(Math.max(0, position) * 1000d));
+                c.startForegroundService(update);
+            } catch (Exception e) {}""",
+    "extras de duração e posição"
+)
+main_path.write_text(main, encoding="utf-8")
+
 # 8) MediaSession real para o Android exibir o cartão de mídia com controles consistentes.
 service = service_path.read_text(encoding="utf-8")
 service = replace_once(service, 'static final String CH = "rimalab_player_v2";', 'static final String CH = "rimalab_player_v3";', "novo canal de mídia")
@@ -211,9 +236,13 @@ service = replace_once(
 
     @Override public IBinder onBind(Intent i) { return null; }
 
+    private long currentDuration, currentPosition;
+    private long getIntentDuration() { return currentDuration; }
     private void syncSession(boolean playing, String title) {
         if (mediaSession == null) return;
+        long duration = getIntentDuration();
         mediaSession.setMetadata(new MediaMetadata.Builder()
+                .putLong(MediaMetadata.METADATA_KEY_DURATION, duration)
                 .putString(MediaMetadata.METADATA_KEY_TITLE, title)
                 .putString(MediaMetadata.METADATA_KEY_ARTIST, "Rima Lab · Treino de freestyle")
                 .putString(MediaMetadata.METADATA_KEY_ALBUM, "Biblioteca de beats")
@@ -223,7 +252,7 @@ service = replace_once(
         PlaybackState state = new PlaybackState.Builder()
                 .setActions(actions)
                 .setState(playing ? PlaybackState.STATE_PLAYING : PlaybackState.STATE_PAUSED,
-                        0L, playing ? 1f : 0f, android.os.SystemClock.elapsedRealtime())
+                        currentPosition, playing ? 1f : 0f, android.os.SystemClock.elapsedRealtime())
                 .build();
         mediaSession.setPlaybackState(state);
         if (!mediaSession.isActive()) mediaSession.setActive(true);
@@ -233,6 +262,8 @@ service = replace_once(
 service = replace_once(
     service,
     """        boolean playing = in != null && in.getIntExtra("st", 0) == 1;
+        currentDuration = in != null ? in.getLongExtra("duration", currentDuration) : currentDuration;
+        currentPosition = in != null ? in.getLongExtra("position", currentPosition) : currentPosition;
         String title = in != null ? in.getStringExtra("title") : null;
         if (title == null || title.length() == 0) title = "Rima Lab";
         Notification n = build(playing, title);""",
@@ -302,6 +333,10 @@ if "mediaSession.release();" not in service:
     )
 service_path.write_text(service, encoding="utf-8")
 
+
+# Alinhamento do botão voltar em todas as seções.
+if "</head>" in html and "rima-back-center-v1" not in html:
+    html = html.replace("</head>", '<style id="rima-back-center-v1">#lv .bk,#bt .bk{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;margin-left:auto!important;margin-right:auto!important}</style></head>', 1)
 
 # 9) Limites por categoria aplicados no momento de montar a lista.
 # A função real do projeto pode variar; injeta um limitador na atribuição final.
