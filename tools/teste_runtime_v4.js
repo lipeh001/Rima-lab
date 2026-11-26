@@ -24,6 +24,12 @@ const checks=[
  ['canal de notificação novo e verificável',main.includes('getNotificationChannel(MusicService.CH)')&&service.includes('rimalab_player_v3')],
  ['Android usa MediaSession real',service.includes('new MediaSession(this, "RimaLabMedia")')&&service.includes('setMediaSession(mediaSession.getSessionToken())')],
  ['notification actions têm play/pause/next/previous/stop',service.includes('onSkipToNext')&&service.includes('onSkipToPrevious')&&service.includes('A_STOP')],
+ ['bridge envia posição e duração reais para o Android',main.includes('mediaState(int st, String title, double duration, double position)')&&main.includes('.putExtra("duration"')&&main.includes('.putExtra("position"')],
+ ['MediaSession publica duração e posição da faixa',service.includes('METADATA_KEY_DURATION')&&service.includes('currentPosition, playing ? 1f : 0f')],
+ ['notificação atualiza o relógio durante a reprodução e não some na troca',h.includes('RimaNative.mediaState(st,title,d,c)')&&h.includes('if(play)zMedia(true)')&&h.includes('zMedia(false)')],
+ ['calibrador mede até 1200ms com sinais separados',h.includes('max="1200"')&&h.includes('N=6,W=1')&&h.includes('T+i*1.5')&&h.includes('dl<1200')],
+ ['botão voltar centralizado em todas as seções',h.includes('rima-back-center-v1')&&h.includes('justify-content:center')],
+
  ['catálogo adicionou beats reais com IDs sem duplicação',tracks.length>0&&tracks.length<=30&&manifest.count===tracks.length&&ids.size===tracks.length],
  ['cada beat extra tem áudio, título, artista e duração válida',tracks.every(x=>x.audio&&x.name&&x.artist&&x.duration>=85&&x.duration<=540)],
  ['Boom bap extra exclui lofi, chill e faixas sazonais',tracks.every(x=>!(/lofi|lo-fi|chill|relax|ambient|christmas|holiday|summer\\s*time|good\\s*vibes/i.test(x.name)))]
