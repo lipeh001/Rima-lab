@@ -32,6 +32,8 @@ on:
       - 'tools/teste_visual_v17.js'
       - 'tools/patch_visual_v19.py'
       - 'tools/teste_visual_v19.js'
+      - 'tools/patch_visual_v20.py'
+      - 'tools/teste_visual_v20.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
       - 'tools/teste_catalog_v8.js'
@@ -151,6 +153,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v19.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Substituir animação CSS por pulso quadro a quadro no JavaScript v20
+        run: python3 tools/patch_visual_v20.py "$BUILD_DIR"
+      - name: Validar pulso JavaScript v20
+        shell: bash
+        run: |
+          node tools/teste_visual_v20.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
