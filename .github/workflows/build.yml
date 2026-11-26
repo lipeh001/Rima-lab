@@ -18,6 +18,8 @@ on:
       - 'tools/teste_visual_v10.js'
       - 'tools/patch_visual_v11.py'
       - 'tools/teste_visual_v11.js'
+      - 'tools/patch_visual_v12.py'
+      - 'tools/teste_visual_v12.js'
       - 'tools/teste_catalog_v8.js'
 jobs:
   apk:
@@ -79,6 +81,13 @@ jobs:
           node tools/teste_quality_v9.js "$BUILD_DIR"
           node tools/teste_visual_v10.js "$BUILD_DIR"
           node tools/teste_visual_v11.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Corrigir rimas fonéticas, palco dourado e calibrador v12
+        run: python3 tools/patch_visual_v12.py "$BUILD_DIR"
+      - name: Validar correções v12
+        shell: bash
+        run: |
+          node tools/teste_visual_v12.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
