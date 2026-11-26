@@ -5,7 +5,7 @@ const checks=[
  ['player e lista usam estado favorito sincronizado',h.includes('function syncFavoriteCatalog()')&&h.includes('rima-v29-player-heart')&&h.includes('[data-rima-fav]')],
  ['favoritos existentes mantêm chave de catálogo',h.includes("localStorage.setItem(KEY,JSON.stringify(fav))")],
  ['retomada de efeitos ao voltar para o app',h.includes("document.addEventListener('visibilitychange'")&&h.includes("window.addEventListener('pageshow'")],
- ['retomada do loop do palco e do player',h.includes('cancelAnimationFrame(window.zR)')&&h.includes('WD.raf=requestAnimationFrame(wLoop)')],
+ ['retomada do loop do palco e do player',h.includes('cancelAnimationFrame(zR)')&&h.includes('WD.raf=requestAnimationFrame(wLoop)')],
  ['retomada após rotação da tela',h.includes("window.addEventListener('orientationchange'")],
  ['palco separa palavra principal das sugestões',h.includes('min-height:clamp(76px,18vh,132px)!important')&&h.includes('margin:10px auto 9px!important')],
  ['player horizontal fixo abaixo do palco',h.includes('bottom:calc(58px + env(safe-area-inset-bottom,0px))!important')],
