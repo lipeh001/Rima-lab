@@ -28,6 +28,11 @@ if 'RIMA_RICH_HINTS_V9' not in s:
 
 rep('Escolha uma base para ouvir e treinar. Na primeira vez que você ouvir, o app tenta salvar o beat automaticamente para ouvir offline, quando a licença permite.','Escolha um beat e toque em Ouvir. Depois de ouvir a faixa, o Rima Lab tenta guardá-la para reprodução offline quando a licença autoriza o armazenamento.','texto alternativo')
 s=s.replace("const NAMES=['baixinho','médio','mais alto'],GAINS=[.3,.6,1],N=8,W=2","const NAMES=['volume confortável'],GAINS=[.18],N=7,W=1")
+old_chirp="const sr=ctx.sampleRate,d=Math.max(1,Math.floor(sr/9000)),fs=sr/d,L=Math.round(sr*.22),dur=L/sr,f0=800,f1=3400,tpl=new Float32Array(L);\\nfor(let i=0;i<L;i++){const t=i/sr;tpl[i]=Math.sin(2*Math.PI*(f0*t+(f1-f0)*t*t/(2*dur)))*(.5-.5*Math.cos(2*Math.PI*i/(L-1)))}"
+new_bell="const sr=ctx.sampleRate,d=Math.max(1,Math.floor(sr/9000)),fs=sr/d,L=Math.round(sr*.24),tpl=new Float32Array(L);\\nfor(let i=0;i<L;i++){const t=i/sr,env=Math.exp(-t*17)*(1-Math.exp(-t*160));tpl[i]=env*(Math.sin(2*Math.PI*880*t)+.48*Math.sin(2*Math.PI*1320*t)+.22*Math.sin(2*Math.PI*1760*t))*.42}"
+s=s.replace(old_chirp,new_bell)
+s=s.replace('Ajuste o tempo entre o áudio e a batida visual.','Ajuste o tempo entre o áudio e a batida visual. O teste usa um sino curto em volume confortável.')
+
 s=s.replace('T+i*.75','T+i*1.25').replace('t0+.75-off0','t0+1.25-off0').replace('ts[N+W-1]+1,w0=Date.now()','ts[N+W-1]+1.4,w0=Date.now()')
 s=s.replace('for(let r=0;r<3;r++)','for(let r=0;r<1;r++)')
 s=s.replace('if(mx>=.1&&mx>=rr*5)','if(mx>=.07&&mx>=rr*4)')
