@@ -31,11 +31,14 @@ s=s.replace("const NAMES=['baixinho','médio','mais alto'],GAINS=[.3,.6,1],N=8,W
 old_chirp="const sr=ctx.sampleRate,d=Math.max(1,Math.floor(sr/9000)),fs=sr/d,L=Math.round(sr*.22),dur=L/sr,f0=800,f1=3400,tpl=new Float32Array(L);\nfor(let i=0;i<L;i++){const t=i/sr;tpl[i]=Math.sin(2*Math.PI*(f0*t+(f1-f0)*t*t/(2*dur)))*(.5-.5*Math.cos(2*Math.PI*i/(L-1)))}"
 new_bell="const sr=ctx.sampleRate,d=Math.max(1,Math.floor(sr/9000)),fs=sr/d,L=Math.round(sr*.24),tpl=new Float32Array(L);\nfor(let i=0;i<L;i++){const t=i/sr,env=Math.exp(-t*17)*(1-Math.exp(-t*160));tpl[i]=env*(Math.sin(2*Math.PI*880*t)+.48*Math.sin(2*Math.PI*1320*t)+.22*Math.sin(2*Math.PI*1760*t))*.42}"
 s=s.replace(old_chirp,new_bell)
-# Patch the current chirp implementation produced by patch_runtime.py as well.
-bell_pattern=r"d=Math.max\\(1,(?:Math\\.ceil|Math\\.floor)\\(sr/\\d+\\)\\),fs=sr/d,L=Math\\.round\\(sr\\*\\.12\\),dur=L/sr,f0=\\d+,f1=\\d+,tpl=new Float32Array\\(L\\);for\\(let i=0;i<L;i\\+\\+\\)\\{const t=i/sr;tpl\\[i\\]=Math\\.sin\\(2\\*Math\\.PI\\*\\(f0\\*t\\+\\(f1-f0\\)\\*t\\*t/\\(2\\*dur\\)\\)\\)\\*\\(\\.5-\\.5\\*Math\\.cos\\(2\\*Math\\.PI\\*i/\\(L-1\\)\\)\\)\\}"
-bell_code="d=Math.max(1,Math.floor(sr/9000)),fs=sr/d,L=Math.round(sr*.24),tpl=new Float32Array(L);for(let i=0;i<L;i++){const t=i/sr,env=Math.exp(-t*17)*(1-Math.exp(-t*160));tpl[i]=env*(Math.sin(2*Math.PI*880*t)+.48*Math.sin(2*Math.PI*1320*t)+.22*Math.sin(2*Math.PI*1760*t))*.42}"
-s,n=re.subn(bell_pattern,bell_code,s,count=1)
-if n==0 and "Math.sin(2*Math.PI*880*t)" not in s:raise SystemExit('QUALITY_V9_FAIL: sino não foi aplicado')
+# patch_runtime.py narrows the original chirp; replace that exact emitted code with a short bell.
+decl="d=Math.max(1,Math.ceil(sr/4000)),fs=sr/d,L=Math.round(sr*.12),dur=L/sr,f0=600,f1=1700,tpl=new Float32Array(L);"
+bell_decl="d=Math.max(1,Math.floor(sr/9000)),fs=sr/d,L=Math.round(sr*.24),tpl=new Float32Array(L);"
+if decl in s:s=s.replace(decl,bell_decl,1)
+loop_old="for(let i=0;i<L;i++){const t=i/sr;tpl[i]=Math.sin(2*Math.PI*(f0*t+(f1-f0)*t*t/(2*dur)))*(.5-.5*Math.cos(2*Math.PI*i/(L-1)))}"
+loop_new="for(let i=0;i<L;i++){const t=i/sr,env=Math.exp(-t*17)*(1-Math.exp(-t*160));tpl[i]=env*(Math.sin(2*Math.PI*880*t)+.48*Math.sin(2*Math.PI*1320*t)+.22*Math.sin(2*Math.PI*1760*t))*.42}"
+if loop_old in s:s=s.replace(loop_old,loop_new,1)
+if "Math.sin(2*Math.PI*880*t)" not in s:raise SystemExit('QUALITY_V9_FAIL: sino não foi aplicado')
 # Force a stable median from at least five consistent detections.
 s=s.replace("if(ok.length>=5){ok.sort((x,y)=>x-y);fin={ms:ok[Math.floor(ok.length/2)],n:ok.length};break}","if(ok.length>=5){ok.sort((x,y)=>x-y);const median=ok[Math.floor(ok.length/2)];fin={ms:Math.round(median/5)*5,n:ok.length};break}")
 s=s.replace("Math.abs(x-md)<=8","Math.abs(x-md)<=10")
