@@ -23,7 +23,7 @@ const checks=[
  ['calibrador automático não pede microfone',cal.includes('ctx.baseLatency')&&!cal.includes('getUserMedia')],
  ['calibrador reúne várias leituras do aparelho',cal.includes('for(let i=0;i<9;i++)')&&cal.includes('values.sort((a,b)=>a-b)')],
  ['calibrador estabiliza resultado em precisão de 1ms',cal.includes('Math.round(measured)')&&cal.includes('values[Math.floor(values.length/2)]')],
- ['texto do calibrador deixa claro que não precisa aumentar volume',h.includes('Não precisa de microfone nem de aumentar o volume.')],
+ ['texto do calibrador deixa claro que não precisa aumentar volume',h.includes('Não precisa de microfone nem aumentar o volume.')],
  ['catálogo exige classificação explícita de instrumental no Jamendo',seedScript.includes("if (vocal !== 'instrumental') return -1;")&&h.includes("if(vi!=='instrumental')return 9;")],
  ['catálogo rejeita títulos de música/som cantado sem marcação de beat',seedScript.includes('music|burger|song|anthem|lyrics|vocal')],
  ['APK terá versão 2.9.3 e atualizará a instalação anterior',gradle.includes('versionCode 29')&&gradle.includes("versionName '2.9.3'")]
