@@ -33,6 +33,8 @@ const checks=[
  ['selo do player mostra um único R ampliado',h.includes('<span>R</span><i></i><i></i><i></i>')&&h.includes('font-size:24px!important')],
  ['calibrador usa chirp curto, amostragem leve e pico global',h.includes('sr/4000')&&h.includes('sr*.12')&&h.includes('createScriptProcessor(512,1,1)')&&h.includes('let jj=mj;let fr=0;')],
  ['calibrador valida mediana com pelo menos cinco detecções consistentes',h.includes('ok.length>=5')&&h.includes('Math.abs(x-md)<=8')],
+ ['palco usa relógio interpolado do áudio entre amostras do WebView',h.includes('let zClockP=0,zClockT=0,zClockR=1')&&h.includes('const estimate=zClockT+(p-zClockP)*zClockR')&&h.includes('zClockP=0;zClockT=0;')],
+
 
 
  ['catálogo adicionou beats reais com IDs sem duplicação',tracks.length>0&&tracks.length<=30&&manifest.count===tracks.length&&ids.size===tracks.length],
