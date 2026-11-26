@@ -102,15 +102,7 @@ function decorateCatalog(){
  if(heart)heart.classList.toggle('on',!!(window.ZS&&ZS.key&&fav.includes(String(ZS.key))));
  updateCounts();
 }
-function installTools(){
- const bp=$('#bp');if(!bp)return;
- let tools=$('#rima-v29-tools');
- if(!tools){tools=document.createElement('div');tools.id='rima-v29-tools';tools.className='rima-v29-tools';bp.appendChild(tools)}
- tools.innerHTML='<button id="rima-v29-random">⤨ Beat aleatório</button><button id="rima-v29-favs">♥ Favoritos <span class="rima-v29-count">'+fav.length+'</span></button>';
- $('#rima-v29-random').onclick=playRandomMix;
- $('#rima-v29-favs').onclick=showFavorites;
-}
-function showFavorites(){
+function installTools(){updateCounts()}\nfunction showFavorites(){
  favView=true;queue=fav.slice();qIndex=0;
  const bp=$('#bp');if(!bp)return;
  const tracks=fav.map(getTrack).filter(Boolean);
