@@ -7,10 +7,10 @@ const icon=fs.readFileSync(path.join(root,'app/src/main/res/drawable/ic_stat_bea
 const gradle=fs.readFileSync(path.join(root,'app/build.gradle'),'utf8');
 const checks=[
  ['dicas usam famílias fonéticas curadas, não apenas as três últimas letras',h.includes('rima-rich-hints-v9')&&h.includes("const family=rimasDe(t)")&&!h.includes("IX.get(kk(t))")],
- ['TAÇA tem pelo menos duas rimas adequadas',h.includes("'TAÇA':['cachaça','fumaça','carcaça','couraça']")],
+ ['TAÇA tem pelo menos duas rimas adequadas',h.includes("'TAÇA':['graça','raça','caça','massa']")],
  ['CONSOLE tem sugestões relacionadas',h.includes("'CONSOLE':['controle','descontrole','enrole','engole']")],
- ['POSTE tem sugestões relacionadas',h.includes("'POSTE':['teste','veste','agreste','nordeste']")],
- ['MAREMOTO tem sugestões relacionadas',h.includes("'MAREMOTO':['terremoto','remoto','devoto','garoto']")],
+ ['POSTE tem sugestões relacionadas',h.includes("'POSTE':['goste','encoste','desgoste','aposte']")],
+ ['MAREMOTO tem sugestões relacionadas',h.includes("'MAREMOTO':['terremoto','remoto','moto','foto']")],
  ['BATIMENTO e LIMPAR têm quatro sugestões',h.includes("'BATIMENTO':['pensamento','lamento','talento','momento']")&&h.includes("'LIMPAR':['poupar','disparar','preparar','escapar']")],
  ['modo Palavra não gera prompts narrativos',h.includes('while(!r&&tries++<24)')&&h.includes("w='coração';r='razão, paixão, canção, ilusão'")&&!h.includes("sub:r&&Math.random()<.5?'Rimas possíveis: '+r:nP()")],
  ['calibrador usa um sinal em volume confortável e sete amostras',h.includes("GAINS=[.18],N=7,W=1")&&h.includes('for(let r=0;r<1;r++)')],
