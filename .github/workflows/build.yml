@@ -36,6 +36,8 @@ on:
       - 'tools/teste_visual_v20.js'
       - 'tools/patch_visual_v21.py'
       - 'tools/teste_visual_v21.js'
+      - 'tools/patch_visual_v22.py'
+      - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
       - 'tools/teste_catalog_v8.js'
@@ -169,6 +171,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v21.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Aplicar identidade oficial no splash e retorno ao topo v22
+        run: python3 tools/patch_visual_v22.py "$BUILD_DIR"
+      - name: Validar splash, navegação e versão 3.0.0 v22
+        shell: bash
+        run: |
+          node tools/teste_visual_v22.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
