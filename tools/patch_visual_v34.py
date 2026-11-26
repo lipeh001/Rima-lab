@@ -61,7 +61,7 @@ const $=s=>document.querySelector(s);
 function syncFavoriteCatalog(){
  let fav=[];try{fav=JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]')}catch(_){}
  if(!Array.isArray(fav))fav=[];
- const current=String(window.ZS&&ZS.key||'');
+ const current=String(typeof ZS!=='undefined'&&ZS.key||'');
  const on=!!current&&fav.includes(current);
  const player=$('#rima-v29-player-heart');
  if(player){player.classList.toggle('on',on);player.textContent=on?'♥':'♡';player.setAttribute('aria-pressed',String(on))}
@@ -75,8 +75,8 @@ function syncFavoriteCatalog(){
 function resumeStage(){
  if(document.visibilityState==='hidden')return;
  try{
-  if(window.ctx&&ctx.state==='suspended')ctx.resume();
-  if(window.play&&window.zPL){
+  if(typeof ctx!=='undefined'&&ctx&&ctx.state==='suspended')ctx.resume();
+  if(typeof play!=='undefined'&&play&&typeof zPL!=='undefined'&&zPL){
    if(window.zA&&zA.paused)zA.play().catch(()=>{});
    else if(window.ZY&&ZY.p&&typeof ZY.p.play==='function'&&ZY.p.paused)ZY.p.play();
    if(typeof window.zTick==='function'){
