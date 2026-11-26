@@ -11,7 +11,7 @@ if (!clientId || clientId.length < 6 || clientId.startsWith('COLE')) {
   throw new Error('CLIENT_ID Jamendo inválido');
 }
 
-const TARGET = 70;
+const TARGETS[style]S = {'Boom bap':88,'Trap':77,'Drill':74};
 const CONFIG = {
   'Boom bap': {
     queries: [
@@ -185,19 +185,19 @@ async function buildStyle(style) {
   const out = [];
   const seen = new Set();
   // Verifica em lotes e para assim que houver 70 streams válidos; evita testar dezenas de faixas desnecessárias.
-  for (let offset = 0; offset < pool.length && out.length < TARGET; offset += 20) {
+  for (let offset = 0; offset < pool.length && out.length < TARGETS[style]; offset += 20) {
     const batch = pool.slice(offset, offset + 20);
     const checked = await mapLimit(batch, 10, async x => ({x, ok:await probeAudio(x.r.audio)}));
     for (const p of checked) {
       if (!p || !p.ok || seen.has(String(p.x.r.id))) continue;
       seen.add(String(p.x.r.id));
       out.push(makeRow(style, p.x.r));
-      if (out.length >= TARGET) break;
+      if (out.length >= TARGETS[style]) break;
     }
-    console.log('CATALOG_AUDIO_BATCH', style, 'tested=' + Math.min(offset + batch.length, pool.length), 'valid=' + out.length + '/' + TARGET);
+    console.log('CATALOG_AUDIO_BATCH', style, 'tested=' + Math.min(offset + batch.length, pool.length), 'valid=' + out.length + '/' + TARGETS[style]);
   }
-  if (out.length < TARGET && style !== 'Drill') {
-    throw new Error(style + ': somente ' + out.length + '/' + TARGET +
+  if (out.length < TARGETS[style] && style !== 'Drill') {
+    throw new Error(style + ': somente ' + out.length + '/' + TARGETS[style] +
       ' instrumentais com áudio validado no Jamendo.');
   }
   console.log('CATALOG_STYLE_OK', style, out.length, style==='Drill'?'Jamendo originais':'Jamendo');
@@ -205,12 +205,12 @@ async function buildStyle(style) {
 }
 
 (async () => {
-  console.log('CATALOG_SEED_START', clientId.slice(0,3) + '…', 'target=' + TARGET);
+  console.log('CATALOG_SEED_START', clientId.slice(0,3) + '…', 'target=' + TARGETS[style]);
   const catalogs = {};
   for (const style of Object.keys(CONFIG)) catalogs[style] = await buildStyle(style);
   const drillJamendoCount = catalogs['Drill'].length;
   const drillMoods = ['Dark 808','Night Run','Shadow Steps','Cold Streets','Deep Bass','Midnight','Cinematic','Underground'];
-  for (let i=drillJamendoCount+1;i<=TARGET;i++) {
+  for (let i=drillJamendoCount+1;i<=TARGETS[style];i++) {
     const n=String(i-drillJamendoCount).padStart(2,'0');
     const bpm=138+((i*7)%11);
     const mood=drillMoods[(i-1)%drillMoods.length];
@@ -222,7 +222,7 @@ async function buildStyle(style) {
       64*4*60/bpm
     ]);
   }
-  console.log('CATALOG_DRILL_ORIGINALS',TARGET-drillJamendoCount,'originais; '+drillJamendoCount+' faixas Jamendo verificadas');
+  console.log('CATALOG_DRILL_ORIGINALS',TARGETS[style]-drillJamendoCount,'originais; '+drillJamendoCount+' faixas Jamendo verificadas');
   const seenAcross = new Map();
   for (const [style, rows] of Object.entries(catalogs)) {
     for (const row of rows) {
@@ -237,10 +237,10 @@ async function buildStyle(style) {
   fs.writeFileSync(file, JSON.stringify({
     version:'rimalab-full-catalog-v8',
     generatedAt:new Date().toISOString(),
-    targetPerStyle:TARGET,
+    targetPerStyle:TARGETS[style],
     vocalinstrumentalFilter:'instrumental',
     verifiedJamendoCounts:{'Boom bap':70,'Trap':70,'Drill':drillJamendoCount},
-    generatedOriginalCounts:{'Drill':TARGET-drillJamendoCount},
+    generatedOriginalCounts:{'Drill':TARGETS[style]-drillJamendoCount},
     counts:Object.fromEntries(Object.entries(catalogs).map(([k,v]) => [k,v.length])),
     catalogs
   }), 'utf8');
