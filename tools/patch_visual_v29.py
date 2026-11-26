@@ -7,7 +7,7 @@ gp=root/'app/build.gradle'
 h=hp.read_text(encoding='utf-8')
 # Keep player/nav reserved area consistent in portrait and landscape; stage never gets resized by the dock.
 css=r"""
-<style id="rimalab-complete-v30">
+<style id="rimalab-complete-v31">
 :root{--rima-dock-space:154px}
 body.pl main{padding-bottom:calc(var(--rima-dock-space) + env(safe-area-inset-bottom,0px))!important}
 #pbar{bottom:calc(78px + env(safe-area-inset-bottom,0px))!important;z-index:90!important}
@@ -58,7 +58,7 @@ main,.tab,#train-step-1,#train-step-2{min-width:0!important;max-width:100%!impor
 if 'id="rimalab-complete-v29"' not in h:
  p=h.lower().rfind('</head>');h=h[:p]+css+h[p:] if p>=0 else h+css
 script=r"""
-<script id="rimalab-complete-runtime-v30">
+<script id="rimalab-complete-runtime-v31">
 (function(){
 'use strict';
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
@@ -217,9 +217,72 @@ h=h.replace('arc=Math.min(4.5,Math.max(1.8,chars.length*.22))','arc=Math.min(2.2
 g=gp.read_text(encoding='utf-8')
 m=re.search(r'versionCode\s+(\d+)',g)
 if not m:raise SystemExit('V29_FAIL: versionCode ausente')
-if int(m.group(1))<49:g=g[:m.start(1)]+'49'+g[m.end(1):]
+if int(m.group(1))<50:g=g[:m.start(1)]+'50'+g[m.end(1):]
 m=re.search(r"versionName\s+['\"]([^'\"]+)['\"]",g)
 if not m:raise SystemExit('V29_FAIL: versionName ausente')
-if m.group(1)<'3.0.7':g=g[:m.start(1)]+'3.0.7'+g[m.end(1):]
+if m.group(1)<'3.0.8':g=g[:m.start(1)]+'3.0.8'+g[m.end(1):]
+
+# Consolidate conflicting stage typography rules and keep hint chips out of the word layout.
+h=re.sub(r'<style id="rima-word-fit-v13">[\\s\\S]*?</style>','',h)
+h=re.sub(r'<style id="rimalab-word-vertical-fit-v24">[\\s\\S]*?</style>','',h)
+h=re.sub(r'<script id="rimalab-word-fit-v28">[\\s\\S]*?</script>','',h)
+stagefix=r"""
+<style id="rimalab-stage-stability-v31">
+#module-summary{display:none!important}
+#lv:not([hidden]) #stg.stage{position:relative!important;display:flex!important;flex-direction:column!important;justify-content:flex-start!important;align-items:stretch!important;overflow:hidden!important;min-width:0!important;box-sizing:border-box!important}
+#lv:not([hidden]) #stg.stage #ck{flex:0 0 auto!important;margin:0 0 8px!important}
+#lv:not([hidden]) #stg.stage #cb{display:block!important;flex:1 1 auto!important;min-width:0!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;margin:0 auto!important;padding:8px 3px!important;white-space:nowrap!important;overflow:visible!important;line-height:1.04!important;letter-spacing:-.045em!important;transform:none!important;animation:none!important;transition:none!important;contain:layout style!important}
+#lv:not([hidden]) #stg.stage #cs{flex:0 0 auto!important;min-height:0!important;margin:4px 0!important}
+#lv:not([hidden]) #stg.stage #rm{position:absolute!important;left:10px!important;right:10px!important;bottom:48px!important;z-index:5!important;display:flex!important;flex-wrap:wrap!important;justify-content:center!important;gap:6px!important;min-height:0!important;margin:0!important;padding:0 2px!important;pointer-events:none!important}
+#lv:not([hidden]) #stg.stage #rm:empty{display:none!important}
+#lv:not([hidden]) #stg.stage #rm span{display:inline-flex!important;align-items:center!important;padding:5px 10px!important;border-radius:999px!important;background:rgba(33,224,192,.18)!important;border:1px solid rgba(33,224,192,.55)!important;color:#d8fff5!important;font-size:clamp(12px,2.2vw,18px)!important;line-height:1.15!important;font-weight:750!important}
+#lv:not([hidden]) #stg.stage #sg{flex:0 0 auto!important;min-height:8px!important;margin:0!important}
+#lv:not([hidden]) #stg.stage #cn{flex:0 0 auto!important;min-height:0!important;margin:4px 0 0!important}
+#lv:not([hidden]) #stg.stage .v3bar{flex:0 0 auto!important;position:relative!important;z-index:6!important;margin:5px auto 0!important;padding:0 0 4px!important}
+#lv:not([hidden]) #stg.stage #cb .rima-curve-char{display:inline-block!important;white-space:pre!important}
+#lv:not([hidden]) #stg.stage #cb.rima-word-fitting{font-size:var(--rima-fit-size,64px)!important}
+@media(orientation:landscape){#lv:not([hidden]) #stg.stage #rm{bottom:32px!important}}
+</style>
+<script id="rimalab-word-fit-v31">
+(function(){
+ const fit=()=>{
+  const e=document.getElementById('cb'),stage=document.getElementById('stg');
+  if(!e||!stage||!stage.clientWidth)return;
+  const text=(e.textContent||'').trim();if(!text)return;
+  const chars=Array.from(text).length;
+  const cap=chars<=5?88:chars<=8?80:chars<=12?70:chars<=18?60:52;
+  const available=Math.max(72,stage.clientWidth-34);
+  const range=document.createRange();
+  try{range.selectNodeContents(e)}catch(_){return}
+  e.classList.add('rima-word-fitting');
+  e.style.setProperty('font-size',cap+'px','important');
+  let rect=range.getBoundingClientRect(),width=Math.max(rect.width,e.scrollWidth>e.clientWidth?e.scrollWidth:0);
+  if(width>available){
+   let size=Math.max(20,cap*available/width*.96);
+   e.style.setProperty('font-size',size.toFixed(1)+'px','important');
+   rect=range.getBoundingClientRect();width=Math.max(rect.width,e.scrollWidth>e.clientWidth?e.scrollWidth:0);
+   if(width>available)e.style.setProperty('font-size',Math.max(18,size*available/width*.94).toFixed(1)+'px','important');
+  }
+  const h=range.getBoundingClientRect().height;
+  const maxH=Math.max(42,Math.min(stage.clientHeight*.36,170));
+  if(h>maxH){const current=parseFloat(getComputedStyle(e).fontSize)||cap;e.style.setProperty('font-size',Math.max(18,current*maxH/h*.94).toFixed(1)+'px','important')}
+ };
+ let queued=false;const schedule=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;fit()})};
+ const boot=()=>{
+  const e=document.getElementById('cb'),stage=document.getElementById('stg');if(!e||!stage)return;
+  new MutationObserver(schedule).observe(e,{childList:true,subtree:true,characterData:true});
+  if(typeof ResizeObserver!=='undefined')new ResizeObserver(schedule).observe(stage);
+  window.addEventListener('resize',schedule,{passive:true});
+  window.addEventListener('orientationchange',()=>setTimeout(schedule,100),{passive:true});
+  schedule();
+ };
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot,{once:true});else boot();
+})();
+</script>
+"""
+pos=h.lower().rfind('</body>')
+if pos<0:raise SystemExit('V31_FAIL: body não encontrado')
+h=h[:pos]+stagefix+'\\n'+h[pos:]
+
 hp.write_text(h,encoding='utf-8');gp.write_text(g,encoding='utf-8')
-print('V29_OK: favoritos, fila aleatória, player heart, modo banner e seletor, mensagens rotativas, back navigation, CSS responsivo e versão 3.0.7')
+print('V29_OK: favoritos, fila aleatória, player heart, modo banner e seletor, mensagens rotativas, back navigation, CSS responsivo e versão 3.0.8')
