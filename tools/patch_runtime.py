@@ -70,7 +70,7 @@ html = replace_once(
 )
 html = replace_once(
     html,
-    "function zSwap(){if(play){if(!zRestartAct())zLoad(ZS.k=='syn'?zBars():0)}pk()}",
+    "function zSwap(){if(play){zLoad(ZS.k=='syn'?zBars():0);pk();return}pk()}",
     "function zSwap(){if(play){if(!zRestartAct()){zLoad(ZS.k=='syn'?zBars():0);pk()}return}pk()}",
     "redesenho único na troca de beat"
 )
@@ -219,7 +219,7 @@ service = replace_once(
         PlaybackState state = new PlaybackState.Builder()
                 .setActions(actions)
                 .setState(playing ? PlaybackState.STATE_PLAYING : PlaybackState.STATE_PAUSED,
-                        PlaybackState.PLAYBACK_POSITION_UNKNOWN, playing ? 1f : 0f)
+                        0L, playing ? 1f : 0f, android.os.SystemClock.elapsedRealtime())
                 .build();
         mediaSession.setPlaybackState(state);
         if (!mediaSession.isActive()) mediaSession.setActive(true);
