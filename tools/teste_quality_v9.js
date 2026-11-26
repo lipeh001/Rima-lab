@@ -12,7 +12,7 @@ const checks=[
  ['POSTE tem sugestões relacionadas',h.includes("'POSTE':['teste','veste','agreste','nordeste']")],
  ['MAREMOTO tem sugestões relacionadas',h.includes("'MAREMOTO':['terremoto','remoto','devoto','garoto']")],
  ['BATIMENTO e LIMPAR têm quatro sugestões',h.includes("'BATIMENTO':['pensamento','lamento','talento','momento']")&&h.includes("'LIMPAR':['poupar','disparar','preparar','escapar']")],
- ['modo Palavra não gera prompts narrativos',h.includes("sub:r?'Rimas possíveis: '+r:'Explore o som final e os sentidos da palavra.'")&&!h.includes("sub:r&&Math.random()<.5?'Rimas possíveis: '+r:nP()")],
+ ['modo Palavra não gera prompts narrativos',h.includes('while(!r&&tries++<24)')&&h.includes("w='coração';r='razão, paixão, canção, ilusão'")&&!h.includes("sub:r&&Math.random()<.5?'Rimas possíveis: '+r:nP()")],
  ['calibrador usa um sinal em volume confortável e sete amostras',h.includes("GAINS=[.18],N=7,W=1")&&h.includes('for(let r=0;r<1;r++)')],
  ['calibrador estabiliza o resultado por mediana e passos de 5 ms',h.includes('Math.round(median/5)*5')&&h.includes('Math.abs(x-md)<=10')],
  ['calibrador não pede para aumentar o volume',!h.includes('Aumente um pouco o volume')&&h.includes('🔔')],
