@@ -30,9 +30,12 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await page.waitForTimeout(150);
   const modeSelected=await page.locator('#md .mc').first().evaluate(e=>e.classList.contains('on')||e.getAttribute('aria-pressed')==='true');
   ok('step 1 mode choice responds to a real tap in landscape',modeSelected);
+  await page.setViewportSize({width:393,height:852});
+  await page.evaluate(()=>{dispatchEvent(new Event('orientationchange'));dispatchEvent(new Event('resize'))});
+  await page.waitForTimeout(220);
   const next=page.locator('#train-step-1 .go').first();await next.waitFor({state:'visible',timeout:8000});
-  const nb=await next.boundingBox();if(nb)await page.mouse.click(nb.x+nb.width/2,nb.y+nb.height/2);
-  await page.waitForTimeout(250);
+  await next.scrollIntoViewIfNeeded();await next.click({timeout:8000});
+  await page.waitForTimeout(350);
   const step2=await page.evaluate(()=>({one:document.querySelector('#train-step-1').hidden,two:!document.querySelector('#train-step-2').hidden,player:getComputedStyle(document.querySelector('#pbar')).display}));
   ok('step 1 continue button advances to step 2 without player appearing',step2.one&&step2.two&&step2.player==='none',JSON.stringify(step2));
   // Simulate a running beat before entering the live stage; the player should
