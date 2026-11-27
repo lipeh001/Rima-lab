@@ -45,16 +45,22 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   ok('opening Favorites does not mutate favorite selection',JSON.stringify(savedAfterOpen)===JSON.stringify(savedBefore));
   await tap('#bp .rima-v43-toggle');
   await page.waitForTimeout(180);
+  const stillFavorites=await page.evaluate(()=>({showing:!!document.querySelector('#bp>.rima-v43-favlist'),pressed:document.querySelector('#bp .rima-v43-toggle')?.getAttribute('aria-pressed'),hidden:document.querySelector('#bp>.bsl')?.hidden,saved:JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]')}));
+  ok('tapping the selected Favorites tab again keeps it selected',stillFavorites.showing&&stillFavorites.pressed==='true'&&stillFavorites.hidden===true&&stillFavorites.saved.includes(key),JSON.stringify(stillFavorites));
+  await tap('#bp .rima-v50-category-row .tag.chip:first-child');
   const backState=await page.evaluate(()=>({category:ZS.s,showing:!!document.querySelector('#bp>.rima-v43-favlist'),hidden:document.querySelector('#bp>.bsl')?.hidden,saved:JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]')}));
-  ok('tapping Favorites again returns to Boom bap instead of deselecting a beat',backState.category==='Boom bap'&&!backState.showing&&backState.hidden===false&&backState.saved.includes(key),JSON.stringify(backState));
+  ok('choosing Boom bap switches out of Favorites without removing saved beats',backState.category==='Boom bap'&&!backState.showing&&backState.hidden===false&&backState.saved.includes(key),JSON.stringify(backState));
   await tap('#train-step-2 .training-footer .go');
   await page.waitForFunction(()=>!document.querySelector('#lv').hidden,{timeout:10000});
   await page.waitForSelector('#bq .rima-v43-toggle',{timeout:8000});
   await tap('#bq .rima-v43-toggle');
   await checkRoot('bq','live selector');
   await tap('#bq .rima-v43-toggle');
+  const liveStill=await page.evaluate(()=>({showing:!!document.querySelector('#bq>.rima-v43-favlist'),pressed:document.querySelector('#bq .rima-v43-toggle')?.getAttribute('aria-pressed'),hidden:document.querySelector('#bq>.bsl')?.hidden}));
+  ok('live Favorites tab remains selected when tapped again',liveStill.showing&&liveStill.pressed==='true'&&liveStill.hidden===true,JSON.stringify(liveStill));
+  await tap('#bq .rima-v50-category-row .tag.chip:first-child');
   const liveBack=await page.evaluate(()=>({category:ZS.s,showing:!!document.querySelector('#bq>.rima-v43-favlist'),hidden:document.querySelector('#bq>.bsl')?.hidden}));
-  ok('live selector Favorites toggle returns to Boom bap and restores catalog',liveBack.category==='Boom bap'&&!liveBack.showing&&liveBack.hidden===false,JSON.stringify(liveBack));
+  ok('choosing Boom bap from live Favorites restores that category',liveBack.category==='Boom bap'&&!liveBack.showing&&liveBack.hidden===false,JSON.stringify(liveBack));
 
   // Verify the very same #pbar node and children return to their original portrait geometry.
   const baseline=await page.evaluate(()=>{
@@ -66,7 +72,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await page.evaluate(()=>window.dispatchEvent(new Event('resize')));
   await page.waitForTimeout(260);
   const landscape=await page.evaluate(()=>({height:document.getElementById('pbar').getBoundingClientRect().height,style:document.getElementById('pbar').getAttribute('style')}));
-  ok('landscape dock is applied to the existing player',landscape.height>0&&/height:\s*70px/.test(landscape.style||''),JSON.stringify(landscape));
+  ok('landscape dock is applied to the existing player with separate timing/seek space',landscape.height>=82&&/height:\s*84px/.test(landscape.style||''),JSON.stringify(landscape));
   await page.setViewportSize({width:393,height:852});
   await page.evaluate(()=>{window.dispatchEvent(new Event('orientationchange'));window.dispatchEvent(new Event('resize'))});
   await page.waitForTimeout(760);
