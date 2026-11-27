@@ -496,3 +496,5 @@ jobs:
 # V54 lexical-global test fix
 
 # Re-run after V54 DOM assertion fix
+
+# Re-run after V54 battle button selector fix
