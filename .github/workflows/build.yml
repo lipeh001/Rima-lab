@@ -492,3 +492,5 @@ jobs:
           name: RimaLab-review
           path: review/*
           if-no-files-found: error
+
+# V54 lexical-global test fix
