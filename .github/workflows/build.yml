@@ -69,6 +69,8 @@ on:
       - 'tools/teste_visual_v44.js'
       - 'tools/patch_visual_v45.py'
       - 'tools/teste_favorites_organic_v45.js'
+      - 'tools/patch_visual_v46.py'
+      - 'tools/teste_visual_v46.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -344,6 +346,13 @@ jobs:
           npm install --no-save playwright@1.55.0
           npx playwright install --with-deps chromium
           node tools/teste_favorites_organic_v45.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Corrigir palco horizontal, Favoritos e download na lista V46
+        run: python3 tools/patch_visual_v46.py "$BUILD_DIR"
+      - name: Validar paisagem, downloads nos Favoritos e player preservado V46
+        shell: bash
+        run: |
+          node tools/teste_visual_v46.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
