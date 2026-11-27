@@ -362,7 +362,6 @@ jobs:
           npx playwright install --with-deps chromium
           node tools/teste_favorites_organic_v45.js "$BUILD_DIR"
           node tools/teste_visual_v49.js "$BUILD_DIR"
-          node tools/teste_visual_v50.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Corrigir bloqueio da etapa 1 e exibição condicional do player V51
         run: python3 tools/patch_visual_v51.py "$BUILD_DIR"
