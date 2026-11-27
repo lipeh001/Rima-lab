@@ -10,23 +10,31 @@ if 'rimalab-selection-feedback-runtime-v45' in h: raise SystemExit('V45_FAIL: al
 if 'rimalab-favorites-layout-runtime-v43' not in h or 'rimalab-favorites-catalog-lexical-v44' not in h:
     raise SystemExit('V45_FAIL: expected V43/V44 runtimes missing')
 replacement=r'''function renderRoot(root){
-  const bar=ensureToolbar(root);removeView(root);
-  root.querySelectorAll(':scope > .bsl:not(.rima-v43-favlist)').forEach(e=>{e.hidden=showing});
-  root.querySelectorAll(':scope > .catalog-attribution').forEach(e=>{e.hidden=showing});
-  root.querySelectorAll(':scope > .row').forEach(row=>{
-   if(!row.querySelector('.tag.chip'))return;
-   row.hidden=showing;
-   if(showing)row.querySelectorAll('.tag.chip').forEach(b=>{b.classList.remove('on');b.setAttribute('aria-pressed','false')});
-  });
-  if(showing)bar.insertAdjacentHTML('afterend',favoriteMarkup());
- }
-'''
+  const id=root.id,bar=ensureToolbar(root);removeView(root);
+  if(id==='bp'){
+   root.querySelectorAll(':scope > .bsl').forEach(e=>{if(!e.classList.contains('rima-v43-favlist'))e.hidden=showing});
+   root.querySelectorAll(':scope > .catalog-attribution').forEach(e=>e.hidden=showing);
+   root.querySelectorAll('.row .tag.chip').forEach(b=>{if(showing){b.classList.remove('on');b.setAttribute('aria-pressed','false')}});
+   if(showing)bar.insertAdjacentHTML('afterend',favoriteMarkup());
+  }else{
+   // Keep stage category chips live; only swap the beat catalog content.
+   if(showing){
+    root.querySelectorAll('.bc').forEach(e=>e.hidden=true);
+    bar.insertAdjacentHTML('afterend',favoriteMarkup());
+   }else root.querySelectorAll('.bc').forEach(e=>e.hidden=false);
+  }
+ }'''
 v43_start=h.find('<script id="rimalab-favorites-layout-runtime-v43">')
 if v43_start<0: raise SystemExit('V45_FAIL: V43 script opening tag missing')
 v43_body=v43_start+len('<script id="rimalab-favorites-layout-runtime-v43">')
 v43_end=h.find('</script>',v43_body)
 if v43_end<0: raise SystemExit('V45_FAIL: V43 script closing tag missing')
 v43_js=h[v43_body:v43_end]
+# Category chips in either selector close Favorites and switch to that category.
+old_chip="const chip=e.target&&e.target.closest?e.target.closest('#bp .row .tag.chip'):null;\n  if(chip&&showing)setMode(false,'bp');"
+new_chip="const chip=e.target&&e.target.closest?e.target.closest('#bp .row .tag.chip,#bq .row .tag.chip'):null;\n  if(chip&&showing)setMode(false,chip.closest('#bp,#bq').id);"
+if old_chip not in v43_js: raise SystemExit('V46_FAIL: stage category click handler not found')
+v43_js=v43_js.replace(old_chip,new_chip,1)
 start=v43_js.find('function renderRoot(root){')
 end=v43_js.find('\n function render(){',start)
 if start<0 or end<0: raise SystemExit('V45_FAIL: renderer function not found inside V43 script')
@@ -52,6 +60,15 @@ css=r'''<style id="rimalab-selection-feedback-v45">
 #bp .rima-v43-fav-play.is-selected b,#bq .rima-v43-fav-play.is-selected b{color:#ffe39a!important}
 #bp .bsl .bi .mc[aria-pressed="true"],#bq .bsl .bi .mc[aria-pressed="true"]{outline:1px solid rgba(239,207,106,.35)!important;outline-offset:1px!important}
 #bp .rima-v43-fav-row,#bq .rima-v43-fav-row{transition:background .16s,border-color .16s,box-shadow .16s!important}
+/* Make all heart glyphs visibly heavier without changing tap targets. */
+#bp .rima-v43-toggle,#bq .rima-v43-toggle,
+#bp .rima-v43-fav-heart,#bq .rima-v43-fav-heart,
+#rima-v29-player-heart,.rima-v29-fav{
+ font-weight:900!important;-webkit-text-stroke:.9px currentColor!important;
+ text-shadow:0 0 .35px currentColor!important;
+}
+#bp .rima-v43-toggle,#bq .rima-v43-toggle{font-size:15px!important}
+#bp .rima-v43-fav-heart,#bq .rima-v43-fav-heart,#rima-v29-player-heart,.rima-v29-fav{font-size:20px!important}
 </style>'''
 runtime=r'''<script id="rimalab-selection-feedback-runtime-v45">
 (function(){
