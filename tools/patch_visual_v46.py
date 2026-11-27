@@ -185,6 +185,25 @@ css=r"""<style id="rimalab-landscape-stage-download-v47">
 <script id="rimalab-landscape-stage-download-runtime-v47">
 (function(){
  'use strict';
+ function annotateInitialCatalog(){
+  const lib=typeof ZLIB!=='undefined'&&ZLIB?ZLIB:(window.ZLIB||{});
+  ['bp','bq'].forEach(id=>{
+   const root=document.getElementById(id);if(!root)return;
+   root.querySelectorAll('.bsl .bi .mc').forEach(button=>{
+    if(button.hasAttribute('data-rima-track-key'))return;
+    const m=String(button.getAttribute('onclick')||'').match(/zLP\\((\\d+),0,'([^']+)'\\)/);
+    if(!m)return;
+    const list=lib[m[2]]&&lib[m[2]][1]||[],item=list[Number(m[1])];
+    if(item&&item[4]!=null){
+     const key='jm-'+String(item[4]);
+     button.setAttribute('data-rima-track-key',key);
+     button.setAttribute('aria-pressed',String(typeof ZS!=='undefined'&&ZS.k==='lib'&&ZS.key===key));
+    }
+   });
+  });
+  if(typeof window.rimaV45SyncSelection==='function')window.rimaV45SyncSelection();
+ }
+ annotateInitialCatalog();setTimeout(annotateInitialCatalog,180);
  function adjust(){
   const lv=document.getElementById('lv'),pb=document.getElementById('pbar');
   if(!lv)return;
