@@ -47,6 +47,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await page.evaluate(()=>{
    const lv=document.querySelector('#lv');
    if(lv){lv.hidden=false;lv.style.display='';}
+   const setup=document.querySelector('#train-step-2');if(setup)setup.hidden=true;
    document.body.classList.add('pl');document.body.classList.remove('pv');
    if(window.rimaV51SyncPlayer)window.rimaV51SyncPlayer();
   });
