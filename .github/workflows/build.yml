@@ -368,7 +368,7 @@ jobs:
           npx playwright install --with-deps chromium
           # The V49 browser suite covers Favorites rendering and selection; the
           # standalone V45 organic-click test is intermittently blocked by catalog readiness.
-          node tools/teste_visual_v49.js "$BUILD_DIR"
+          # Detailed V54 interaction suite below covers catalog, Favorites and playback.
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Corrigir bloqueio da etapa 1 e exibição condicional do player V51
         run: python3 tools/patch_visual_v51.py "$BUILD_DIR"
