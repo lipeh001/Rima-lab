@@ -9,7 +9,7 @@ h=hp.read_text(encoding='utf-8');g=gp.read_text(encoding='utf-8')
 if 'rimalab-selection-feedback-runtime-v45' in h: raise SystemExit('V45_FAIL: already applied')
 if 'rimalab-favorites-layout-runtime-v43' not in h or 'rimalab-favorites-catalog-lexical-v44' not in h:
     raise SystemExit('V45_FAIL: expected V43/V44 runtimes missing')
-pattern=r' function renderRoot\(root\)\{[\s\S]*?\n \}\n function render\(\)'
+pattern=r' function renderRoot\\(root\\)\\{[\\s\\S]*?\\n \\}\\n function render\\(\\)'
 replacement=r''' function renderRoot(root){
   const bar=ensureToolbar(root);removeView(root);
   root.querySelectorAll(':scope > .bsl:not(.rima-v43-favlist)').forEach(e=>{e.hidden=showing});
@@ -22,9 +22,15 @@ replacement=r''' function renderRoot(root){
   if(showing)bar.insertAdjacentHTML('afterend',favoriteMarkup());
  }
  function render()'''
-h2,n=re.subn(pattern,replacement,h,count=1)
-if n!=1: raise SystemExit('V45_FAIL: could not replace shared Favorites renderer')
-h=h2
+v43_start=h.find('<script id="rimalab-favorites-layout-runtime-v43">')
+if v43_start<0: raise SystemExit('V45_FAIL: V43 script opening tag missing')
+v43_body=v43_start+len('<script id="rimalab-favorites-layout-runtime-v43">')
+v43_end=h.find('</script>',v43_body)
+if v43_end<0: raise SystemExit('V45_FAIL: V43 script closing tag missing')
+v43_js=h[v43_body:v43_end]
+v43_js2,n=re.subn(pattern,replacement,v43_js,count=1)
+if n!=1: raise SystemExit('V45_FAIL: could not replace renderer inside V43 script')
+h=h[:v43_body]+v43_js2+h[v43_end:]
 css=r'''<style id="rimalab-selection-feedback-v45">
 #bp .bsl .bi>.beat-info>.mc.on,#bq .bsl .bi>.beat-info>.mc.on,#bp .bsl .bi .mc.on,#bq .bsl .bi .mc.on{
  background:linear-gradient(105deg,rgba(229,196,91,.34),rgba(229,196,91,.14))!important;
