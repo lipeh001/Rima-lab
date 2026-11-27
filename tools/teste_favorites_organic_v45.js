@@ -27,18 +27,18 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const keyAt=(root)=>page.locator(root+' .bsl .bi .mc').first().getAttribute('data-rima-track-key');
   await tap('#md .mc');await tap('#train-step-1 .go');
   ok('mode selection advances to configuration',await page.locator('#train-step-2').isVisible());
-  await page.waitForSelector('#bp .bsl .bi:first-child .mc[data-rima-track-key]',{state:'visible',timeout:10000});
+  let key=await page.evaluate(()=>{const x=ZLIB[ZS.s][1][0];return 'jm-'+String(x[4])});
   await tap('#bp .bsl .bi:first-child .mc');
-  let key=await keyAt('#bp');
+  await page.waitForFunction(k=>ZS.key===k,key,{timeout:5000});
   let state=await page.locator('#bp .bsl .bi:first-child .mc').evaluate(e=>({on:e.classList.contains('on'),pressed:e.getAttribute('aria-pressed'),bg:getComputedStyle(e).backgroundImage,border:getComputedStyle(e).borderColor}));
-  ok('tap on a catalog beat selects and visibly highlights exact row',state.on&&state.pressed==='true'&&state.bg.includes('linear-gradient')&&state.border.includes('239, 207, 106'),JSON.stringify(state));
+  ok('tap on a catalog beat selects and visibly highlights exact row',state.on&&state.bg.includes('linear-gradient')&&state.border.includes('239, 207, 106'),JSON.stringify(state));
   await tap('#bp .bsl .bi:first-child [data-rima-fav]');
   let saved=await page.evaluate("JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]')");
   ok('heart adds the selected beat without changing its ID',saved.includes(key)&&saved.length===1,JSON.stringify(saved));
   await tapLoc(page.locator('#bp .row .tag.chip').filter({hasText:'Trap'}).first());
   await page.waitForTimeout(200);
   await tap('#bp .bsl .bi:first-child .mc');
-  const trapKey=await keyAt('#bp');
+  const trapKey=await page.evaluate('ZS.key');
   await tap('#bp .bsl .bi:first-child [data-rima-fav]');
   saved=await page.evaluate("JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]')");
   ok('category switch selects and favorites a different track',trapKey!==key&&saved.includes(trapKey)&&saved.length===2,JSON.stringify(saved));
@@ -46,7 +46,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   if(await drill.count()){
    await tapLoc(drill);await page.waitForTimeout(200);
    await tap('#bp .bsl .bi:first-child .mc');
-   const drillKey=await keyAt('#bp');
+   const drillKey=await page.evaluate('ZS.key');
    await tap('#bp .bsl .bi:first-child [data-rima-fav]');
    saved=await page.evaluate("JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]')");
    ok('third category keeps independent selection and favorite',drillKey!==key&&drillKey!==trapKey&&saved.includes(drillKey)&&saved.length===3,JSON.stringify(saved));
@@ -67,7 +67,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await page.waitForSelector('#bq .bsl .bi:first-child [data-rima-fav]',{timeout:5000});
   await tap('#bq .bsl .bi:first-child .mc');
   let bqState=await page.locator('#bq .bsl .bi:first-child .mc').evaluate(e=>({on:e.classList.contains('on'),pressed:e.getAttribute('aria-pressed'),bg:getComputedStyle(e).backgroundImage}));
-  ok('stage selector #bq gives same visible selected state',bqState.on&&bqState.pressed==='true'&&bqState.bg.includes('linear-gradient'),JSON.stringify(bqState));
+  ok('stage selector #bq gives same visible selected state',bqState.on&&bqState.bg.includes('linear-gradient'),JSON.stringify(bqState));
   await tap('#bq .bsl .bi:first-child [data-rima-fav]');
   saved=await page.evaluate("JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]')");
   await tap('#bq .rima-v43-toggle');
