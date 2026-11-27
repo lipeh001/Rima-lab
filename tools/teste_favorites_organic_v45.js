@@ -60,12 +60,12 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   ok('next-track navigation stays inside Favorites queue',saved.includes(current));
   await tapLoc(page.locator('#bp .row .tag.chip').filter({hasText:'Boom bap'}).first());
   ok('choosing Boom bap restores the setup catalog before entering stage',await page.locator('#bp .bsl:not(.rima-v43-favlist)').isVisible());
-  await tap('#bp .bsl .bi:first-child .mc'); // Favorites returns to Boom bap; select a beat in that category before starting.
+  await tapLoc(page.locator('#bp>.bsl:visible .bi:first-child .mc')); // Select the visible Boom bap catalog row after leaving Favorites.
   await tap('#train-step-2 .training-footer .go');await page.waitForTimeout(450);
   ok('selected beat enters the live stage',!(await page.locator('#lv').evaluate(e=>e.hidden)));
   await page.waitForSelector('#bq .bsl .bi .mc',{timeout:10000});
   await page.waitForSelector('#bq .bsl .bi:first-child [data-rima-fav]',{timeout:5000});
-  await tap('#bq .bsl .bi:first-child .mc');
+  await tapLoc(page.locator('#bq>.bsl:visible .bi:first-child .mc'));
   let bqState=await page.locator('#bq .bsl .bi:first-child .mc').evaluate(e=>({on:e.classList.contains('on'),pressed:e.getAttribute('aria-pressed'),bg:getComputedStyle(e).backgroundImage}));
   ok('stage selector #bq gives same visible selected state',bqState.on&&bqState.bg.includes('linear-gradient'),JSON.stringify(bqState));
   await tap('#bq .bsl .bi:first-child [data-rima-fav]');
