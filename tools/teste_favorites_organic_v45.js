@@ -16,12 +16,13 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await page.setContent(shim+html,{waitUntil:'domcontentloaded',timeout:30000});
   await page.waitForSelector('#md .mc',{timeout:15000});
   await page.waitForSelector('#bp .bsl .bi .mc',{timeout:15000});
-  const tap=async selector=>{
-   const loc=page.locator(selector).first();await loc.waitFor({state:'visible',timeout:7000});
+  const tapLoc=async loc=>{
+   await loc.waitFor({state:'visible',timeout:7000});
    await loc.evaluate(e=>e.scrollIntoView({block:'center',inline:'center'}));
-   const box=await loc.boundingBox();if(!box)throw Error('No clickable box: '+selector);
+   const box=await loc.boundingBox();if(!box)throw Error('No clickable box');
    await page.mouse.click(box.x+box.width/2,box.y+box.height/2);await page.waitForTimeout(130);
   };
+  const tap=selector=>tapLoc(page.locator(selector).first());
   const keyAt=(root)=>page.locator(root+' .bsl .bi .mc').first().getAttribute('data-rima-track-key');
   await tap('#md .mc');await tap('#train-step-1 .go');
   ok('mode selection advances to configuration',await page.locator('#train-step-2').isVisible());
@@ -32,7 +33,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await tap('#bp .bsl .bi:first-child [data-rima-fav]');
   let saved=await page.evaluate("JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]')");
   ok('heart adds the selected beat without changing its ID',saved.includes(key)&&saved.length===1,JSON.stringify(saved));
-  await tap('#bp .row .tag.chip');
+  await tapLoc(page.locator('#bp .row .tag.chip').filter({hasText:'Trap'}).first());
   await page.waitForTimeout(200);
   await tap('#bp .bsl .bi:first-child .mc');
   const trapKey=await keyAt('#bp');
@@ -41,7 +42,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   ok('category switch selects and favorites a different track',trapKey!==key&&saved.includes(trapKey)&&saved.length===2,JSON.stringify(saved));
   const drill=page.locator('#bp .row .tag.chip').filter({hasText:'Drill'}).first();
   if(await drill.count()){
-   await drill.evaluate(e=>e.click());await page.waitForTimeout(200);
+   await tapLoc(drill);await page.waitForTimeout(200);
    await tap('#bp .bsl .bi:first-child .mc');
    const drillKey=await keyAt('#bp');
    await tap('#bp .bsl .bi:first-child [data-rima-fav]');
@@ -70,6 +71,11 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   ok('stage Favorites plays and highlights selected saved item',saved.includes(current)&&await page.locator('#bq .rima-v43-fav-play[aria-current="true"]').count()===1);
   await tap('#bq .rima-v43-toggle');await page.waitForTimeout(120);
   ok('closing stage Favorites restores catalog and selected beat',await page.locator('#bq .bsl .bi .mc.on').count()===1);
+  await tapLoc(page.locator('#bq .row .tag.chip').filter({hasText:'Boom bap'}).first());
+  await tap('#bq .bsl .bi:first-child .mc');
+  const bqCategoryState=await page.locator('#bq .bsl .bi:first-child .mc').evaluate(e=>({on:e.classList.contains('on'),bg:getComputedStyle(e).backgroundImage}));
+  ok('category switching also preserves visible selection inside the stage',bqCategoryState.on&&bqCategoryState.bg.includes('linear-gradient'),JSON.stringify(bqCategoryState));
+  await tap('#lv > .bk');
   await tap('nav button[data-i="2"]');const battle=await page.locator('nav button[data-i="2"]').getAttribute('class');
   await tap('nav button[data-i="1"]');const lessons=await page.locator('nav button[data-i="1"]').getAttribute('class');
   await tap('nav button[data-i="0"]');const training=await page.locator('nav button[data-i="0"]').getAttribute('class');
