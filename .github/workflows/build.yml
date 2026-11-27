@@ -71,6 +71,7 @@ on:
       - 'tools/teste_favorites_organic_v45.js'
       - 'tools/patch_visual_v46.py'
       - 'tools/teste_visual_v46.js'
+      - 'tools/patch_visual_v47.py'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -342,6 +343,8 @@ jobs:
         run: python3 tools/patch_visual_v45.py "$BUILD_DIR"
       - name: Corrigir palco horizontal, Favoritos e download na lista V46
         run: python3 tools/patch_visual_v46.py "$BUILD_DIR"
+      - name: Refinar Favoritos, rotação do player e sobreposição do palco V47
+        run: python3 tools/patch_visual_v47.py "$BUILD_DIR"
       - name: Testar seleção e Favoritos com cliques reais no Chromium
         shell: bash
         run: |
