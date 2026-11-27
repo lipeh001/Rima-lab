@@ -74,6 +74,8 @@ on:
       - 'tools/patch_visual_v47.py'
       - 'tools/patch_visual_v49.py'
       - 'tools/teste_visual_v49.js'
+      - 'tools/patch_visual_v50.py'
+      - 'tools/teste_visual_v50.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -349,6 +351,8 @@ jobs:
         run: python3 tools/patch_visual_v47.py "$BUILD_DIR"
       - name: Unificar seletores, restaurar player original e bloquear página de fundo V49
         run: python3 tools/patch_visual_v49.py "$BUILD_DIR"
+      - name: Corrigir rolagem de Favoritos, layout horizontal e espaçamento do player V50
+        run: python3 tools/patch_visual_v50.py "$BUILD_DIR"
       - name: Testar seleção e Favoritos com cliques reais no Chromium
         shell: bash
         run: |
@@ -356,6 +360,7 @@ jobs:
           npx playwright install --with-deps chromium
           node tools/teste_favorites_organic_v45.js "$BUILD_DIR"
           node tools/teste_visual_v49.js "$BUILD_DIR"
+          node tools/teste_visual_v50.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Validar paisagem, downloads nos Favoritos e player preservado V46
         shell: bash
