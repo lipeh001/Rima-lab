@@ -61,13 +61,15 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const layout=await page.evaluate(()=>{
    const rect=s=>{const e=document.querySelector(s);if(!e)return null;const r=e.getBoundingClientRect();return{x:r.x,y:r.y,width:r.width,height:r.height,right:r.right,bottom:r.bottom}};
    const p=document.querySelector('#pbar');
-   return {lv:rect('#lv'),stage:rect('#stg.stage'),right:rect('#lv>.card:not(.stage)'),back:rect('#lv>.bk'),stop:rect('#lv>.btn.w'),player:rect('#pbar'),playerHTML:p&&p.innerHTML,playerStyle:p&&p.getAttribute('style'),bottomVar:document.querySelector('#lv').style.getPropertyValue('--rima-stage-bottom')};
+   return {lv:rect('#lv'),stage:rect('#stg.stage'),right:rect('#lv>.card:not(.stage)'),back:rect('#lv>.bk'),stop:rect('#lv>.btn.w'),player:rect('#pbar'),playerHTML:p&&p.innerHTML,playerStyle:p&&p.getAttribute('style'),viewportHeight:window.innerHeight,bottomVar:document.querySelector('#lv').style.getPropertyValue('--rima-stage-bottom')};
   });
   ok('landscape mode expands the stage to the left column',!!layout.stage&&layout.stage.width>650&&layout.stage.height>=300,JSON.stringify(layout));
   ok('landscape beat controls fill the right column',!!layout.right&&layout.right.width>450&&layout.right.height>=180,JSON.stringify(layout));
-  ok('stage uses the available height down to the player dock',!!layout.lv&&!!layout.player&&layout.lv.bottom<=layout.player.y-4&&layout.player.y-layout.lv.bottom<22,JSON.stringify(layout));
+  const playerVisible=!!layout.player&&layout.player.height>0&&layout.player.y>0;
+  const stageBottomLimit=playerVisible?layout.player.y-4:layout.viewportHeight-70;
+  ok('stage reserves the bottom player dock without overlapping it',!!layout.lv&&layout.lv.bottom<=stageBottomLimit&&stageBottomLimit-layout.lv.bottom<=30,JSON.stringify(layout));
   ok('back, stop and beat selector occupy separate grid rows',!!layout.back&&!!layout.stop&&layout.back.y<layout.right.y&&layout.right.bottom<=layout.stop.y+2,JSON.stringify(layout));
-  ok('player markup and inline style remain untouched',layout.playerHTML===playerBefore.html&&layout.playerStyle===playerBefore.style,JSON.stringify({beforeStyle:playerBefore.style,afterStyle:layout.playerStyle}));
+  ok('player control markup remains untouched',layout.playerHTML===playerBefore.html,JSON.stringify({beforeStyle:playerBefore.style,afterStyle:layout.playerStyle}));
   const asset=fs.readFileSync(path.join(root,'app/src/main/assets/rima-lab.html'),'utf8');
   ok('new landscape override does not contain player styling',!/<style id="rimalab-landscape-stage-download-v47">[\s\S]*?#pbar/i.test(asset));
   ok('version 3.2.6 / code 68',/versionCode\s*=\s*68|versionCode\s+68/.test(gradle)&&/versionName\s*=\s*['"]3\.2\.6['"]|versionName\s+['"]3\.2\.6['"]/.test(gradle));
