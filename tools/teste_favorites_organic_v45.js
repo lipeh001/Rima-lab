@@ -88,7 +88,8 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   current=await page.evaluate('ZS.key');
   ok('stage Favorites plays and highlights selected saved item',saved.includes(current)&&await page.locator('#bq .rima-v43-fav-play[aria-current="true"]').count()===1);
   await tap('#bq .rima-v43-toggle');await page.waitForTimeout(120);
-  ok('closing stage Favorites restores catalog and selected beat',await page.locator('#bq .bsl .bi .mc.on').count()===1);
+  const restoredStage=await page.evaluate(()=>{const list=(ZLIB['Boom bap']&&ZLIB['Boom bap'][1])||[];const match=list.some(x=>zKey(x)===ZS.key);return{visible:!document.querySelector('#bq>.bsl')?.hidden,category:ZS.s,match,selected:document.querySelectorAll('#bq .bsl .bi .mc.on').length}});
+  ok('closing stage Favorites restores Boom bap catalog without stale selection',restoredStage.visible&&restoredStage.category==='Boom bap'&&restoredStage.selected===(restoredStage.match?1:0),JSON.stringify(restoredStage));
   await tapLoc(page.locator('#bq .row .tag.chip').filter({hasText:'Boom bap'}).first());
   await tap('#bq .bsl .bi:first-child .mc');
   const bqCategoryState=await page.locator('#bq .bsl .bi:first-child .mc').evaluate(e=>({on:e.classList.contains('on'),bg:getComputedStyle(e).backgroundImage}));
