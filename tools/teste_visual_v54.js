@@ -114,7 +114,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const wideCount=await wideRows.count();
   const wideTarget=await page.evaluate(()=>{const saved=new Set(JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]'));const rows=[...document.querySelectorAll('#bp .bsl .bi')];for(let i=0;i<rows.length;i++){const heart=rows[i].querySelector('[data-rima-fav]');if(heart&&!saved.has(heart.getAttribute('data-rima-fav')))return i}return -1});
   if(wideTarget>=0){await page.locator('#bp .bsl .bi').nth(wideTarget).locator('[data-rima-fav]').click({timeout:10000});}
-  const wideFav=await page.evaluate(()=>({count:JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]').length,heart:wideTarget>=0?document.querySelectorAll('#bp .bsl .bi [data-rima-fav]')[wideTarget]?.getAttribute('aria-pressed'):null,target:wideTarget,wideCount}));
+  const wideFav=await page.evaluate(({target,count})=>({count:JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]').length,heart:target>=0?document.querySelectorAll('#bp .bsl .bi [data-rima-fav]')[target]?.getAttribute('aria-pressed'):null,target,wideCount:count}),{target:wideTarget,count:wideCount});
   ok('landscape one-tap favorite updates the shared state',wideTarget>=0&&wideFav.count>0&&wideFav.heart==='true',JSON.stringify(wideFav));
   ok('version 3.3.3 / code 75',/versionCode\s*=\s*75|versionCode\s+75/.test(gradle)&&/versionName\s*=\s*['"]3\.3\.3['"]|versionName\s+['"]3\.3\.3['"]/.test(gradle));
   ok('V53 global scrolling is preserved',html.includes('rimalab-global-scroll-system-v53'));
