@@ -75,7 +75,6 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   });
   ok('landscape mode expands the stage to the left column',!!layout.stage&&layout.stage.width>650&&layout.stage.height>=300,JSON.stringify(layout));
   ok('landscape beat controls fill the right column',!!layout.right&&layout.right.width>450&&layout.right.height>=180,JSON.stringify(layout));
-  const playerVisible=!!layout.player&&layout.player.height>0&&layout.player.y>0;
   const playerVisible=!!layout.player&&layout.player.height>=82&&layout.player.y>0;
   ok('stage, selector and the single expanded landscape player are present',!!layout.stage&&!!layout.right&&playerVisible&&!!layout.playerHTML,JSON.stringify(layout));
   ok('back, stop and beat selector occupy separate grid rows',!!layout.back&&!!layout.stop&&layout.back.y<layout.right.y&&layout.right.bottom<=layout.stop.y+2,JSON.stringify(layout));
