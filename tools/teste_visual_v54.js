@@ -23,10 +23,12 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   // O app recebe o catálogo embarcado em catalog-seed.json; no Chromium sem rede,
   // força a mesma construção local que o app executa após carregar o cache.
   await page.evaluate(()=>{
-    if(typeof window.zBuild==='function')window.zBuild('Boom bap');
-    if(window.ZLIB&&Array.isArray(window.RIMA_CATALOG_SEED_V8?.['Boom bap'])){
-      window.ZLIB['Boom bap'][1]=window.RIMA_CATALOG_SEED_V8['Boom bap'].slice(0,87);
-    }
+    // ZLIB, RIMA_CATALOG_SEED_V8 e zBuild são declarações top-level const/function
+    // do HTML; não são propriedades de window.
+    if(typeof zBuild==='function')zBuild('Boom bap');
+    const seeded=typeof RIMA_CATALOG_SEED_V8!=='undefined'&&Array.isArray(RIMA_CATALOG_SEED_V8['Boom bap']);
+    const rows=seeded?RIMA_CATALOG_SEED_V8['Boom bap']:[];
+    if(typeof ZLIB!=='undefined'&&rows.length)ZLIB['Boom bap'][1]=rows.slice(0,87);
     const tab=[...document.querySelectorAll('#bp button,#bp .chip,#bp [role=button]')].find(x=>/boom bap/i.test(x.textContent||''));
     if(tab)tab.click();
   });
