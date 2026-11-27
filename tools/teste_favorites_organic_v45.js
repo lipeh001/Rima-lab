@@ -98,7 +98,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await tap('nav button[data-i="0"]');const training=await page.locator('nav button[data-i="0"]').getAttribute('class');
   ok('Battle, Lessons and Training navigation remains clickable',String(battle).includes('on')&&String(lessons).includes('on')&&String(training).includes('on'));
   ok('no uncaught JavaScript errors during organic click flow',errors.length===0,errors.join(' | '));
-  ok('version 3.2.5 / code 67',/versionCode\s*=\s*66|versionCode\s+66/.test(gradle)&&/versionName\s*=\s*['"]3\.2\.4['"]|versionName\s+['"]3\.2\.4['"]/.test(gradle));
+  ok('version 3.2.5 / code 67',/versionCode\\s*=\\s*67|versionCode\\s+67/.test(gradle)&&/versionName\\s*=\\s*['"]3\\.2\\.5['"]|versionName\\s+['"]3\\.2\\.5['"]/.test(gradle));
  }finally{await browser.close()}
  for(const x of pass)console.log('PASS '+x.name+(x.detail?' :: '+x.detail:''));
  for(const x of fail)console.log('FAIL '+x.name+(x.detail?' :: '+x.detail:''));
