@@ -90,7 +90,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await page.setViewportSize({width:393,height:852});await page.waitForTimeout(760);
   const portraitPlayer=await page.locator('#pbar').evaluate(e=>({sameNode:e===window.__rimaV46Player,style:e.getAttribute('style'),html:e.innerHTML,height:e.getBoundingClientRect().height}));
   ok('portrait restores the same player markup and clears landscape inline geometry',portraitPlayer.sameNode&&!/(position|top|bottom|left|right|height|min-height|max-height|z-index):/.test(portraitPlayer.style||''),JSON.stringify({height:portraitPlayer.height,style:portraitPlayer.style}));
-  ok('version 3.3.0 / code 72',/versionCode\s*=\s*72|versionCode\s+72/.test(gradle)&&/versionName\s*=\s*['"]3\.3\.0['"]|versionName\s+['"]3\.3\.0['"]/.test(gradle));
+  ok('version 3.3.1 / code 73',/versionCode\s*=\s*72|versionCode\s+72/.test(gradle)&&/versionName\s*=\s*['"]3.3.1['"]|versionName\s+['"]3.3.1['"]/.test(gradle));
   ok('no uncaught JavaScript errors',errors.length===0,errors.join(' | '));
   await tap('#lv>.btn.w');
   ok('setup step 2 returns after leaving the live stage',!(await page.locator('#train-step-2').evaluate(e=>e.hidden)));
