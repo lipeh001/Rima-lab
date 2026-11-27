@@ -67,6 +67,8 @@ on:
       - 'tools/teste_visual_v43.js'
       - 'tools/patch_visual_v44.py'
       - 'tools/teste_visual_v44.js'
+      - 'tools/patch_visual_v45.py'
+      - 'tools/teste_favorites_organic_v45.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -333,6 +335,15 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v44.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Destacar faixa selecionada e sincronizar Favoritos nos dois seletores v45
+        run: python3 tools/patch_visual_v45.py "$BUILD_DIR"
+      - name: Testar seleção e Favoritos com cliques reais no Chromium
+        shell: bash
+        run: |
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+          node tools/teste_favorites_organic_v45.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
