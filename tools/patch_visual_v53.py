@@ -90,7 +90,6 @@ body:not(.rima-live-landscape) main{
 }
 body:not(.rima-live-landscape) main>.tab:not([hidden]),
 body:not(.rima-live-landscape) #su,
-body:not(.rima-live-landscape) #bt,
 body:not(.rima-live-landscape) #train-step-1,
 body:not(.rima-live-landscape) #train-step-2{
  position:relative!important;inset:auto!important;
