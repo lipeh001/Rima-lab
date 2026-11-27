@@ -88,8 +88,8 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const stageMargins=await page.evaluate(()=>({label:parseFloat(getComputedStyle(document.querySelector('#ck')).marginTop),hint:parseFloat(getComputedStyle(document.querySelector('#stg .v3bar')).marginTop)}));
   ok('stage label is lowered and rhyme hint button is moved slightly upward',stageMargins.label>=16&&stageMargins.hint<=6,JSON.stringify(stageMargins));
   await page.setViewportSize({width:393,height:852});await page.waitForTimeout(450);
-  const portraitSeek=await page.locator('#pbar .pwscr').evaluate(e=>({display:getComputedStyle(e).display,visibility:getComputedStyle(e).visibility,rect:(()=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}})(),bar:(()=>{const r=document.querySelector('#pbar').getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}})()}));
-  ok('portrait progress bar returns after landscape-to-portrait rotation',portraitSeek.display!=='none'&&portraitSeek.visibility==='visible'&&portraitSeek.rect.width>200&&portraitSeek.rect.height>=2,JSON.stringify(portraitSeek));
+  const portraitSeek=await page.locator('#pbar .pwscr').evaluate(e=>{const p=e.querySelector('.pwp');const r=e.getBoundingClientRect();return {display:getComputedStyle(e).display,visibility:getComputedStyle(e).visibility,height:getComputedStyle(e).height,trackDisplay:p&&getComputedStyle(p).display,trackHeight:p&&getComputedStyle(p).height,trackVisibility:p&&getComputedStyle(p).visibility,rect:{width:r.width,height:r.height}}});
+  ok('portrait progress bar returns after landscape-to-portrait rotation',portraitSeek.display!=='none'&&portraitSeek.visibility==='visible'&&portraitSeek.height==='3px'&&portraitSeek.trackDisplay!=='none'&&portraitSeek.trackVisibility==='visible'&&portraitSeek.trackHeight==='3px',JSON.stringify(portraitSeek));
   ok('version 3.2.7 / code 69',/versionCode\s*=\s*69|versionCode\s+69/.test(gradle)&&/versionName\s*=\s*['"]3\.2\.7['"]|versionName\s+['"]3\.2\.7['"]/.test(gradle));
   ok('no uncaught JavaScript errors',errors.length===0,errors.join(' | '));
   await tap('#lv>.btn.w');
