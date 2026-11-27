@@ -53,7 +53,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await tap('#bp .rima-v43-toggle');
   await tap('#train-step-2 .training-footer .go');
   await page.waitForFunction(()=>!document.querySelector('#lv').hidden,{timeout:10000});
-  ok('step 2 setup page is hidden while live stage is open',document.querySelector('#train-step-2').hidden);
+  ok('step 2 setup page is hidden while live stage is open',await page.locator('#train-step-2').evaluate(e=>e.hidden));
   await page.waitForSelector('#bq .rima-v43-toggle',{timeout:8000});
   await tap('#bq .rima-v43-toggle');
   const bqRow=page.locator('#bq .rima-v43-fav-row[data-key="'+key+'"]');
