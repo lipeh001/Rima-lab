@@ -32,7 +32,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
     const tab=[...document.querySelectorAll('#bp button,#bp .chip,#bp [role=button]')].find(x=>/boom bap/i.test(x.textContent||''));
     if(tab)tab.click();
   });
-  await page.waitForFunction(()=>Array.isArray(window.ZLIB?.['Boom bap']?.[1])&&window.ZLIB['Boom bap'][1].length>1&&!!document.querySelector('#bp .bsl .bi .mc'),{timeout:15000});
+  await page.waitForFunction(()=>typeof ZLIB!=='undefined'&&Array.isArray(ZLIB['Boom bap']?.[1])&&ZLIB['Boom bap'][1].length>1&&!!document.querySelector('#bp .bsl .bi .mc'),{timeout:15000});
   await page.evaluate(()=>{window.__v54ClickSelector=null;window.__v54ClickCount=0;document.addEventListener('click',e=>{const s=window.__v54ClickSelector;if(s&&e.target.closest&&e.target.closest(s))window.__v54ClickCount++},true)});
   const selectedBefore=await page.evaluate(()=>ZS.key||'');
   const firstCatalogButton=page.locator('#bp .bsl .bi .mc').nth(selectedBefore?1:0);
