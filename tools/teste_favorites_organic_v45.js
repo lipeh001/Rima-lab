@@ -59,6 +59,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   ok('next-track navigation stays inside Favorites queue',saved.includes(current));
   await tap('#bp .rima-v43-toggle');
   ok('closing Favorites restores the setup catalog before entering stage',await page.locator('#bp .bsl:not(.rima-v43-favlist)').isVisible());
+  await tap('#bp .bsl .bi:first-child .mc'); // Favorites returns to Boom bap; select a beat in that category before starting.
   await tap('#train-step-2 .training-footer .go');await page.waitForTimeout(450);
   ok('selected beat enters the live stage',!(await page.locator('#lv').evaluate(e=>e.hidden)));
   await page.waitForSelector('#bq .bsl .bi .mc',{timeout:10000});
