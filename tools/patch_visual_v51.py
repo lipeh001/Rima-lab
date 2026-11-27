@@ -24,7 +24,8 @@ old=""" function dockPlayer(){
 new=""" function dockPlayer(){
   const bar=$('#pbar');if(!bar)return;
   const landscape=(window.matchMedia&&window.matchMedia('(orientation:landscape)').matches)||window.innerWidth>window.innerHeight;
-  const live=!!(document.getElementById('lv')&&!document.getElementById('lv').hidden&&document.body.classList.contains('pl')&&!document.body.classList.contains('pv'));
+  const setup=document.getElementById('train-step-2');
+  const live=!!(document.getElementById('lv')&&!document.getElementById('lv').hidden&&(!setup||setup.hidden)&&document.body.classList.contains('pl')&&!document.body.classList.contains('pv'));
   const playing=document.body.classList.contains('rima-player-visible');
   if(!landscape||!live||!playing){
    ['position','top','bottom','left','right','inset','transform','z-index','width','max-width','height','min-height','max-height'].forEach(k=>bar.style.removeProperty(k));
@@ -51,7 +52,8 @@ body:not(.rima-v51-player-eligible) #pbar *{pointer-events:none!important}
  const dock=['position','top','bottom','left','right','inset','transform','z-index','width','max-width','height','min-height','max-height'];
  function landscape(){return !!(window.matchMedia&&window.matchMedia('(orientation:landscape)').matches)||innerWidth>innerHeight}
  function sync(){
-  const live=!lv.hidden&&body.classList.contains('pl')&&!body.classList.contains('pv');
+  const setup=document.getElementById('train-step-2');
+  const live=!lv.hidden&&(!setup||setup.hidden)&&body.classList.contains('pl')&&!body.classList.contains('pv');
   const audio=body.classList.contains('rima-player-visible');
   const eligible=live&&audio;
   body.classList.toggle('rima-v51-player-eligible',eligible);
