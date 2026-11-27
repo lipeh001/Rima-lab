@@ -88,9 +88,9 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const stageMargins=await page.evaluate(()=>({label:parseFloat(getComputedStyle(document.querySelector('#ck')).marginTop),hint:parseFloat(getComputedStyle(document.querySelector('#stg .v3bar')).marginTop)}));
   ok('stage label is lowered and rhyme hint button is moved slightly upward',stageMargins.label>=16&&stageMargins.hint<=6,JSON.stringify(stageMargins));
   await page.setViewportSize({width:393,height:852});await page.waitForTimeout(450);
-  const portraitSeek=await page.locator('#pbar .pwscr').evaluate(e=>{const p=e.querySelector('.pwp');const r=e.getBoundingClientRect();return {display:getComputedStyle(e).display,visibility:getComputedStyle(e).visibility,height:getComputedStyle(e).height,trackDisplay:p&&getComputedStyle(p).display,trackHeight:p&&getComputedStyle(p).height,trackVisibility:p&&getComputedStyle(p).visibility,rect:{width:r.width,height:r.height}}});
-  ok('portrait progress bar returns after landscape-to-portrait rotation',portraitSeek.display!=='none'&&portraitSeek.visibility==='visible'&&portraitSeek.height==='3px'&&portraitSeek.trackDisplay!=='none'&&portraitSeek.trackVisibility==='visible'&&portraitSeek.trackHeight==='3px',JSON.stringify(portraitSeek));
-  ok('version 3.2.7 / code 69',/versionCode\s*=\s*69|versionCode\s+69/.test(gradle)&&/versionName\s*=\s*['"]3\.2\.7['"]|versionName\s+['"]3\.2\.7['"]/.test(gradle));
+  const portraitPlayer=await page.locator('#pbar').evaluate(e=>({style:e.getAttribute('style'),html:e.innerHTML,height:e.getBoundingClientRect().height}));
+  ok('portrait restores the same player markup and clears landscape inline geometry',portraitPlayer.html===playerBefore.html&&!/(position|top|bottom|left|right|height|min-height|max-height|z-index):/.test(portraitPlayer.style||''),JSON.stringify({height:portraitPlayer.height,style:portraitPlayer.style}));
+  ok('version 3.2.8 / code 70',/versionCode\s*=\s*70|versionCode\s+70/.test(gradle)&&/versionName\s*=\s*['"]3\.2\.8['"]|versionName\s+['"]3\.2\.8['"]/.test(gradle));
   ok('no uncaught JavaScript errors',errors.length===0,errors.join(' | '));
   await tap('#lv>.btn.w');
   ok('setup step 2 returns after leaving the live stage',!(await page.locator('#train-step-2').evaluate(e=>e.hidden)));
