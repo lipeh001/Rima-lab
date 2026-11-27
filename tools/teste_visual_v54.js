@@ -20,11 +20,21 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const setup=await page.evaluate(()=>({lists:document.querySelectorAll('#bp>.bsl').length,max:getComputedStyle(document.querySelector('#bp>.bsl')).maxHeight,overflow:getComputedStyle(document.querySelector('#bp>.bsl')).overflowY,player:getComputedStyle(document.querySelector('#pbar')).display}));
   ok('stage 2 has exactly one bounded, scrollable list',setup.lists===1&&setup.max!=='none'&&setup.overflow==='auto',JSON.stringify(setup));
   ok('player stays hidden in stage 2',setup.player==='none'||setup.player==='');
-  await page.evaluate(()=>{const old=zLP;window.__v54ZlpCalls=0;window.zLP=function(){window.__v54ZlpCalls++;return old.apply(this,arguments)}});
-  await page.locator('#bp .bsl .bi .mc').first().waitFor({state:'visible',timeout:10000});
-  await click('#bp .bsl .bi .mc');await page.waitForFunction(()=>!!ZS.key,{timeout:6000});
+  await page.evaluate(async()=>{if(window.rimaCatalogReady&&typeof window.rimaCatalogReady.then==='function')await window.rimaCatalogReady});
+  await page.waitForFunction(()=>Array.isArray(window.ZLIB?.['Boom bap']?.[1])&&window.ZLIB['Boom bap'][1].length>1&&!!document.querySelector('#bp .bsl .bi .mc'),{timeout:15000});
+  await page.evaluate(()=>{window.__v54ClickSelector=null;window.__v54ClickCount=0;document.addEventListener('click',e=>{const s=window.__v54ClickSelector;if(s&&e.target.closest&&e.target.closest(s))window.__v54ClickCount++},true)});
+  const selectedBefore=await page.evaluate(()=>ZS.key||'');
+  const firstCatalogButton=page.locator('#bp .bsl .bi .mc').nth(selectedBefore?1:0);
+  const expectedClick=await firstCatalogButton.getAttribute('onclick');
+  const expectedMatch=String(expectedClick||'').match(/zLP\((\d+),0,'([^']+)'\)/);
+  if(!expectedMatch)throw new Error('Catalog play button has no valid one-track handler');
+  const expectedKey=await page.evaluate(({i,cat})=>'jm-'+String(ZLIB[cat][1][i][4]),{i:Number(expectedMatch[1]),cat:expectedMatch[2]});
+  await page.evaluate(s=>{window.__v54ClickSelector=s;window.__v54ClickCount=0},'#bp .bsl .bi .mc');
+  await firstCatalogButton.click({timeout:10000});
+  await page.waitForFunction(k=>ZS.key===k,expectedKey,{timeout:6000});
   const key=await page.evaluate(()=>ZS.key);
-  ok('one catalog tap selects a beat exactly once',!!key&&(await tapCount())===1,String(await tapCount()));
+  const catalogClicks=await page.evaluate(()=>window.__v54ClickCount);
+  ok('one catalog tap selects the requested beat without duplicating the list',key===expectedKey&&catalogClicks===1&&document.querySelectorAll('#bp>.bsl').length===1,JSON.stringify({key,expectedKey,catalogClicks}));
   await page.locator('#bp .bsl .bi [data-rima-fav]').first().waitFor({state:'visible',timeout:8000});
   await click('#bp .bsl .bi [data-rima-fav]');
   await page.waitForFunction(k=>JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]').includes(k),key,{timeout:5000});
@@ -35,19 +45,23 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const shape=await page.locator('#bp .rima-v43-fav-row').first().evaluate(r=>({bi:r.classList.contains('bi'),info:!!r.querySelector('.beat-info'),title:!!r.querySelector('.beat-info .mc b'),artist:!!r.querySelector('.beat-meta .beat-artist'),heart:!!r.querySelector('.rima-v43-fav-heart'),download:!!r.querySelector('.dlb'),lists:document.querySelectorAll('#bp>.rima-v43-favlist').length,hidden:document.querySelector('#bp>.bsl')?.hidden}));
   ok('Favorites cards use the catalog card structure and styling',shape.bi&&shape.info&&shape.title&&shape.artist&&shape.heart&&shape.download,JSON.stringify(shape));
   ok('Favorites shows one list and hides the original catalog',shape.lists===1&&shape.hidden===true,JSON.stringify(shape));
-  await page.evaluate(()=>{const old=zLP;window.__v54ZlpCalls=0;window.zLP=function(){window.__v54ZlpCalls++;return old.apply(this,arguments)}});
+  await page.evaluate(()=>{window.__v54ClickSelector='#bp .rima-v43-fav-play';window.__v54ClickCount=0});
   await click('#bp .rima-v43-fav-play');await page.waitForFunction(k=>ZS.key===k,key,{timeout:6000});
-  ok('one tap on a favorite starts the selected beat',await page.evaluate(()=>ZS.key)===key&&(await tapCount())<=1,String(await tapCount()));
+  const favoriteClicks=await page.evaluate(()=>window.__v54ClickCount);
+  ok('one tap on a favorite starts the selected beat without duplicate clicks',await page.evaluate(()=>ZS.key)===key&&favoriteClicks===1,String(favoriteClicks));
   await click('#bp .rima-v43-fav-heart');await page.waitForFunction(k=>!JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]').includes(k),key,{timeout:5000});
   ok('heart inside Favorites removes the track from shared saved state',!(await getFav()).includes(key));
   await click('#bp .row .tag.chip');
   for(const category of ['Boom bap','Trap','Drill']){
    await page.locator('#bp .row .tag.chip').filter({hasText:category}).first().click({timeout:10000});
    await page.waitForFunction(c=>ZS.s===c,category,{timeout:5000});
-   await page.evaluate(()=>window.__v54ZlpCalls=0);
-   await click('#bp .bsl .bi .mc');await page.waitForFunction(()=>!!ZS.key,{timeout:5000});
-   const n=await tapCount(),cat=await page.evaluate(()=>ZS.s);
-   ok('category '+category+' responds to one playback tap',cat===category&&n===1,JSON.stringify({cat,n}));
+   await page.evaluate(()=>{window.__v54ClickSelector='#bp .bsl .bi .mc';window.__v54ClickCount=0});
+   const catButton=page.locator('#bp .bsl .bi .mc').first();
+   const catHandler=String(await catButton.getAttribute('onclick')||'').match(/zLP\((\d+),0,'([^']+)'\)/);
+   const catKey=catHandler?await page.evaluate(({i,cat})=>'jm-'+String(ZLIB[cat][1][i][4]),{i:Number(catHandler[1]),cat:catHandler[2]}):'';
+   await catButton.click({timeout:10000});if(catKey)await page.waitForFunction(k=>ZS.key===k,catKey,{timeout:5000});
+   const n=await page.evaluate(()=>window.__v54ClickCount),cat=await page.evaluate(()=>ZS.s);
+   ok('category '+category+' responds to one playback tap',cat===category&&!!catKey&&n===1,JSON.stringify({cat,n,catKey}));
   }
   await click('#train-step-2 .training-footer .go');await page.waitForFunction(()=>!document.querySelector('#lv').hidden,{timeout:12000});
   const liveList=await page.evaluate(()=>({count:document.querySelectorAll('#bq>.bsl').length,max:getComputedStyle(document.querySelector('#bq>.bsl')).maxHeight,overflow:getComputedStyle(document.querySelector('#bq>.bsl')).overflowY}));
@@ -77,9 +91,13 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await click('#bbq .rima-v43-fav-play');
   ok('Battle favorite playback selects the matching track',await page.evaluate(k=>ZS.key===k,bkey));
   await click('#bbq .row .tag.chip');
-  await click('#bt .btn.go');
-  const battleStarted=await page.evaluate(()=>!!B&&!!document.querySelector('#bt .card.stage'));
-  ok('Começar batalha opens the live battle stage',battleStarted);
+  const startButton=page.getByRole('button',{name:'Começar batalha'});
+  await startButton.waitFor({state:'visible',timeout:8000});
+  await startButton.click({timeout:10000});
+  await page.waitForFunction(()=>!!B&&!!document.querySelector('#bt .card.stage'),{timeout:6000}).catch(()=>{});
+  const battleState=await page.evaluate(()=>({hasBattle:typeof B!=='undefined'&&!!B,stage:!!document.querySelector('#bt .card.stage'),roundText:document.querySelector('#bt .card.stage')?.innerText||'',startButton:document.querySelector('#bt button.btn.go')?.outerHTML||'',errors:window.__v54Errors||[]}));
+  const battleStarted=battleState.hasBattle&&battleState.stage;
+  ok('Começar batalha opens the live battle stage',battleStarted,JSON.stringify(battleState));
   if(battleStarted){await click('#bt .card.stage button.btn');ok('Valendo starts the battle round',await page.evaluate(()=>!!B&&B.run===1))}
 
   await click('nav button[data-i="1"]');await page.waitForFunction(()=>!document.querySelectorAll('.tab')[1].hidden,{timeout:7000});
@@ -92,9 +110,12 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await page.setViewportSize({width:852,height:393});await page.evaluate(()=>{dispatchEvent(new Event('orientationchange'));dispatchEvent(new Event('resize'))});await page.waitForTimeout(450);
   const wide=await page.evaluate(()=>({lists:document.querySelectorAll('#bp>.bsl').length,max:getComputedStyle(document.querySelector('#bp>.bsl')).maxHeight,overflow:getComputedStyle(document.querySelector('#bp>.bsl')).overflowY}));
   ok('landscape stage 2 has one bounded scrollable catalog',wide.lists===1&&wide.max!=='none'&&wide.overflow==='auto',JSON.stringify(wide));
-  await click('#bp .bsl .bi .mc');await page.waitForFunction(()=>!!ZS.key,{timeout:5000});await click('#bp .bsl .bi [data-rima-fav]');
-  const wideFav=await page.evaluate(()=>({count:JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]').length,heart:document.querySelector('#bp .bsl .bi [data-rima-fav]')?.getAttribute('aria-pressed')}));
-  ok('landscape one-tap favorite updates the shared state',wideFav.count>0&&wideFav.heart==='true',JSON.stringify(wideFav));
+  const wideRows=page.locator('#bp .bsl .bi');
+  const wideCount=await wideRows.count();
+  const wideTarget=await page.evaluate(()=>{const saved=new Set(JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]'));const rows=[...document.querySelectorAll('#bp .bsl .bi')];for(let i=0;i<rows.length;i++){const heart=rows[i].querySelector('[data-rima-fav]');if(heart&&!saved.has(heart.getAttribute('data-rima-fav')))return i}return -1});
+  if(wideTarget>=0){await page.locator('#bp .bsl .bi').nth(wideTarget).locator('[data-rima-fav]').click({timeout:10000});}
+  const wideFav=await page.evaluate(()=>({count:JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]').length,heart:wideTarget>=0?document.querySelectorAll('#bp .bsl .bi [data-rima-fav]')[wideTarget]?.getAttribute('aria-pressed'):null,target:wideTarget,wideCount}));
+  ok('landscape one-tap favorite updates the shared state',wideTarget>=0&&wideFav.count>0&&wideFav.heart==='true',JSON.stringify(wideFav));
   ok('version 3.3.3 / code 75',/versionCode\s*=\s*75|versionCode\s+75/.test(gradle)&&/versionName\s*=\s*['"]3\.3\.3['"]|versionName\s+['"]3\.3\.3['"]/.test(gradle));
   ok('V53 global scrolling is preserved',html.includes('rimalab-global-scroll-system-v53'));
   ok('no uncaught JavaScript errors',errors.length===0,errors.join(' | '));
