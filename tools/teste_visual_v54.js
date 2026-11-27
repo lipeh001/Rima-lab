@@ -53,6 +53,9 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const liveList=await page.evaluate(()=>({count:document.querySelectorAll('#bq>.bsl').length,max:getComputedStyle(document.querySelector('#bq>.bsl')).maxHeight,overflow:getComputedStyle(document.querySelector('#bq>.bsl')).overflowY}));
   ok('live stage also has one bounded list',liveList.count===1&&liveList.max!=='none'&&liveList.overflow==='auto',JSON.stringify(liveList));
   await click('#bq .bsl .bi .mc');await page.waitForTimeout(250);
+  const liveKey=await page.evaluate(()=>ZS.key);
+  await click('#bq .bsl .bi [data-rima-fav]');
+  await page.waitForFunction(k=>JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]').includes(k),liveKey,{timeout:5000});
   // Mimic the audio engine's active-playback notification after the actual beat-selection tap.
   await page.evaluate(()=>zSetPL(1));await page.waitForTimeout(250);
   const player=await page.evaluate(()=>({visible:getComputedStyle(document.querySelector('#pbar')).display!=='none'&&getComputedStyle(document.querySelector('#pbar')).visibility!=='hidden',gate:document.body.classList.contains('rima-v51-player-eligible'),stage:!document.querySelector('#lv').hidden}));
