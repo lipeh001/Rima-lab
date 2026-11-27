@@ -206,7 +206,7 @@ main,.tab,#bp,#bq{min-width:0!important;max-width:100%!important;box-sizing:bord
 /* In landscape, keep category chips and Favorites visible; only the beat list scrolls. */
 @media(orientation:landscape) and (min-width:560px){
  /* Reserve enough content space for the expanded 84px landscape dock. */
- body.pl:not(.pv) #lv:not([hidden]){--rima-stage-bottom:108px!important}
+ #lv:not([hidden]){--rima-stage-bottom:108px!important}
  html.rima-live-landscape,body.rima-live-landscape{
   width:100vw!important;max-width:100vw!important;height:100vh!important;max-height:100vh!important;
   overflow:hidden!important;overflow-x:hidden!important;overscroll-behavior:none!important;touch-action:pan-y!important;
