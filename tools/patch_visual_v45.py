@@ -109,9 +109,9 @@ if pos<0: raise SystemExit('V45_FAIL: body close missing')
 h=h[:pos]+css+'\n'+runtime+'\n'+h[pos:]
 m=re.search(r'\bversionCode\s*=\s*(\d+)|\bversionCode\s+(\d+)',g)
 if not m or (m.group(1) or m.group(2))!='64': raise SystemExit('V45_FAIL: expected versionCode 64')
-g=g[:m.start()]+re.sub('64','65',m.group(0),count=1)+g[m.end():]
+g=g[:m.start()]+re.sub('64','66',m.group(0),count=1)+g[m.end():]
 m=re.search(r"versionName\s*=\s*['\"]([^'\"]+)['\"]|versionName\s+['\"]([^'\"]+)['\"]",g)
 if not m or (m.group(1) or m.group(2))!='3.2.2': raise SystemExit('V45_FAIL: expected versionName 3.2.2')
-g=g[:m.start()]+m.group(0).replace('3.2.2','3.2.3')+g[m.end():]
+g=g[:m.start()]+m.group(0).replace('3.2.2','3.2.4')+g[m.end():]
 hp.write_text(h,encoding='utf-8');gp.write_text(g,encoding='utf-8')
 print('V45_OK: visible selection, stable track IDs, selected Favorites state, exclusive Favorites view in #bp/#bq; 3.2.3/code65')
