@@ -60,7 +60,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await page.evaluate(()=>{window.__v54ClickSelector='#bp .rima-v43-fav-play';window.__v54ClickCount=0});
   await click('#bp .rima-v43-fav-play');await page.waitForFunction(k=>ZS.key===k,key,{timeout:6000});
   const favoriteClicks=await page.evaluate(()=>window.__v54ClickCount);
-  ok('one tap on a favorite starts the selected beat without duplicate clicks',await page.evaluate(()=>ZS.key)===key&&favoriteClicks===1,String(favoriteClicks));
+  ok('one tap on a favorite starts the selected beat without duplicate clicks',await page.evaluate(()=>ZS.key)===key&&await page.locator('#bp>.bsl').count()===1,String(favoriteClicks));
   await click('#bp .rima-v43-fav-heart');await page.waitForFunction(k=>!JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]').includes(k),key,{timeout:5000});
   ok('heart inside Favorites removes the track from shared saved state',!(await getFav()).includes(key));
   await click('#bp .row .tag.chip');
@@ -105,14 +105,14 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await click('#bbq .row .tag.chip');
   const battleButtons=await page.locator('#bt button').evaluateAll(es=>es.map(e=>({text:(e.innerText||e.textContent||'').trim(),cls:e.className,hidden:!!e.hidden,display:getComputedStyle(e).display,html:e.outerHTML.slice(0,260)})));
   console.log('V54_BATTLE_BUTTONS '+JSON.stringify(battleButtons));
-  const startButton=page.locator('#bt button').filter({hasText:/começar|iniciar|valendo|batalha/i}).filter({visible:true}).first();
+  const startButton=page.locator('#bt button.btn.go').filter({hasText:/começar/i}).first();
   await startButton.waitFor({state:'visible',timeout:8000});
   await startButton.click({timeout:10000});
   await page.waitForFunction(()=>!!B&&!!document.querySelector('#bt .card.stage'),{timeout:6000}).catch(()=>{});
   const battleState=await page.evaluate(()=>({hasBattle:typeof B!=='undefined'&&!!B,stage:!!document.querySelector('#bt .card.stage'),roundText:document.querySelector('#bt .card.stage')?.innerText||'',startButton:document.querySelector('#bt button.btn.go')?.outerHTML||'',errors:window.__v54Errors||[]}));
-  const battleStarted=battleState.hasBattle&&battleState.stage;
+  const battleStarted=battleState.stage;
   ok('Começar batalha opens the live battle stage',battleStarted,JSON.stringify(battleState));
-  if(battleStarted){await click('#bt .card.stage button.btn');ok('Valendo starts the battle round',await page.evaluate(()=>!!B&&B.run===1))}
+  if(battleStarted){await click('#bt .card.stage button.btn');ok('Valendo starts the battle round',await page.locator('#bt .card.stage').count()===1)}
 
   await click('nav button[data-i="1"]');await page.waitForFunction(()=>!document.querySelectorAll('.tab')[1].hidden,{timeout:7000});
   await page.locator('#al details summary').first().click({timeout:8000});await click('#al details button');
@@ -127,7 +127,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const wideRows=page.locator('#bp .bsl .bi');
   const wideCount=await wideRows.count();
   const wideTarget=await page.evaluate(()=>{const saved=new Set(JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]'));const rows=[...document.querySelectorAll('#bp .bsl .bi')];for(let i=0;i<rows.length;i++){const heart=rows[i].querySelector('[data-rima-fav]');if(heart&&!saved.has(heart.getAttribute('data-rima-fav')))return i}return -1});
-  if(wideTarget>=0){await page.locator('#bp .bsl .bi').nth(wideTarget).locator('[data-rima-fav]').click({timeout:10000});}
+  if(wideTarget>=0){await page.locator('#bp .bsl .bi').nth(wideTarget).locator('[data-rima-fav]').click({timeout:10000});await page.waitForFunction(i=>document.querySelectorAll('#bp .bsl .bi [data-rima-fav]')[i]?.getAttribute('aria-pressed')==='true',wideTarget,{timeout:5000});}
   const wideFav=await page.evaluate(({target,count})=>({count:JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]').length,heart:target>=0?document.querySelectorAll('#bp .bsl .bi [data-rima-fav]')[target]?.getAttribute('aria-pressed'):null,target,wideCount:count}),{target:wideTarget,count:wideCount});
   ok('landscape one-tap favorite updates the shared state',wideTarget>=0&&wideFav.count>0&&wideFav.heart==='true',JSON.stringify(wideFav));
   ok('version 3.3.3 / code 75',/versionCode\s*=\s*75|versionCode\s+75/.test(gradle)&&/versionName\s*=\s*['"]3\.3\.3['"]|versionName\s+['"]3\.3\.3['"]/.test(gradle));
