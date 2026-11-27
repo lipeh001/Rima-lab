@@ -498,3 +498,5 @@ jobs:
 # Re-run after V54 DOM assertion fix
 
 # Re-run after V54 battle button selector fix
+
+# Re-run after V54 battle action diagnostic
