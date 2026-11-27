@@ -14,6 +14,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const page=await browser.newPage({viewport:{width:393,height:852},deviceScaleFactor:1,isMobile:true,hasTouch:true});
   const errors=[];page.on('pageerror',e=>errors.push(String(e)));
   await page.setContent(shim+html,{waitUntil:'domcontentloaded',timeout:30000});
+  await page.waitForFunction(()=>{const e=document.querySelector('#rima-splash');return !e||e.classList.contains('done')},{timeout:15000});
   await page.waitForSelector('#md .mc',{timeout:15000});
   await page.waitForSelector('#bp .bsl .bi .mc',{state:'attached',timeout:15000});
   const tapLoc=async loc=>{
