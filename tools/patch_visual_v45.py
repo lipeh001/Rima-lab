@@ -7,6 +7,7 @@ gp=next((p for p in (root/'app/build.gradle',root/'app/build.gradle.kts') if p.e
 if not hp.is_file() or gp is None: raise SystemExit('V45_FAIL: missing app assets or Gradle')
 h=hp.read_text(encoding='utf-8');g=gp.read_text(encoding='utf-8')
 if 'rimalab-selection-feedback-runtime-v45' in h: raise SystemExit('V45_FAIL: already applied')
+if 'rimalab-landscape-stage-reflow-v46' in h: raise SystemExit('V46_FAIL: already applied')
 if 'rimalab-favorites-layout-runtime-v43' not in h or 'rimalab-favorites-catalog-lexical-v44' not in h:
     raise SystemExit('V45_FAIL: expected V43/V44 runtimes missing')
 replacement=r'''function renderRoot(root){
@@ -19,7 +20,7 @@ replacement=r'''function renderRoot(root){
   }else{
    // Keep stage category chips live; only swap the beat catalog content.
    if(showing){
-    // Keep the stage category row visible and swap only the beat list.
+    root.querySelectorAll('.row .tag.chip').forEach(b=>{b.classList.remove('on');b.setAttribute('aria-pressed','false')});
     root.querySelectorAll('.bsl').forEach(e=>{if(!e.classList.contains('rima-v43-favlist'))e.hidden=true});
     bar.insertAdjacentHTML('afterend',favoriteMarkup());
    }else root.querySelectorAll('.bsl').forEach(e=>{if(!e.classList.contains('rima-v43-favlist'))e.hidden=false});
@@ -125,11 +126,35 @@ runtime=r'''<script id="rimalab-selection-feedback-runtime-v45">
 pos=h.lower().rfind('</body>')
 if pos<0: raise SystemExit('V45_FAIL: body close missing')
 h=h[:pos]+css+'\n'+runtime+'\n'+h[pos:]
+landscape=r'''<style id="rimalab-landscape-stage-reflow-v46">
+#bp .rima-v43-toggle,#bq .rima-v43-toggle{font-weight:500!important}
+#bp .rima-v43-toggle .rima-v29-count,#bq .rima-v43-toggle .rima-v29-count{font-weight:850!important}
+@media (orientation:landscape) and (min-width:600px){
+ main{box-sizing:border-box!important;width:100%!important;max-width:none!important}
+ #lv:not([hidden]){display:grid!important;box-sizing:border-box!important;width:100%!important;height:calc(100svh - 215px)!important;min-height:340px!important;max-height:none!important;grid-template-columns:minmax(0,1.42fr) minmax(0,1fr)!important;grid-template-rows:42px minmax(0,1fr) 42px!important;align-items:stretch!important;gap:7px 10px!important;margin:0!important;padding:0 0 3px!important;overflow:visible!important}
+ #lv:not([hidden])>.bk{grid-column:2!important;grid-row:1!important;align-self:stretch!important;width:100%!important;height:42px!important;min-height:42px!important;margin:0!important}
+ #lv:not([hidden])>#stg.stage{grid-column:1!important;grid-row:1/4!important;align-self:stretch!important;display:flex!important;flex-direction:column!important;justify-content:flex-start!important;box-sizing:border-box!important;width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;margin:0!important;overflow:hidden!important;padding:clamp(8px,1.3vh,13px) clamp(9px,1vw,16px)!important}
+ #lv:not([hidden])>#stg.stage #ck{flex:0 0 auto!important;margin:0 0 4px!important}
+ #lv:not([hidden])>#stg.stage #cb{flex:0 0 auto!important;box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-height:clamp(74px,14vh,112px)!important;height:auto!important;margin:0 auto 4px!important;white-space:normal!important;overflow-wrap:anywhere!important}
+ #lv:not([hidden])>#stg.stage #rm{flex:0 0 auto!important;position:relative!important;inset:auto!important;display:flex!important;flex-wrap:wrap!important;justify-content:center!important;align-items:center!important;width:100%!important;height:auto!important;min-height:0!important;margin:4px auto 6px!important;padding:0 3px!important;transform:none!important;gap:5px!important}
+ #lv:not([hidden])>#stg.stage #rm>*{max-width:48%!important;min-width:0!important;white-space:normal!important}
+ #lv:not([hidden])>#stg.stage #sg{flex:0 0 auto!important;margin:4px 0!important}
+ #lv:not([hidden])>#stg.stage #cs,#lv:not([hidden])>#stg.stage #cn{flex:0 0 auto!important;max-width:100%!important;margin:5px auto 0!important;line-height:1.2!important}
+ #lv:not([hidden])>#stg.stage .v3bar{flex:0 0 auto!important;margin:8px auto 0!important}
+ #lv:not([hidden])>.card:not(.stage){grid-column:2!important;grid-row:2!important;align-self:stretch!important;box-sizing:border-box!important;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;max-height:none!important;margin:0!important;padding:9px 10px!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important}
+ #lv:not([hidden]) #bq{box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important}
+ #lv:not([hidden]) #bq .bsl{max-width:100%!important;min-width:0!important}
+ #lv:not([hidden])>.btn.w{grid-column:2!important;grid-row:3!important;align-self:stretch!important;width:100%!important;height:42px!important;min-height:42px!important;margin:0!important}
+}
+</style>'''
+pos=h.lower().rfind('</body>')
+if pos<0: raise SystemExit('V46_FAIL: body close missing')
+h=h[:pos]+landscape+'\n'+h[pos:]
 m=re.search(r'\bversionCode\s*=\s*(\d+)|\bversionCode\s+(\d+)',g)
 if not m or (m.group(1) or m.group(2))!='64': raise SystemExit('V46_FAIL: expected versionCode 64')
-g=g[:m.start()]+re.sub('64','66',m.group(0),count=1)+g[m.end():]
+g=g[:m.start()]+re.sub('64','67',m.group(0),count=1)+g[m.end():]
 m=re.search(r"versionName\s*=\s*['\"]([^'\"]+)['\"]|versionName\s+['\"]([^'\"]+)['\"]",g)
 if not m or (m.group(1) or m.group(2))!='3.2.2': raise SystemExit('V46_FAIL: expected versionName 3.2.2')
-g=g[:m.start()]+m.group(0).replace('3.2.2','3.2.4')+g[m.end():]
+g=g[:m.start()]+m.group(0).replace('3.2.2','3.2.5')+g[m.end():]
 hp.write_text(h,encoding='utf-8');gp.write_text(g,encoding='utf-8')
-print('V46_OK: stage category chips remain clickable from Favorites, selected beat feedback retained, bolder hearts; 3.2.4/code66')
+print('V46_OK: stage category chips remain clickable from Favorites, selected beat feedback retained, bolder hearts; 3.2.5/code67')
