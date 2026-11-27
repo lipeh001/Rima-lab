@@ -93,10 +93,11 @@ css=r"""<style id="rimalab-favorites-details-v48">
 /* Never let the previous setup page peek through the live stage. */
 #train-step-2[hidden]{display:none!important}
 #lv:not([hidden])~#train-step-2{display:none!important}
-#lv:not([hidden]) #stg.stage #ck{margin:18px 0 8px!important}
-#lv:not([hidden]) #stg.stage .v3bar{margin:5px auto 0!important;padding-bottom:4px!important}
+body.pl:not(.pv) #lv:not([hidden])>#stg.stage #ck{margin:18px 0 8px!important}
+body.pl:not(.pv) #lv:not([hidden])>#stg.stage .v3bar{margin:3px auto 0!important;padding-bottom:4px!important}
 /* Rebuild the thin seek line after returning from landscape to portrait. */
 @media (orientation:portrait) and (max-width:700px){
+ body.pl:not(.pv) #pbar{display:flex!important}
  #pbar .pwscr{
   display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;
   position:absolute!important;left:12px!important;right:12px!important;top:auto!important;bottom:3px!important;
@@ -120,6 +121,10 @@ css=r"""<style id="rimalab-favorites-details-v48">
  function restorePortraitProgress(){
   const portrait=window.matchMedia?window.matchMedia('(orientation:portrait) and (max-width:700px)').matches:window.innerHeight>=window.innerWidth;
   if(!portrait||!bar)return;
+  if(document.body.classList.contains('pl')&&!document.body.classList.contains('pv')){
+   bar.style.removeProperty('display');
+   bar.style.removeProperty('visibility');
+  }
   const seek=bar.querySelector('.pwscr');
   if(seek){
    ['display','visibility','opacity','position','left','right','top','bottom','width','height','min-height','max-height','flex','flex-basis','margin','padding','gap','z-index'].forEach(k=>seek.style.removeProperty(k));
