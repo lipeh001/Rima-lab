@@ -195,7 +195,7 @@ css=r"""<style id="rimalab-landscape-stage-download-v47">
   lv.style.setProperty('--rima-stage-bottom',reserve+'px');
  }
  const lv=document.getElementById('lv'),pb=document.getElementById('pbar');
- if(lv&&window.MutationObserver)new MutationObserver(()=>{requestAnimationFrame(adjust);setTimeout(adjust,120)}).observe(lv,{attributes:true,attributeFilter:['hidden','style']});
+ if(lv&&window.MutationObserver)new MutationObserver(()=>{requestAnimationFrame(adjust);setTimeout(adjust,120)}).observe(lv,{attributes:true,attributeFilter:['hidden']});
  window.addEventListener('resize',adjust,{passive:true});
  window.addEventListener('orientationchange',()=>setTimeout(adjust,120),{passive:true});
  if(window.ResizeObserver&&pb){try{new ResizeObserver(adjust).observe(pb)}catch(_){}}
