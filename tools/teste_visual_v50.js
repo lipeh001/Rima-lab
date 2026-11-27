@@ -90,6 +90,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
     htmlOverflow:getComputedStyle(document.documentElement).overflowX,bodyOverflow:getComputedStyle(document.body).overflowX,bodyTouch:getComputedStyle(document.body).touchAction,
     locked:document.body.classList.contains('rima-live-landscape')&&document.documentElement.classList.contains('rima-live-landscape'),
     card:rect('#bq')&&rect('#bq').width?(()=>{const r=card.getBoundingClientRect();return{x:r.x,right:r.right,top:r.top,bottom:r.bottom}})():null,
+    lv:rect('#lv'),stage:rect('#stg.stage'),stop:rect('#lv>.btn.w'),
     bq:rect('#bq'),categoryRow:rect('#bq>.rima-v50-category-row'),chips,favoritesButton:br&&{left:br.left,right:br.right,width:br.width},
     list:rect('#bq>.bsl'),player:rect('#pbar'),row:rect('#pbar .pwrow'),info:rect('#pbar .pwinfo'),seek:rect('#pbar .pwscr'),
     playerHeight:p.getBoundingClientRect().height,playerCount:document.querySelectorAll('#pbar').length
@@ -102,6 +103,10 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   ok('all Boom bap / Trap / Drill buttons fit inside the landscape panel',horizontal.chips.length>=3&&chipBounds,JSON.stringify(horizontal.chips));
   ok('Favorites button is fully visible below the categories',!!horizontal.favoritesButton&&horizontal.categoryRow&&horizontal.favoritesButton.left>=horizontal.card.x-1&&horizontal.favoritesButton.right<=horizontal.card.right+1&&horizontal.favoritesButton.width>200,JSON.stringify(horizontal.favoritesButton));
   ok('catalog occupies a separate vertical-scroll region',!!horizontal.list&&horizontal.list.height>70&&horizontal.list.bottom<=horizontal.card.bottom+1,JSON.stringify(horizontal.list));
+  ok('stage and stop button remain above the same landscape player dock',
+    !!horizontal.stage&&!!horizontal.stop&&!!horizontal.player&&
+    horizontal.stage.bottom<=horizontal.player.y-4&&horizontal.stop.bottom<=horizontal.player.y-4,
+    JSON.stringify({stage:horizontal.stage,stop:horizontal.stop,player:horizontal.player,lv:horizontal.lv}));
   ok('landscape time label sits between controls and progress row without overlap',
     horizontal.playerHeight>=82&&horizontal.row&&horizontal.info&&horizontal.seek&&horizontal.row.bottom<=horizontal.info.y+1&&horizontal.info.bottom<=horizontal.seek.y+1&&horizontal.seek.bottom<=horizontal.player.bottom+1,
     JSON.stringify({player:horizontal.player,row:horizontal.row,info:horizontal.info,seek:horizontal.seek}));
