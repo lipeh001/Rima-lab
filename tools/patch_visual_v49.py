@@ -115,6 +115,11 @@ css=r"""<style id="rimalab-shared-selector-orientation-v49">
   inset:0!important;bottom:0!important;background:#0b0b0e!important;
  }
 }
+#bp .rima-v43-toggle .rima-v29-count,#bq .rima-v43-toggle .rima-v29-count,
+#bp .rima-v42-favorites-toggle .rima-v29-count,#bq .rima-v42-favorites-toggle .rima-v29-count,
+#bp .rima-v29-tools .rima-v29-count,#bq .rima-v29-tools .rima-v29-count{font-weight:500!important}
+body.pl:not(.pv) #lv:not([hidden])>#stg.stage #ck{margin:18px 0 8px!important}
+body.pl:not(.pv) #lv:not([hidden])>#stg.stage .v3bar{margin:3px auto 0!important;padding-bottom:4px!important}
 #bp>.rima-v43-tools,#bq>.rima-v43-tools{
  display:flex!important;position:relative!important;float:none!important;clear:both!important;
  width:100%!important;max-width:100%!important;box-sizing:border-box!important;
