@@ -76,6 +76,8 @@ on:
       - 'tools/teste_visual_v49.js'
       - 'tools/patch_visual_v50.py'
       - 'tools/teste_visual_v50.js'
+      - 'tools/patch_visual_v51.py'
+      - 'tools/teste_visual_v51.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -353,6 +355,13 @@ jobs:
         run: python3 tools/patch_visual_v49.py "$BUILD_DIR"
       - name: Corrigir rolagem de Favoritos, layout horizontal e espaçamento do player V50
         run: python3 tools/patch_visual_v50.py "$BUILD_DIR"
+      - name: Corrigir bloqueio da etapa 1 e exibição condicional do player V51
+        run: python3 tools/patch_visual_v51.py "$BUILD_DIR"
+      - name: Validar etapa 1, orientação e player somente no palco V51
+        shell: bash
+        run: |
+          node tools/teste_visual_v51.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Testar seleção e Favoritos com cliques reais no Chromium
         shell: bash
         run: |
