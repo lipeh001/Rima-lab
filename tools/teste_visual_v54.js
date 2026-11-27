@@ -103,7 +103,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await click('#bbq .rima-v43-fav-play');
   ok('Battle favorite playback selects the matching track',await page.evaluate(k=>ZS.key===k,bkey));
   await click('#bbq .row .tag.chip');
-  const startButton=page.getByRole('button',{name:'Começar batalha'});
+  const startButton=page.locator('#bt button.btn.go').filter({hasText:/Começar batalha/i}).first();
   await startButton.waitFor({state:'visible',timeout:8000});
   await startButton.click({timeout:10000});
   await page.waitForFunction(()=>!!B&&!!document.querySelector('#bt .card.stage'),{timeout:6000}).catch(()=>{});
