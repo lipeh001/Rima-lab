@@ -83,9 +83,9 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await page.waitForTimeout(350);
   const locked=await page.evaluate(()=>{
    const main=document.querySelector('main'),lv=document.getElementById('lv'),r=lv.getBoundingClientRect();
-   return {class:document.body.classList.contains('rima-live-landscape'),mainPosition:getComputedStyle(main).position,mainOverflow:getComputedStyle(main).overflow,bodyOverflow:getComputedStyle(document.body).overflow,mainScroll:main.scrollHeight-main.clientHeight,lv:{top:r.top,bottom:r.bottom,height:r.height},height:innerHeight};
+   return {class:document.body.classList.contains('rima-live-landscape'),mainPosition:getComputedStyle(main).position,mainOverflow:getComputedStyle(main).overflow,bodyOverflow:getComputedStyle(document.body).overflow,mainTop:main.scrollTop,documentTop:document.scrollingElement.scrollTop,lv:{top:r.top,bottom:r.bottom,height:r.height},height:innerHeight};
   });
-  ok('landscape live stage locks the background page and covers the viewport',locked.class&&locked.mainPosition==='fixed'&&locked.mainOverflow==='hidden'&&locked.bodyOverflow==='hidden'&&locked.mainScroll<=1&&locked.lv.top===0&&locked.lv.bottom>=locked.height-1,JSON.stringify(locked));
+  ok('landscape live stage locks the background page and covers the viewport',locked.class&&locked.mainPosition==='fixed'&&locked.mainOverflow==='hidden'&&locked.bodyOverflow==='hidden'&&locked.mainTop===0&&locked.documentTop===0&&locked.lv.top===0&&locked.lv.bottom>=locked.height-1,JSON.stringify(locked));
   ok('only one persistent player exists in both orientations',await page.locator('#pbar').count()===1);
   ok('no uncaught JavaScript errors',errors.length===0,errors.join(' | '));
  }finally{await browser.close()}
