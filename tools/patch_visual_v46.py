@@ -13,6 +13,36 @@ if 'rimalab-favorites-layout-runtime-v43' not in h or 'rimalab-selection-feedbac
 if 'rimalab-landscape-stage-download-v47' in h:
     raise SystemExit('V46_FAIL: already applied')
 
+# Expose catalog-owned download state/actions to the Favorites runtime. The catalog
+# keeps its download Sets/Maps in a private script scope, so do not duplicate them.
+catalog_api = r"""
+window.rimaDownloadStateByKey=function(key){
+ const wanted=String(key||'');
+ for(const cat of Object.keys(ZLIB||{})){
+  const list=(ZLIB[cat]&&ZLIB[cat][1])||[];
+  const index=list.findIndex(x=>zKey(x)===wanted);
+  if(index>=0){
+   const x=list[index];
+   return {category:cat,index,local:zIsLocal(x)||!!ZDL[wanted],busy:ZDS[wanted]==='busy',can:x[10]===true&&!!x[9]};
+  }
+ }
+ const x=ZMETA[wanted];
+ if(x)return {category:x[5]||'Boom bap',index:-1,local:zIsLocal(x)||!!ZDL[wanted],busy:ZDS[wanted]==='busy',can:x[10]===true&&!!x[9]};
+ return null;
+};
+window.rimaDownloadByKey=function(key){
+ const state=window.rimaDownloadStateByKey(String(key||''));
+ if(!state||state.index<0)return false;
+ const previous=ZS.s;ZS.s=state.category;
+ try{zDl(state.index)}finally{ZS.s=previous}
+ return true;
+};
+"""
+m=re.search(r"function zDl\(i\)\{[^\n]*\}",h)
+if not m: raise SystemExit('V46_FAIL: catalog download function not found')
+if 'window.rimaDownloadStateByKey' not in h:
+ h=h[:m.end()]+'\n'+catalog_api+h[m.end():]
+
 # Add a download control to every favorite row, using the same permission and local-state
 # rules as the main catalog download button.
 v43_open='<script id="rimalab-favorites-layout-runtime-v43">'
@@ -24,7 +54,7 @@ if z<0: raise SystemExit('V46_FAIL: V43 closing tag missing')
 js=h[body:z]
 pattern=re.compile(r" function favoriteMarkup\(\)\{.*?\n \}\n function removeView",re.S)
 replacement=r''' function favoriteDownloadMarkup(t){
-  const x=t.x,k=t.key,local=zIsLocal(x)||!!ZDL[k],busy=ZDS[k]==='busy',can=x[10]===true&&!!x[9];
+  const x=t.x,k=t.key,state=window.rimaDownloadStateByKey?window.rimaDownloadStateByKey(k):null,local=!!(state&&state.local),busy=!!(state&&state.busy),can=!!(state&&state.can);
   const cls=local?'ok':busy?'busy':(!can?'nodl':'');
   const icon=local?'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>':busy?'…':'<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>';
   const label=local?'Salvo no celular. Toque para apagar':busy?'Salvando beat':can?'Salvar no celular':'Download offline não autorizado para esta faixa';
@@ -47,23 +77,9 @@ replacement=r''' function favoriteDownloadMarkup(t){
   });
  }
  function downloadFavorite(key){
-  const k=String(key||''),t=allTracks().find(item=>item.key===k);
-  if(!t)return;
-  const x=t.x,local=zIsLocal(x)||!!ZDL[k];
-  if(local){
-   if(!confirm('Apagar o beat “'+x[1]+'” do celular?'))return;
-   try{if(window.RimaNative&&RimaNative.apagar)RimaNative.apagar(k)}catch(_){}
-   ZLOCAL.delete(k);delete ZDL[k];delete ZMETA[k];
-   zSv('jm_local_ids',[...ZLOCAL]);zSv('dlmeta1',ZMETA);
-   zBuild(t.cat);if(typeof window.pk==='function')window.pk();
-   setTimeout(()=>syncFavoriteDownloads(k),80);
-   return;
-  }
-  if(ZDS[k]==='busy')return;
-  if(!(x[10]===true&&x[9])){if(typeof zFlash==='function')zFlash('Esta faixa não tem autorização para download offline.');return}
-  if(!(window.RimaNative&&RimaNative.baixar)){if(typeof zFlash==='function')zFlash('O salvamento offline funciona no app instalado.');return}
-  ZMETA[k]=x;zSv('dlmeta1',ZMETA);ZDS[k]='busy';syncFavoriteDownloads(k);
-  try{RimaNative.baixar(k,x[9],1)}catch(e){window.__dl(k,'erro',1)}
+  const k=String(key||''),api=window.rimaDownloadByKey;
+  if(typeof api!=='function')return;
+  api(k);setTimeout(()=>syncFavoriteDownloads(k),80);
  }
  window.rimaV47SyncFavoriteDownloads=syncFavoriteDownloads;
  window.zDlFavorite=downloadFavorite;
