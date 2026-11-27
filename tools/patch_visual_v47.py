@@ -15,7 +15,7 @@ if 'rimalab-favorites-details-v48' in h:
 
 # Two older patches wrote the characters backslash+n between script/style tags.
 # Those characters become visible text nodes in Android WebView.
-h=h.replace('</script>\\n<style','</script>\n<style')
+h=h.replace('\\n<style','\n<style')
 
 # Add a visible status label matching the catalog's "SALVO NO CELULAR" treatment.
 open_tag='<script id="rimalab-favorites-layout-runtime-v43">'
