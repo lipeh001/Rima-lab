@@ -69,7 +69,12 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await tap('#bq .bsl .bi:first-child [data-rima-fav]');
   saved=await page.evaluate("JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]')");
   await tap('#bq .rima-v43-toggle');
-  ok('Favorites from live stage hides the normal catalog and shows all saved beats',await page.locator('#bq .rima-v43-fav-row').count()===saved.length&&await page.locator('#bq .bsl:not(.rima-v43-favlist)').evaluateAll(es=>es.every(e=>e.hidden)));
+  ok('Favorites from live stage hides the normal catalog and shows all saved beats',await page.locator('#bq .rima-v43-fav-row').count()===saved.length&&await page.locator('#bq .bc').evaluateAll(es=>es.every(e=>e.hidden)));
+  const stageBoom=page.locator('#bq .row .tag.chip').filter({hasText:'Boom bap'}).first();
+  await tapLoc(stageBoom);await page.waitForTimeout(120);
+  ok('Boom bap chip switches out of Favorites inside the stage',await page.locator('#bq .rima-v43-favlist').count()===0&&await page.locator('#bq .row .tag.chip').filter({hasText:'Boom bap'}).count()===1);
+  await tap('#bq .rima-v43-toggle');
+  ok('stage Favorites can be reopened after category switching',await page.locator('#bq .rima-v43-fav-row').count()===saved.length);
   await tap('#bq .rima-v43-fav-play');
   current=await page.evaluate('ZS.key');
   ok('stage Favorites plays and highlights selected saved item',saved.includes(current)&&await page.locator('#bq .rima-v43-fav-play[aria-current="true"]').count()===1);
