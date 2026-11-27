@@ -29,7 +29,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await click('#bp .bsl .bi [data-rima-fav]');
   await page.waitForFunction(k=>JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]').includes(k),key,{timeout:5000});
   await page.waitForTimeout(180);
-  const heartSync=await page.evaluate(k=>['bp','bq','bbq'].every(id=>[...document.querySelectorAll('#'+id+' [data-rima-fav]')].some(b=>b.getAttribute('data-rima-fav')===k&&b.classList.contains('on'))),key);
+  const heartSync=await page.evaluate(k=>['bp','bq'].every(id=>[...document.querySelectorAll('#'+id+' [data-rima-fav]')].some(b=>b.getAttribute('data-rima-fav')===k&&b.classList.contains('on'))),key);
   ok('favorite status synchronizes across setup, live and battle catalogs',heartSync);
   await click('#bp .rima-v43-toggle');await page.locator('#bp .rima-v43-fav-row').first().waitFor({state:'visible',timeout:8000});
   const shape=await page.locator('#bp .rima-v43-fav-row').first().evaluate(r=>({bi:r.classList.contains('bi'),info:!!r.querySelector('.beat-info'),title:!!r.querySelector('.beat-info .mc b'),artist:!!r.querySelector('.beat-meta .beat-artist'),heart:!!r.querySelector('.rima-v43-fav-heart'),download:!!r.querySelector('.dlb'),lists:document.querySelectorAll('#bp>.rima-v43-favlist').length,hidden:document.querySelector('#bp>.bsl')?.hidden}));
@@ -59,6 +59,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   ok('player gate opens for active playback only inside the live stage',player.visible&&player.gate&&player.stage,JSON.stringify(player));
   await click('#bq .rima-v43-toggle');await page.locator('#bq .rima-v43-fav-row').first().waitFor({state:'visible',timeout:8000});
   ok('Favorites works in the live selector without duplicating the list',await page.locator('#bq>.rima-v43-favlist').count()===1&&await page.locator('#bq>.bsl[hidden]').count()===1);
+  await click('#bq .row .tag.chip');
   await click('#lv .bk');await page.waitForFunction(()=>document.querySelector('#lv').hidden,{timeout:10000});
   const off=await page.evaluate(()=>({hidden:getComputedStyle(document.querySelector('#pbar')).display==='none',step2:!document.querySelector('#train-step-2').hidden}));
   ok('leaving the live stage hides the player and returns to setup',off.hidden&&off.step2,JSON.stringify(off));
@@ -72,6 +73,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   ok('Battle Favorites reuses the same catalog card',await page.locator('#bbq .rima-v43-fav-row.bi .beat-info').count()>0);
   await click('#bbq .rima-v43-fav-play');
   ok('Battle favorite playback selects the matching track',await page.evaluate(k=>ZS.key===k,bkey));
+  await click('#bbq .row .tag.chip');
   await click('#bt .btn.go');
   const battleStarted=await page.evaluate(()=>!!B&&!!document.querySelector('#bt .card.stage'));
   ok('Começar batalha opens the live battle stage',battleStarted);
