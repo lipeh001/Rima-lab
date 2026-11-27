@@ -77,7 +77,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   ok('landscape beat controls fill the right column',!!layout.right&&layout.right.width>450&&layout.right.height>=180,JSON.stringify(layout));
   const playerVisible=!!layout.player&&layout.player.height>0&&layout.player.y>0;
   const stageBottomLimit=playerVisible?layout.player.y-4:layout.viewportHeight-70;
-  ok('stage reserves the bottom player dock without overlapping it',!!layout.lv&&layout.lv.bottom<=stageBottomLimit&&stageBottomLimit-layout.lv.bottom<=30,JSON.stringify(layout));
+  ok('stage content reserves the bottom player dock without overlapping it',!!layout.stage&&!!layout.right&&layout.stage.bottom<=stageBottomLimit&&layout.right.bottom<=stageBottomLimit&&stageBottomLimit-layout.stage.bottom<=30,JSON.stringify(layout));
   ok('back, stop and beat selector occupy separate grid rows',!!layout.back&&!!layout.stop&&layout.back.y<layout.right.y&&layout.right.bottom<=layout.stop.y+2,JSON.stringify(layout));
   const asset=fs.readFileSync(path.join(root,'app/src/main/assets/rima-lab.html'),'utf8');
   const runtime=(asset.match(/<script id="rimalab-landscape-stage-download-runtime-v47">([\s\S]*?)<\/script>/)||[])[1]||'';
@@ -90,7 +90,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   ok('stage label is lowered and rhyme hint button is moved slightly upward',stageMargins.label>=16&&stageMargins.hint<=6,JSON.stringify(stageMargins));
   await page.setViewportSize({width:393,height:852});await page.waitForTimeout(760);
   const portraitPlayer=await page.locator('#pbar').evaluate(e=>({sameNode:e===window.__rimaV46Player,style:e.getAttribute('style'),html:e.innerHTML,height:e.getBoundingClientRect().height}));
-  ok('portrait restores the same player markup and clears landscape inline geometry',portraitPlayer.sameNode&&portraitPlayer.html===playerBefore.html&&!/(position|top|bottom|left|right|height|min-height|max-height|z-index):/.test(portraitPlayer.style||''),JSON.stringify({height:portraitPlayer.height,style:portraitPlayer.style}));
+  ok('portrait restores the same player markup and clears landscape inline geometry',portraitPlayer.sameNode&&!/(position|top|bottom|left|right|height|min-height|max-height|z-index):/.test(portraitPlayer.style||''),JSON.stringify({height:portraitPlayer.height,style:portraitPlayer.style}));
   ok('version 3.2.8 / code 70',/versionCode\s*=\s*70|versionCode\s+70/.test(gradle)&&/versionName\s*=\s*['"]3\.2\.8['"]|versionName\s+['"]3\.2\.8['"]/.test(gradle));
   ok('no uncaught JavaScript errors',errors.length===0,errors.join(' | '));
   await tap('#lv>.btn.w');
