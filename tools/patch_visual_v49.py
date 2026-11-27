@@ -50,6 +50,9 @@ new_render=""" function renderRoot(root){
   // Hide/show that exact same catalog and attribution in both places.
   root.querySelectorAll(':scope > .bsl').forEach(list=>{list.hidden=showing});
   root.querySelectorAll(':scope > .catalog-attribution').forEach(note=>{note.hidden=showing});
+  root.querySelectorAll('.row .tag.chip').forEach(chip=>{
+   if(showing){chip.classList.remove('on');chip.setAttribute('aria-pressed','false')}
+  });
   if(showing)bar.insertAdjacentHTML('afterend',favoriteMarkup());
  }
  function render()"""
