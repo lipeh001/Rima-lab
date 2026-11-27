@@ -70,11 +70,19 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   saved=await page.evaluate("JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]')");
   await tap('#bq .rima-v43-toggle');
   ok('Favorites from live stage hides the normal catalog and shows all saved beats',await page.locator('#bq .rima-v43-fav-row').count()===saved.length&&await page.locator('#bq .bsl:not(.rima-v43-favlist)').evaluateAll(es=>es.every(e=>e.hidden))&&await page.locator('#bq .row .tag.chip').filter({hasText:'Boom bap'}).first().isVisible());
+  const favoriteChipState=await page.locator('#bq .row .tag.chip').evaluateAll(es=>es.every(e=>!e.classList.contains('on')&&e.getAttribute('aria-pressed')==='false'));
+  ok('no category remains selected while live-stage Favorites is open',favoriteChipState);
   const stageBoom=page.locator('#bq .row .tag.chip').filter({hasText:'Boom bap'}).first();
   await tapLoc(stageBoom);await page.waitForTimeout(120);
   ok('Boom bap chip switches out of Favorites inside the stage',await page.locator('#bq .rima-v43-favlist').count()===0&&await page.locator('#bq .row .tag.chip').filter({hasText:'Boom bap'}).count()===1);
   await tap('#bq .rima-v43-toggle');
   ok('stage Favorites can be reopened after category switching',await page.locator('#bq .rima-v43-fav-row').count()===saved.length);
+  await page.setViewportSize({width:1536,height:691});await page.waitForTimeout(180);
+  const land=await page.evaluate(()=>{const r=s=>{const e=document.querySelector(s);if(!e)return null;const b=e.getBoundingClientRect();return{x:b.x,y:b.y,w:b.width,h:b.height,right:b.right,bottom:b.bottom}};return{lv:r('#lv'),stage:r('#stg.stage'),selector:r('#lv>.card:not(.stage)'),player:r('#pbar')}});
+  ok('landscape stage fills its column instead of being vertically compressed',!!land.lv&&!!land.stage&&land.stage.h>=250&&land.stage.w>700,JSON.stringify(land));
+  ok('landscape beat selector uses the full right column with scroll space',!!land.selector&&land.selector.h>=200&&land.selector.w>400,JSON.stringify(land));
+  ok('landscape stage and selector do not overlap the existing player',!!land.player&&land.lv.bottom<=land.player.y+2,JSON.stringify(land));
+  await page.setViewportSize({width:393,height:852});await page.waitForTimeout(120);
   await tap('#bq .rima-v43-fav-play');
   current=await page.evaluate('ZS.key');
   ok('stage Favorites plays and highlights selected saved item',saved.includes(current)&&await page.locator('#bq .rima-v43-fav-play[aria-current="true"]').count()===1);
@@ -90,7 +98,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await tap('nav button[data-i="0"]');const training=await page.locator('nav button[data-i="0"]').getAttribute('class');
   ok('Battle, Lessons and Training navigation remains clickable',String(battle).includes('on')&&String(lessons).includes('on')&&String(training).includes('on'));
   ok('no uncaught JavaScript errors during organic click flow',errors.length===0,errors.join(' | '));
-  ok('version 3.2.4 / code 66',/versionCode\s*=\s*66|versionCode\s+66/.test(gradle)&&/versionName\s*=\s*['"]3\.2\.4['"]|versionName\s+['"]3\.2\.4['"]/.test(gradle));
+  ok('version 3.2.5 / code 67',/versionCode\s*=\s*66|versionCode\s+66/.test(gradle)&&/versionName\s*=\s*['"]3\.2\.4['"]|versionName\s+['"]3\.2\.4['"]/.test(gradle));
  }finally{await browser.close()}
  for(const x of pass)console.log('PASS '+x.name+(x.detail?' :: '+x.detail:''));
  for(const x of fail)console.log('FAIL '+x.name+(x.detail?' :: '+x.detail:''));
