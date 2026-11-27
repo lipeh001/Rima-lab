@@ -97,6 +97,10 @@ new_lv="""  position:fixed!important;inset:0!important;
   background:#0b0b0e!important;isolation:isolate!important;"""
 if old_lv not in h: raise SystemExit('V49_FAIL: landscape live-stage inset rule missing')
 h=h.replace(old_lv,new_lv,1)
+old_pad="margin:0!important;padding:8px max(12px,env(safe-area-inset-right,0px)) 4px max(12px,env(safe-area-inset-left,0px))!important;"
+new_pad="margin:0!important;padding:8px max(12px,env(safe-area-inset-right,0px)) calc(var(--rima-stage-bottom,90px) + 4px) max(12px,env(safe-area-inset-left,0px))!important;"
+if old_pad not in h: raise SystemExit('V49_FAIL: landscape padding shorthand missing')
+h=h.replace(old_pad,new_pad,1)
 
 # Remove the earlier V48 workaround's effects by restoring every property set by
 # V42 dockPlayer() whenever the viewport returns to portrait.
