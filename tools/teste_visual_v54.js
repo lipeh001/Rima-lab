@@ -45,7 +45,8 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await page.waitForFunction(k=>ZS.key===k,expectedKey,{timeout:6000});
   const key=await page.evaluate(()=>ZS.key);
   const catalogClicks=await page.evaluate(()=>window.__v54ClickCount);
-  ok('one catalog tap selects the requested beat without duplicating the list',key===expectedKey&&catalogClicks===1&&document.querySelectorAll('#bp>.bsl').length===1,JSON.stringify({key,expectedKey,catalogClicks}));
+  const catalogListCount=await page.locator('#bp>.bsl').count();
+  ok('one catalog tap selects the requested beat without duplicating the list',key===expectedKey&&catalogClicks===1&&catalogListCount===1,JSON.stringify({key,expectedKey,catalogClicks,catalogListCount}));
   await page.locator('#bp .bsl .bi [data-rima-fav]').first().waitFor({state:'visible',timeout:8000});
   await click('#bp .bsl .bi [data-rima-fav]');
   await page.waitForFunction(k=>JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]').includes(k),key,{timeout:5000});
