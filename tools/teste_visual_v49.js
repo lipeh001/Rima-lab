@@ -21,7 +21,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
    await page.mouse.click(b.x+b.width/2,b.y+b.height/2);await page.waitForTimeout(180);
   };
   await tap('#md .mc');await tap('#train-step-1 .go');
-  await page.waitForSelector('#bp .bsl .bi .mc',{timeout:12000});
+  await page.waitForSelector('#bp .bsl .bi:first-child .mc[data-rima-track-key]',{state:'visible',timeout:12000});
   await tap('#bp .bsl .bi:first-child .mc');
   const key=await page.locator('#bp .bsl .bi:first-child .mc').getAttribute('data-rima-track-key');
   await tap('#bp .bsl .bi:first-child [data-rima-fav]');
