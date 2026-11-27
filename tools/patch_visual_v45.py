@@ -19,9 +19,10 @@ replacement=r'''function renderRoot(root){
   }else{
    // Keep stage category chips live; only swap the beat catalog content.
    if(showing){
-    root.querySelectorAll('.bc').forEach(e=>e.hidden=true);
+    // Keep the stage category row visible and swap only the beat list.
+    root.querySelectorAll('.bsl').forEach(e=>{if(!e.classList.contains('rima-v43-favlist'))e.hidden=true});
     bar.insertAdjacentHTML('afterend',favoriteMarkup());
-   }else root.querySelectorAll('.bc').forEach(e=>e.hidden=false);
+   }else root.querySelectorAll('.bsl').forEach(e=>{if(!e.classList.contains('rima-v43-favlist'))e.hidden=false});
   }
  }'''
 v43_start=h.find('<script id="rimalab-favorites-layout-runtime-v43">')
