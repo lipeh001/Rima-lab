@@ -65,7 +65,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   ok('Favorites label is not bold in live-stage selector',bqWeight<=600,String(bqWeight));
   const bqCountWeight=Number(await page.locator('#bq .rima-v43-toggle .rima-v29-count').evaluate(e=>getComputedStyle(e).fontWeight));
   ok('Favorites count number is not bold in live-stage selector',bqCountWeight<=500,String(bqCountWeight));
-  const playerBefore=await page.locator('#pbar').evaluate(e=>({html:e.innerHTML,style:e.getAttribute('style')}));
+  const playerBefore=await page.locator('#pbar').evaluate(e=>{document.body.classList.add('pl','rima-player-visible');window.__rimaV46Player=e;return{html:e.innerHTML,style:e.getAttribute('style'),height:e.getBoundingClientRect().height}});
   await page.setViewportSize({width:1536,height:691});
   await page.waitForTimeout(500);
   const layout=await page.evaluate(()=>{
@@ -89,8 +89,8 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const stageMargins=await page.evaluate(()=>({label:parseFloat(getComputedStyle(document.querySelector('#ck')).marginTop),hint:parseFloat(getComputedStyle(document.querySelector('#stg .v3bar')).marginTop)}));
   ok('stage label is lowered and rhyme hint button is moved slightly upward',stageMargins.label>=16&&stageMargins.hint<=6,JSON.stringify(stageMargins));
   await page.setViewportSize({width:393,height:852});await page.waitForTimeout(760);
-  const portraitPlayer=await page.locator('#pbar').evaluate(e=>({style:e.getAttribute('style'),html:e.innerHTML,height:e.getBoundingClientRect().height}));
-  ok('portrait restores the same player markup and clears landscape inline geometry',portraitPlayer.html===playerBefore.html&&!/(position|top|bottom|left|right|height|min-height|max-height|z-index):/.test(portraitPlayer.style||''),JSON.stringify({height:portraitPlayer.height,style:portraitPlayer.style}));
+  const portraitPlayer=await page.locator('#pbar').evaluate(e=>({sameNode:e===window.__rimaV46Player,style:e.getAttribute('style'),html:e.innerHTML,height:e.getBoundingClientRect().height}));
+  ok('portrait restores the same player markup and clears landscape inline geometry',portraitPlayer.sameNode&&portraitPlayer.html===playerBefore.html&&!/(position|top|bottom|left|right|height|min-height|max-height|z-index):/.test(portraitPlayer.style||''),JSON.stringify({height:portraitPlayer.height,style:portraitPlayer.style}));
   ok('version 3.2.8 / code 70',/versionCode\s*=\s*70|versionCode\s+70/.test(gradle)&&/versionName\s*=\s*['"]3\.2\.8['"]|versionName\s+['"]3\.2\.8['"]/.test(gradle));
   ok('no uncaught JavaScript errors',errors.length===0,errors.join(' | '));
   await tap('#lv>.btn.w');
