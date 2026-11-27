@@ -494,3 +494,5 @@ jobs:
           if-no-files-found: error
 
 # V54 lexical-global test fix
+
+# Re-run after V54 DOM assertion fix
