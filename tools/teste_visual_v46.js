@@ -92,7 +92,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   ok('version 3.2.7 / code 69',/versionCode\\s*=\\s*69|versionCode\\s+69/.test(gradle)&&/versionName\\s*=\\s*['\"]3\\.2\\.7['\"]|versionName\\s+['\"]3\\.2\\.7['\"]/.test(gradle));
   ok('no uncaught JavaScript errors',errors.length===0,errors.join(' | '));
   await tap('#lv>.btn.w');
-  ok('setup step 2 returns after leaving the live stage',!document.querySelector('#train-step-2').hidden);
+  ok('setup step 2 returns after leaving the live stage',!(await page.locator('#train-step-2').evaluate(e=>e.hidden)));
  }finally{await browser.close()}
  for(const x of pass)console.log('PASS '+x.name+(x.detail?' :: '+x.detail:''));
  for(const x of fail)console.log('FAIL '+x.name+(x.detail?' :: '+x.detail:''));
