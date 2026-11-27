@@ -82,7 +82,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const runtime=(asset.match(/<script id="rimalab-landscape-stage-download-runtime-v47">([\s\S]*?)<\/script>/)||[])[1]||'';
   ok('new landscape runtime only reads player geometry and never writes to the player',/getBoundingClientRect/.test(runtime)&&!(/pb\.innerHTML\s*=|pb\.style\.|pbar\.innerHTML\s*=|pbar\.style\./.test(runtime)),runtime);
   ok('new landscape override does not contain player styling',!/<style id="rimalab-landscape-stage-download-v47">[\s\S]*?#pbar/i.test(asset));
-  const rawEscapes=await page.evaluate(()=>Array.from(document.body.childNodes).filter(n=>n.nodeType===3&&n.textContent.includes('\\\\n')).map(n=>n.textContent.trim()).filter(Boolean));
+  const rawEscapes=await page.evaluate(()=>Array.from(document.body.childNodes).filter(n=>n.nodeType===3&&n.textContent.includes('\\n')).map(n=>n.textContent.trim()).filter(Boolean));
   ok('no visible escaped-newline text is left around the page footer',rawEscapes.length===0,JSON.stringify(rawEscapes));
   const stageMargins=await page.evaluate(()=>({label:parseFloat(getComputedStyle(document.querySelector('#ck')).marginTop),hint:parseFloat(getComputedStyle(document.querySelector('#stg .v3bar')).marginTop)}));
   ok('stage label is lowered and rhyme hint button is moved slightly upward',stageMargins.label>=16&&stageMargins.hint<=6,JSON.stringify(stageMargins));
