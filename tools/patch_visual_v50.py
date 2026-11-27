@@ -292,6 +292,16 @@ main,.tab,#bp,#bq{min-width:0!important;max-width:100%!important;box-sizing:bord
   if(active){body.scrollLeft=0;html.scrollLeft=0}
  }
  function settle(){requestAnimationFrame(sync);setTimeout(sync,120);setTimeout(sync,320)}
+ // Category chips are the single explicit way to leave Favorites in both selectors.
+ // V43 originally wired only #bp; #bq now uses the same close action.
+ document.addEventListener('click',function(e){
+  const chip=e.target&&e.target.closest?e.target.closest('#bp .row .tag.chip,#bq .row .tag.chip'):null;
+  if(!chip)return;
+  const root=chip.closest('#bp,#bq');
+  if(root&&root.querySelector(':scope > .rima-v43-favlist')&&typeof window.rimaV43ShowFavorites==='function'){
+   window.rimaV43ShowFavorites(false);
+  }
+ },true);
  if(lv&&window.MutationObserver)new MutationObserver(settle).observe(lv,{attributes:true,attributeFilter:['hidden']});
  window.addEventListener('resize',settle,{passive:true});
  window.addEventListener('orientationchange',settle,{passive:true});
