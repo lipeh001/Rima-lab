@@ -69,7 +69,6 @@ body:not(.rima-v51-player-eligible) #pbar *{pointer-events:none!important}
  if(window.MutationObserver){
   new MutationObserver(settle).observe(body,{attributes:true,attributeFilter:['class']});
   new MutationObserver(settle).observe(lv,{attributes:true,attributeFilter:['hidden','class']});
-  new MutationObserver(settle).observe(bar,{attributes:true,attributeFilter:['style']});
  }
  window.addEventListener('resize',settle,{passive:true});
  window.addEventListener('orientationchange',settle,{passive:true});
