@@ -87,7 +87,7 @@ css=r'''<style id="rimalab-landscape-navigation-touch-v52">
  }
  function settle(){requestAnimationFrame(sync);setTimeout(sync,100);setTimeout(sync,300);setTimeout(sync,700)}
  const observer=new MutationObserver(()=>sync());
- observer.observe(document.body,{attributes:true,attributeFilter:['class','style'],subtree:true});
+ observer.observe(document.body,{attributes:true,attributeFilter:['class']});
  window.addEventListener('orientationchange',settle,{passive:true});
  window.addEventListener('resize',settle,{passive:true});
  window.addEventListener('pageshow',settle,{passive:true});
