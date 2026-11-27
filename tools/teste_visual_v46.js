@@ -70,8 +70,8 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   ok('stage reserves the bottom player dock without overlapping it',!!layout.lv&&layout.lv.bottom<=stageBottomLimit&&stageBottomLimit-layout.lv.bottom<=30,JSON.stringify(layout));
   ok('back, stop and beat selector occupy separate grid rows',!!layout.back&&!!layout.stop&&layout.back.y<layout.right.y&&layout.right.bottom<=layout.stop.y+2,JSON.stringify(layout));
   const asset=fs.readFileSync(path.join(root,'app/src/main/assets/rima-lab.html'),'utf8');
-  const runtime=(asset.match(/<script id="rimalab-landscape-stage-download-runtime-v47">([\s\S]*?)<\\/script>/)||[])[1]||'';
-  ok('new landscape runtime only reads player geometry and never writes to the player',/getBoundingClientRect/.test(runtime)&&!(/pb\\.innerHTML\\s*=|pb\\.style\\.|pbar\\.innerHTML\\s*=|pbar\\.style\\./.test(runtime)),runtime);
+  const runtime=(asset.match(/<script id="rimalab-landscape-stage-download-runtime-v47">([\s\S]*?)<\/script>/)||[])[1]||'';
+  ok('new landscape runtime only reads player geometry and never writes to the player',/getBoundingClientRect/.test(runtime)&&!(/pb\.innerHTML\s*=|pb\.style\.|pbar\.innerHTML\s*=|pbar\.style\./.test(runtime)),runtime);
   ok('new landscape override does not contain player styling',!/<style id="rimalab-landscape-stage-download-v47">[\s\S]*?#pbar/i.test(asset));
   ok('version 3.2.6 / code 68',/versionCode\s*=\s*68|versionCode\s+68/.test(gradle)&&/versionName\s*=\s*['"]3\.2\.6['"]|versionName\s+['"]3\.2\.6['"]/.test(gradle));
   ok('no uncaught JavaScript errors',errors.length===0,errors.join(' | '));
