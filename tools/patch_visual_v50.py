@@ -89,7 +89,8 @@ scroll_code=r"""
   for(let p=root.parentElement;p&&p!==document.documentElement;p=p.parentElement){
    if(p.scrollTop>0||p.scrollHeight>p.clientHeight+2)parents.push({el:p,top:p.scrollTop});
   }
-  const state={listTop:view?view.scrollTop:(scrollSnapshots[root.id]?.listTop||0),pageY:window.scrollY||document.scrollingElement.scrollTop||0,parents};
+  const scrollRoot=document.scrollingElement||document.body||document.documentElement;
+  const state={listTop:view?view.scrollTop:(scrollSnapshots[root.id]?.listTop||0),pageY:(window.scrollY||(scrollRoot?scrollRoot.scrollTop:0)||0),parents};
   scrollSnapshots[root.id]=state;
   return state;
  }
@@ -98,8 +99,9 @@ scroll_code=r"""
   const restore=()=>{
    const view=root.querySelector(':scope > .rima-v43-favlist');
    if(view&&Math.abs(view.scrollTop-state.listTop)>1)view.scrollTop=state.listTop;
-   (state.parents||[]).forEach(p=>{if(p.el&&Math.abs(p.el.scrollTop-p.top)>1)p.el.scrollTop=p.top});
-   const current=window.scrollY||document.scrollingElement.scrollTop||0;
+   (state.parents||[]).forEach(p=>{if(p.el&&p.el.isConnected&&Math.abs(p.el.scrollTop-p.top)>1)p.el.scrollTop=p.top});
+   const scrollRoot=document.scrollingElement||document.body||document.documentElement;
+   const current=(window.scrollY||(scrollRoot?scrollRoot.scrollTop:0)||0);
    if(Math.abs(current-state.pageY)>2)window.scrollTo(0,state.pageY);
   };
   requestAnimationFrame(()=>{restore();requestAnimationFrame(restore)});
@@ -203,6 +205,8 @@ main,.tab,#bp,#bq{min-width:0!important;max-width:100%!important;box-sizing:bord
 }
 /* In landscape, keep category chips and Favorites visible; only the beat list scrolls. */
 @media(orientation:landscape) and (min-width:560px){
+ /* Reserve enough content space for the expanded 84px landscape dock. */
+ body.pl:not(.pv) #lv:not([hidden]){--rima-stage-bottom:108px!important}
  html.rima-live-landscape,body.rima-live-landscape{
   width:100vw!important;max-width:100vw!important;height:100vh!important;max-height:100vh!important;
   overflow:hidden!important;overflow-x:hidden!important;overscroll-behavior:none!important;touch-action:pan-y!important;
