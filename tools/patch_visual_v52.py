@@ -78,9 +78,16 @@ css=r'''<style id="rimalab-landscape-navigation-touch-v52">
   if(!landscape())return;
   const live=document.body.classList.contains('rima-live-landscape');
   if(nav&&!live){nav.style.setProperty('display','grid','important');nav.style.setProperty('visibility','visible','important');nav.style.setProperty('pointer-events','auto','important')}
-  if(main&&!live){main.style.removeProperty('position');main.style.removeProperty('inset');main.style.removeProperty('height');main.style.removeProperty('max-height');main.style.removeProperty('overflow')}
+  if(main&&!live){
+   /* V49/V51 can reapply fixed/hidden inline geometry on stage changes. */
+   for(const [k,v] of [['position','relative'],['inset','auto'],['left','auto'],['right','auto'],['top','auto'],['bottom','auto'],['height','auto'],['max-height','none'],['overflow-x','hidden'],['overflow-y','visible'],['touch-action','pan-y']])main.style.setProperty(k,v,'important');
+   document.documentElement.style.setProperty('overflow-y','auto','important');
+   document.body.style.setProperty('overflow-y','auto','important');
+  }
  }
- function settle(){requestAnimationFrame(sync);setTimeout(sync,100);setTimeout(sync,300)}
+ function settle(){requestAnimationFrame(sync);setTimeout(sync,100);setTimeout(sync,300);setTimeout(sync,700)}
+ const observer=new MutationObserver(()=>sync());
+ observer.observe(document.body,{attributes:true,attributeFilter:['class','style'],subtree:true});
  window.addEventListener('orientationchange',settle,{passive:true});
  window.addEventListener('resize',settle,{passive:true});
  window.addEventListener('pageshow',settle,{passive:true});
