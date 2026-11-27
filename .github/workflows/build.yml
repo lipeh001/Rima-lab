@@ -340,6 +340,8 @@ jobs:
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Destacar faixa selecionada e sincronizar Favoritos nos dois seletores v45
         run: python3 tools/patch_visual_v45.py "$BUILD_DIR"
+      - name: Corrigir palco horizontal, Favoritos e download na lista V46
+        run: python3 tools/patch_visual_v46.py "$BUILD_DIR"
       - name: Testar seleção e Favoritos com cliques reais no Chromium
         shell: bash
         run: |
@@ -347,8 +349,6 @@ jobs:
           npx playwright install --with-deps chromium
           node tools/teste_favorites_organic_v45.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
-      - name: Corrigir palco horizontal, Favoritos e download na lista V46
-        run: python3 tools/patch_visual_v46.py "$BUILD_DIR"
       - name: Validar paisagem, downloads nos Favoritos e player preservado V46
         shell: bash
         run: |
