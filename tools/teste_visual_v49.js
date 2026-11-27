@@ -21,7 +21,14 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
    await page.mouse.click(b.x+b.width/2,b.y+b.height/2);await page.waitForTimeout(180);
   };
   await tap('#md .mc');await tap('#train-step-1 .go');
-  await tap('#bp .bsl .bi:first-child .mc');
+  // Wait for the real catalog bootstrap before clicking; otherwise a temporary
+  // loading row can consume the tap while zLP is still building the category.
+  await page.evaluate(async()=>{if(window.rimaCatalogReady&&typeof window.rimaCatalogReady.then==='function')await window.rimaCatalogReady});
+  await page.waitForFunction(()=>Array.isArray(window.ZLIB?.['Boom bap']?.[1])&&window.ZLIB['Boom bap'][1].length>0&&!!document.querySelector('#bp .bsl .bi .mc'),{timeout:15000});
+  const firstTrack=page.locator('#bp .bsl .bi .mc').first();
+  await firstTrack.scrollIntoViewIfNeeded();
+  await firstTrack.click({timeout:9000});
+  await page.waitForFunction(()=>!!(window.ZS&&ZS.key),{timeout:7000});
   const key=await page.evaluate('ZS.key');
   if(!key)throw new Error('Clicked catalog beat did not produce a selected key');
   await page.waitForFunction(k=>ZS.key===k,key,{timeout:7000});
