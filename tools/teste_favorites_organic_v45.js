@@ -58,8 +58,8 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   ok('playing a favorite marks that exact saved row',saved.includes(current)&&await page.locator('#bp .rima-v43-fav-play[aria-current="true"]').count()===1);
   await page.evaluate('zStep(1)');await page.waitForTimeout(160);current=await page.evaluate('ZS.key');
   ok('next-track navigation stays inside Favorites queue',saved.includes(current));
-  await tap('#bp .rima-v43-toggle');
-  ok('closing Favorites restores the setup catalog before entering stage',await page.locator('#bp .bsl:not(.rima-v43-favlist)').isVisible());
+  await tapLoc(page.locator('#bp .row .tag.chip').filter({hasText:'Boom bap'}).first());
+  ok('choosing Boom bap restores the setup catalog before entering stage',await page.locator('#bp .bsl:not(.rima-v43-favlist)').isVisible());
   await tap('#bp .bsl .bi:first-child .mc'); // Favorites returns to Boom bap; select a beat in that category before starting.
   await tap('#train-step-2 .training-footer .go');await page.waitForTimeout(450);
   ok('selected beat enters the live stage',!(await page.locator('#lv').evaluate(e=>e.hidden)));
@@ -88,9 +88,9 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await tap('#bq .rima-v43-fav-play');
   current=await page.evaluate('ZS.key');
   ok('stage Favorites plays and highlights selected saved item',saved.includes(current)&&await page.locator('#bq .rima-v43-fav-play[aria-current="true"]').count()===1);
-  await tap('#bq .rima-v43-toggle');await page.waitForTimeout(120);
+  await tapLoc(page.locator('#bq .row .tag.chip').filter({hasText:'Boom bap'}).first());await page.waitForTimeout(120);
   const restoredStage=await page.evaluate(()=>{const list=(ZLIB['Boom bap']&&ZLIB['Boom bap'][1])||[];const match=list.some(x=>zKey(x)===ZS.key);return{visible:!document.querySelector('#bq>.bsl')?.hidden,category:ZS.s,match,selected:document.querySelectorAll('#bq .bsl .bi .mc.on').length}});
-  ok('closing stage Favorites restores Boom bap catalog without stale selection',restoredStage.visible&&restoredStage.category==='Boom bap'&&restoredStage.selected===(restoredStage.match?1:0),JSON.stringify(restoredStage));
+  ok('choosing Boom bap exits stage Favorites and restores its catalog',restoredStage.visible&&restoredStage.category==='Boom bap'&&restoredStage.selected===(restoredStage.match?1:0),JSON.stringify(restoredStage));
   await tapLoc(page.locator('#bq .row .tag.chip').filter({hasText:'Boom bap'}).first());
   await tap('#bq .bsl .bi:first-child .mc');
   const bqCategoryState=await page.locator('#bq .bsl .bi:first-child .mc').evaluate(e=>({on:e.classList.contains('on'),bg:getComputedStyle(e).backgroundImage}));
