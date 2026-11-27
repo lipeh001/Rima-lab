@@ -59,6 +59,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await tap('#train-step-2 .training-footer .go');await page.waitForTimeout(450);
   ok('selected beat enters the live stage',!(await page.locator('#lv').evaluate(e=>e.hidden)));
   await page.waitForSelector('#bq .bsl .bi .mc',{timeout:10000});
+  await page.waitForSelector('#bq .bsl .bi:first-child [data-rima-fav]',{timeout:5000});
   await tap('#bq .bsl .bi:first-child .mc');
   let bqState=await page.locator('#bq .bsl .bi:first-child .mc').evaluate(e=>({on:e.classList.contains('on'),pressed:e.getAttribute('aria-pressed'),bg:getComputedStyle(e).backgroundImage}));
   ok('stage selector #bq gives same visible selected state',bqState.on&&bqState.pressed==='true'&&bqState.bg.includes('linear-gradient'),JSON.stringify(bqState));
