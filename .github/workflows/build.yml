@@ -78,6 +78,8 @@ on:
       - 'tools/teste_visual_v50.js'
       - 'tools/patch_visual_v51.py'
       - 'tools/teste_visual_v51.js'
+      - 'tools/patch_visual_v52.py'
+      - 'tools/teste_visual_v52.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -369,6 +371,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v51.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Restaurar navegação, rolagem e toques na orientação horizontal V52
+        run: python3 tools/patch_visual_v52.py "$BUILD_DIR"
+      - name: Validar Treino, Batalha, Aulas e interação horizontal V52
+        shell: bash
+        run: |
+          node tools/teste_visual_v52.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Validar paisagem, downloads nos Favoritos e player preservado V46
         shell: bash
