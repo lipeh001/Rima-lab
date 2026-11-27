@@ -9,7 +9,7 @@ h=hp.read_text(encoding='utf-8');g=gp.read_text(encoding='utf-8')
 if 'rimalab-selection-feedback-runtime-v45' in h: raise SystemExit('V45_FAIL: already applied')
 if 'rimalab-favorites-layout-runtime-v43' not in h or 'rimalab-favorites-catalog-lexical-v44' not in h:
     raise SystemExit('V45_FAIL: expected V43/V44 runtimes missing')
-replacement=r''' function renderRoot(root){
+replacement=r'''function renderRoot(root){
   const bar=ensureToolbar(root);removeView(root);
   root.querySelectorAll(':scope > .bsl:not(.rima-v43-favlist)').forEach(e=>{e.hidden=showing});
   root.querySelectorAll(':scope > .catalog-attribution').forEach(e=>{e.hidden=showing});
@@ -27,7 +27,7 @@ v43_body=v43_start+len('<script id="rimalab-favorites-layout-runtime-v43">')
 v43_end=h.find('</script>',v43_body)
 if v43_end<0: raise SystemExit('V45_FAIL: V43 script closing tag missing')
 v43_js=h[v43_body:v43_end]
-start=v43_js.find(' function renderRoot(root){')
+start=v43_js.find('function renderRoot(root){')
 end=v43_js.find('\n function render(){',start)
 if start<0 or end<0: raise SystemExit('V45_FAIL: renderer function not found inside V43 script')
 v43_js2=v43_js[:start]+replacement.rstrip('\n')+v43_js[end:]
