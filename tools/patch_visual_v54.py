@@ -66,6 +66,8 @@ h=h.replace("['bp','bq'].forEach(id=>{","['bp','bq','bbq'].forEach(id=>{",1)
 
 css=r'''<style id="rimalab-unified-catalog-favorites-v54">
 /* Same single list and same card grammar in setup, live stage and battle. */
+#train-step-2 #bp>.bsl,#train-step-2 #bp>.rima-v43-favlist,#lv:not([hidden]) #bq>.bsl,#lv:not([hidden]) #bq>.rima-v43-favlist,#bt #bbq>.bsl,#bt #bbq>.rima-v43-favlist{height:auto!important;max-height:min(42vh,320px)!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-y!important}
+
 #bp>.rima-v43-tools,#bq>.rima-v43-tools,#bbq>.rima-v43-tools{display:flex!important;position:relative!important;float:none!important;clear:both!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;margin:8px 0 10px!important;padding:0!important}
 #bp>.rima-v43-tools button,#bq>.rima-v43-tools button,#bbq>.rima-v43-tools button{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;min-height:46px!important;padding:8px 14px!important;border:1px solid rgba(229,196,91,.55)!important;border-radius:14px!important;background:rgba(220,190,80,.12)!important;color:#f0d77d!important;font-weight:600!important;font-size:16px!important;white-space:nowrap!important}
 #bp>.rima-v43-tools button.active,#bq>.rima-v43-tools button.active,#bbq>.rima-v43-tools button.active{background:rgba(220,190,80,.22)!important;border-color:#e5c45b!important}
