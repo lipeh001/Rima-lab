@@ -57,6 +57,8 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   ok('playing a favorite marks that exact saved row',saved.includes(current)&&await page.locator('#bp .rima-v43-fav-play[aria-current="true"]').count()===1);
   await page.evaluate('zStep(1)');await page.waitForTimeout(160);current=await page.evaluate('ZS.key');
   ok('next-track navigation stays inside Favorites queue',saved.includes(current));
+  await tap('#bp .rima-v43-toggle');
+  ok('closing Favorites restores the setup catalog before entering stage',await page.locator('#bp .bsl:not(.rima-v43-favlist)').isVisible());
   await tap('#train-step-2 .training-footer .go');await page.waitForTimeout(450);
   ok('selected beat enters the live stage',!(await page.locator('#lv').evaluate(e=>e.hidden)));
   await page.waitForSelector('#bq .bsl .bi .mc',{timeout:10000});
