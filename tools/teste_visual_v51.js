@@ -42,8 +42,8 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   // still remain hidden until the user moves into the live stage.
   await page.evaluate(()=>document.body.classList.add('rima-player-visible'));
   await page.waitForTimeout(180);
-  const setupAudio=await page.evaluate(()=>getComputedStyle(document.querySelector('#pbar')).display);
-  ok('audio flag alone does not show the player during setup',setupAudio==='none',setupAudio);
+  const setupAudio=await page.evaluate(()=>({display:getComputedStyle(document.querySelector('#pbar')).display,eligible:document.body.classList.contains('rima-v51-player-eligible'),setupHidden:document.querySelector('#train-step-2')?.hidden,lvHidden:document.querySelector('#lv')?.hidden,classes:document.body.className,style:document.querySelector('#pbar').getAttribute('style')}));
+  ok('audio flag alone does not show the player during setup',setupAudio.display==='none'&&!setupAudio.eligible,JSON.stringify(setupAudio));
   await page.evaluate(()=>{
    const lv=document.querySelector('#lv');
    if(lv){lv.hidden=false;lv.style.display='';}
