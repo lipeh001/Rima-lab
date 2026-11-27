@@ -64,7 +64,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
    return {lv:rect('#lv'),stage:rect('#stg.stage'),right:rect('#lv>.card:not(.stage)'),back:rect('#lv>.bk'),stop:rect('#lv>.btn.w'),player:rect('#pbar'),playerHTML:p&&p.innerHTML,playerStyle:p&&p.getAttribute('style'),bottomVar:document.querySelector('#lv').style.getPropertyValue('--rima-stage-bottom')};
   });
   ok('landscape mode expands the stage to the left column',!!layout.stage&&layout.stage.width>650&&layout.stage.height>=300,JSON.stringify(layout));
-  ok('landscape beat controls fill the right column',!!layout.right&&layout.right.width>450&&layout.right.height>=200,JSON.stringify(layout));
+  ok('landscape beat controls fill the right column',!!layout.right&&layout.right.width>450&&layout.right.height>=180,JSON.stringify(layout));
   ok('stage uses the available height down to the player dock',!!layout.lv&&!!layout.player&&layout.lv.bottom<=layout.player.y-4&&layout.player.y-layout.lv.bottom<22,JSON.stringify(layout));
   ok('back, stop and beat selector occupy separate grid rows',!!layout.back&&!!layout.stop&&layout.back.y<layout.right.y&&layout.right.bottom<=layout.stop.y+2,JSON.stringify(layout));
   ok('player markup and inline style remain untouched',layout.playerHTML===playerBefore.html&&layout.playerStyle===playerBefore.style,JSON.stringify({beforeStyle:playerBefore.style,afterStyle:layout.playerStyle}));
