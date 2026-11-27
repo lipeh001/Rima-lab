@@ -21,9 +21,9 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
    await page.mouse.click(b.x+b.width/2,b.y+b.height/2);await page.waitForTimeout(180);
   };
   await tap('#md .mc');await tap('#train-step-1 .go');
-  await page.waitForSelector('#bp .bsl .bi:first-child .mc[data-rima-track-key]',{state:'visible',timeout:12000});
+  const key=await page.evaluate(()=>{const x=ZLIB[ZS.s][1][0];return 'jm-'+String(x[4])});
   await tap('#bp .bsl .bi:first-child .mc');
-  const key=await page.locator('#bp .bsl .bi:first-child .mc').getAttribute('data-rima-track-key');
+  await page.waitForFunction(k=>ZS.key===k,key,{timeout:7000});
   await tap('#bp .bsl .bi:first-child [data-rima-fav]');
   const savedBefore=await page.evaluate("JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]')");
   ok('test favorite saved before opening Favorites',savedBefore.includes(key),JSON.stringify(savedBefore));
