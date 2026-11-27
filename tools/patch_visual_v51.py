@@ -41,6 +41,8 @@ css=r"""
 /* The persistent player is unavailable during setup, including step 1 and step 2.
    It becomes visible only after audio is active inside the live training stage. */
 body:not(.rima-v51-player-eligible) #pbar{display:none!important;visibility:hidden!important;pointer-events:none!important}
+body.pl:not(.pv):not(.rima-v51-player-eligible) #pbar,
+body.pl.sy:not(.rima-v51-player-eligible) #pbar{display:none!important;visibility:hidden!important;pointer-events:none!important}
 body.rima-v51-player-eligible #pbar{display:flex!important;visibility:visible!important;pointer-events:auto!important}
 body:not(.rima-v51-player-eligible) #pbar *{pointer-events:none!important}
 </style>
