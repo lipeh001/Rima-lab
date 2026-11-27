@@ -21,7 +21,9 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
    await page.mouse.click(b.x+b.width/2,b.y+b.height/2);await page.waitForTimeout(180);
   };
   await tap('#md .mc');await tap('#train-step-1 .go');
-  const key=await page.evaluate(()=>{const x=ZLIB[ZS.s][1][0];return 'jm-'+String(x[4])});
+  const firstCatalogBeat=page.locator('#bp .bsl .bi:first-child .mc').first();
+  const key=await firstCatalogBeat.getAttribute('data-rima-track-key');
+  if(!key)throw new Error('First catalog beat has no stable key');
   await tap('#bp .bsl .bi:first-child .mc');
   await page.waitForFunction(k=>ZS.key===k,key,{timeout:7000});
   await tap('#bp .bsl .bi:first-child [data-rima-fav]');
