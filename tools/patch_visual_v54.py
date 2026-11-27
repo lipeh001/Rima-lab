@@ -123,7 +123,6 @@ player=r'''<script id="rimalab-player-state-settle-v54">
     if(!key||key==='jm-')return;
     play.setAttribute('data-rima-track-key',key);
     const heart=document.createElement('button');heart.type='button';heart.className='rima-v29-fav'+(fav.has(key)?' on':'');heart.setAttribute('data-rima-fav',key);heart.setAttribute('aria-pressed',String(fav.has(key)));heart.setAttribute('aria-label',fav.has(key)?'Remover dos favoritos':'Adicionar aos favoritos');heart.textContent=fav.has(key)?'♥':'♡';
-    heart.addEventListener('click',ev=>{ev.preventDefault();ev.stopPropagation();if(typeof window.rimaV29ToggleFav==='function')window.rimaV29ToggleFav(key)});
     const dl=row.querySelector('.dlb');if(dl)dl.before(heart);else row.appendChild(heart);
    });
   });
@@ -140,7 +139,17 @@ player=r'''<script id="rimalab-player-state-settle-v54">
  function refresh(){decorate();syncHearts();if(typeof window.rimaV45SyncSelection==='function')window.rimaV45SyncSelection()}
  function wrapToggle(){const old=window.rimaV29ToggleFav;if(typeof old!=='function'||old.__rimaV54)return;const f=function(){const r=old.apply(this,arguments);requestAnimationFrame(refresh);setTimeout(refresh,50);setTimeout(refresh,180);return r};f.__rimaV54=true;window.rimaV29ToggleFav=f}
  function wrap(name){const old=window[name];if(typeof old!=='function'||old.__rimaV54)return;const f=function(){const r=old.apply(this,arguments);if(name==='pk'){requestAnimationFrame(refresh);setTimeout(refresh,80);setTimeout(refresh,220)}settle();return r};f.__rimaV54=true;window[name]=f}
- wrapToggle();['zLP','zSetPL','zToggle','pk','zBarUI','rimaV41StartFavorites'].forEach(wrap);
+ wrapToggle();
+ document.addEventListener('click',e=>{
+  const b=e.target&&e.target.closest?e.target.closest('#bp .bsl [data-rima-fav],#bq .bsl [data-rima-fav],#bbq .bsl [data-rima-fav]'):null;
+  if(!b)return;
+  e.preventDefault();e.stopImmediatePropagation();
+  const key=String(b.getAttribute('data-rima-fav')||'');
+  if(key&&typeof window.rimaV29ToggleFav==='function')window.rimaV29ToggleFav(key);
+  else if(key){try{const a=JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]'),n=a.includes(key)?a.filter(x=>x!==key):a.concat(key);localStorage.setItem('rimalab_favorites_v29',JSON.stringify(n))}catch(_){}}
+  requestAnimationFrame(refresh);setTimeout(refresh,60);setTimeout(refresh,200);
+ },true);
+ ['zLP','zSetPL','zToggle','pk','zBarUI','rimaV41StartFavorites'].forEach(wrap);
  requestAnimationFrame(refresh);setTimeout(refresh,200);setTimeout(refresh,600);
  document.addEventListener('click',e=>{const b=e.target&&e.target.closest?e.target.closest('#pwb,#bp .bsl .bi .mc,#bq .bsl .bi .mc,#bbq .bsl .bi .mc,#bp [data-v43-play],#bq [data-v43-play],#bbq [data-v43-play]'):null;if(b)settle()},true);
  window.addEventListener('resize',settle,{passive:true});window.addEventListener('orientationchange',settle,{passive:true});settle();
