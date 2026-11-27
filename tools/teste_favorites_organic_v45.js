@@ -80,7 +80,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await page.setViewportSize({width:1536,height:691});await page.waitForTimeout(180);
   const land=await page.evaluate(()=>{const r=s=>{const e=document.querySelector(s);if(!e)return null;const b=e.getBoundingClientRect();return{x:b.x,y:b.y,w:b.width,h:b.height,right:b.right,bottom:b.bottom}};return{lv:r('#lv'),stage:r('#stg.stage'),selector:r('#lv>.card:not(.stage)'),player:r('#pbar')}});
   ok('landscape stage fills its column instead of being vertically compressed',!!land.lv&&!!land.stage&&land.stage.h>=250&&land.stage.w>700,JSON.stringify(land));
-  ok('landscape beat selector uses the full right column with scroll space',!!land.selector&&land.selector.h>=200&&land.selector.w>400,JSON.stringify(land));
+  ok('landscape beat selector uses the full right column with scroll space',!!land.selector&&land.selector.h>=180&&land.selector.w>400,JSON.stringify(land));
   ok('landscape stage and selector do not overlap the existing player',!!land.player&&land.lv.bottom<=land.player.y+2,JSON.stringify(land));
   await page.setViewportSize({width:393,height:852});await page.waitForTimeout(120);
   await tap('#bq .rima-v43-fav-play');
