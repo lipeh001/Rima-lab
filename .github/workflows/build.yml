@@ -65,6 +65,8 @@ on:
       - 'tools/teste_visual_v42.js'
       - 'tools/patch_visual_v43.py'
       - 'tools/teste_visual_v43.js'
+      - 'tools/patch_visual_v44.py'
+      - 'tools/teste_visual_v44.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -324,6 +326,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v43.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Corrigir acesso ao catálogo de Favoritos e preservar dados v44
+        run: python3 tools/patch_visual_v44.py "$BUILD_DIR"
+      - name: Validar sincronização real dos favoritos V44
+        shell: bash
+        run: |
+          node tools/teste_visual_v44.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
