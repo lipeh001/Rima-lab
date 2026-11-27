@@ -103,7 +103,9 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await click('#bbq .rima-v43-fav-play');
   ok('Battle favorite playback selects the matching track',await page.evaluate(k=>ZS.key===k,bkey));
   await click('#bbq .row .tag.chip');
-  const startButton=page.locator('#bt button.btn.go').filter({hasText:/Começar batalha/i}).first();
+  const battleButtons=await page.locator('#bt button').evaluateAll(es=>es.map(e=>({text:(e.innerText||e.textContent||'').trim(),cls:e.className,hidden:!!e.hidden,display:getComputedStyle(e).display,html:e.outerHTML.slice(0,260)})));
+  console.log('V54_BATTLE_BUTTONS '+JSON.stringify(battleButtons));
+  const startButton=page.locator('#bt button').filter({hasText:/começar|iniciar|valendo|batalha/i}).filter({visible:true}).first();
   await startButton.waitFor({state:'visible',timeout:8000});
   await startButton.click({timeout:10000});
   await page.waitForFunction(()=>!!B&&!!document.querySelector('#bt .card.stage'),{timeout:6000}).catch(()=>{});
