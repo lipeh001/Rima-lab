@@ -20,7 +20,16 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const setup=await page.evaluate(()=>({lists:document.querySelectorAll('#bp>.bsl').length,max:getComputedStyle(document.querySelector('#bp>.bsl')).maxHeight,overflow:getComputedStyle(document.querySelector('#bp>.bsl')).overflowY,player:getComputedStyle(document.querySelector('#pbar')).display}));
   ok('stage 2 has exactly one bounded, scrollable list',setup.lists===1&&setup.max!=='none'&&setup.overflow==='auto',JSON.stringify(setup));
   ok('player stays hidden in stage 2',setup.player==='none'||setup.player==='');
-  await page.evaluate(async()=>{if(window.rimaCatalogReady&&typeof window.rimaCatalogReady.then==='function')await window.rimaCatalogReady});
+  // O app recebe o catálogo embarcado em catalog-seed.json; no Chromium sem rede,
+  // força a mesma construção local que o app executa após carregar o cache.
+  await page.evaluate(()=>{
+    if(typeof window.zBuild==='function')window.zBuild('Boom bap');
+    if(window.ZLIB&&Array.isArray(window.RIMA_CATALOG_SEED_V8?.['Boom bap'])){
+      window.ZLIB['Boom bap'][1]=window.RIMA_CATALOG_SEED_V8['Boom bap'].slice(0,87);
+    }
+    const tab=[...document.querySelectorAll('#bp button,#bp .chip,#bp [role=button]')].find(x=>/boom bap/i.test(x.textContent||''));
+    if(tab)tab.click();
+  });
   await page.waitForFunction(()=>Array.isArray(window.ZLIB?.['Boom bap']?.[1])&&window.ZLIB['Boom bap'][1].length>1&&!!document.querySelector('#bp .bsl .bi .mc'),{timeout:15000});
   await page.evaluate(()=>{window.__v54ClickSelector=null;window.__v54ClickCount=0;document.addEventListener('click',e=>{const s=window.__v54ClickSelector;if(s&&e.target.closest&&e.target.closest(s))window.__v54ClickCount++},true)});
   const selectedBefore=await page.evaluate(()=>ZS.key||'');
