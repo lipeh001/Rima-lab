@@ -63,6 +63,8 @@ on:
       - 'tools/teste_visual_v41.js'
       - 'tools/patch_visual_v42.py'
       - 'tools/teste_visual_v42.js'
+      - 'tools/patch_visual_v43.py'
+      - 'tools/teste_visual_v43.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -315,6 +317,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v42.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Reconstruir layout e interações de Favoritos nos dois seletores v43
+        run: python3 tools/patch_visual_v43.py "$BUILD_DIR"
+      - name: Validar layout, reprodução e remoção de Favoritos v43
+        shell: bash
+        run: |
+          node tools/teste_visual_v43.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
