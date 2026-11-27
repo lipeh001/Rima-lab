@@ -27,6 +27,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const keyAt=(root)=>page.locator(root+' .bsl .bi .mc').first().getAttribute('data-rima-track-key');
   await tap('#md .mc');await tap('#train-step-1 .go');
   ok('mode selection advances to configuration',await page.locator('#train-step-2').isVisible());
+  await page.waitForSelector('#bp .bsl .bi:first-child .mc[data-rima-track-key]',{state:'visible',timeout:10000});
   await tap('#bp .bsl .bi:first-child .mc');
   let key=await keyAt('#bp');
   let state=await page.locator('#bp .bsl .bi:first-child .mc').evaluate(e=>({on:e.classList.contains('on'),pressed:e.getAttribute('aria-pressed'),bg:getComputedStyle(e).backgroundImage,border:getComputedStyle(e).borderColor}));
