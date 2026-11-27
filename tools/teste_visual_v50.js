@@ -17,6 +17,12 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await page.setContent(shim+html,{waitUntil:'domcontentloaded',timeout:30000});
   await page.waitForFunction(()=>{const e=document.querySelector('#rima-splash');return !e||e.classList.contains('done')},{timeout:15000});
   await page.waitForSelector('#md .mc',{timeout:15000});
+  const tapCategory=async(root,label)=>{
+   const loc=page.locator(root+' .rima-v50-category-row .tag.chip').filter({hasText:new RegExp(label,'i')}).first();
+   await loc.waitFor({state:'visible',timeout:10000});
+   const b=await loc.boundingBox();if(!b)throw Error('No category box for '+label);
+   await page.mouse.click(b.x+b.width/2,b.y+b.height/2);await page.waitForTimeout(180);
+  };
   const tap=async(selector)=>{
    const loc=page.locator(selector).first();await loc.waitFor({state:'visible',timeout:10000});
    await loc.evaluate(e=>e.scrollIntoView({block:'center',inline:'nearest'}));
@@ -53,7 +59,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await tap('#bp .rima-v43-toggle');
   const remains=await page.evaluate(()=>({showing:!!document.querySelector('#bp>.rima-v43-favlist'),pressed:document.querySelector('#bp .rima-v43-toggle')?.getAttribute('aria-pressed'),saved:JSON.parse(localStorage.getItem('rimalab_favorites_v29')||'[]').length}));
   ok('tapping selected Favorites again leaves it selected',remains.showing&&remains.pressed==='true'&&remains.saved>=18,JSON.stringify(remains));
-  await tap('#bp .rima-v50-category-row .tag.chip:first-child');
+  await tapCategory('#bp','Boom bap');
   const setupBack=await page.evaluate(()=>({mode:!!document.querySelector('#bp>.rima-v43-favlist'),category:ZS.s,visible:!document.querySelector('#bp>.bsl').hidden}));
   ok('category chip is the action that switches out of Favorites',!setupBack.mode&&setupBack.category==='Boom bap'&&setupBack.visible,JSON.stringify(setupBack));
 
@@ -74,7 +80,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await tap('#bq .rima-v43-toggle');
   const liveRemains=await page.evaluate(()=>({showing:!!document.querySelector('#bq>.rima-v43-favlist'),pressed:document.querySelector('#bq .rima-v43-toggle')?.getAttribute('aria-pressed')}));
   ok('live Favorites remains selected on a second tap',liveRemains.showing&&liveRemains.pressed==='true',JSON.stringify(liveRemains));
-  await tap('#bq .rima-v50-category-row .tag.chip:first-child');
+  await tapCategory('#bq','Boom bap');
 
   // Match the real use case: the persistent player is visible while audio is playing.
   await page.evaluate(()=>document.body.classList.add('pl','rima-player-visible'));
