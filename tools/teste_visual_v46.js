@@ -81,7 +81,8 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const asset=fs.readFileSync(path.join(root,'app/src/main/assets/rima-lab.html'),'utf8');
   const runtime=(asset.match(/<script id="rimalab-landscape-stage-download-runtime-v47">([\s\S]*?)<\/script>/)||[])[1]||'';
   ok('new landscape runtime only reads player geometry and never writes to the player',/getBoundingClientRect/.test(runtime)&&!(/pb\.innerHTML\s*=|pb\.style\.|pbar\.innerHTML\s*=|pbar\.style\./.test(runtime)),runtime);
-  ok('new landscape override does not contain player styling',!/<style id="rimalab-landscape-stage-download-v47">[\s\S]*?#pbar/i.test(asset));
+  const landscapeCss=(asset.match(/<style id="rimalab-landscape-stage-download-v47">([\s\S]*?)<\/style>/)||[])[1]||'';
+  ok('new landscape override does not contain player styling',!/#pbar/i.test(landscapeCss),landscapeCss);
   const rawEscapes=await page.evaluate(()=>Array.from(document.body.childNodes).filter(n=>n.nodeType===3&&n.textContent.includes('\\n')).map(n=>n.textContent.trim()).filter(Boolean));
   ok('no visible escaped-newline text is left around the page footer',rawEscapes.length===0,JSON.stringify(rawEscapes));
   const stageMargins=await page.evaluate(()=>({label:parseFloat(getComputedStyle(document.querySelector('#ck')).marginTop),hint:parseFloat(getComputedStyle(document.querySelector('#stg .v3bar')).marginTop)}));
@@ -89,7 +90,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await page.setViewportSize({width:393,height:852});await page.waitForTimeout(450);
   const portraitSeek=await page.locator('#pbar .pwscr').evaluate(e=>({display:getComputedStyle(e).display,visibility:getComputedStyle(e).visibility,rect:(()=>{const r=e.getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}})(),bar:(()=>{const r=document.querySelector('#pbar').getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height}})()}));
   ok('portrait progress bar returns after landscape-to-portrait rotation',portraitSeek.display!=='none'&&portraitSeek.visibility==='visible'&&portraitSeek.rect.width>200&&portraitSeek.rect.height>=2,JSON.stringify(portraitSeek));
-  ok('version 3.2.7 / code 69',/versionCode\\s*=\\s*69|versionCode\\s+69/.test(gradle)&&/versionName\\s*=\\s*['\"]3\\.2\\.7['\"]|versionName\\s+['\"]3\\.2\\.7['\"]/.test(gradle));
+  ok('version 3.2.7 / code 69',/versionCode\s*=\s*69|versionCode\s+69/.test(gradle)&&/versionName\s*=\s*['"]3\.2\.7['"]|versionName\s+['"]3\.2\.7['"]/.test(gradle));
   ok('no uncaught JavaScript errors',errors.length===0,errors.join(' | '));
   await tap('#lv>.btn.w');
   ok('setup step 2 returns after leaving the live stage',!(await page.locator('#train-step-2').evaluate(e=>e.hidden)));
