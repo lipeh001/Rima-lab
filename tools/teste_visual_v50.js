@@ -76,6 +76,8 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   ok('live Favorites remains selected on a second tap',liveRemains.showing&&liveRemains.pressed==='true',JSON.stringify(liveRemains));
   await tap('#bq .rima-v50-category-row .tag.chip:first-child');
 
+  // Match the real use case: the persistent player is visible while audio is playing.
+  await page.evaluate(()=>document.body.classList.add('pl','rima-player-visible'));
   await page.setViewportSize({width:1536,height:691});
   await page.evaluate(()=>{window.dispatchEvent(new Event('orientationchange'));window.dispatchEvent(new Event('resize'))});
   await page.waitForTimeout(450);
