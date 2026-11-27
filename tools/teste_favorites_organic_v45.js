@@ -15,7 +15,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const errors=[];page.on('pageerror',e=>errors.push(String(e)));
   await page.setContent(shim+html,{waitUntil:'domcontentloaded',timeout:30000});
   await page.waitForSelector('#md .mc',{timeout:15000});
-  await page.waitForSelector('#bp .bsl .bi .mc',{timeout:15000});
+  await page.waitForSelector('#bp .bsl .bi .mc',{state:'attached',timeout:15000});
   const tapLoc=async loc=>{
    await loc.waitFor({state:'visible',timeout:7000});
    await loc.evaluate(e=>e.scrollIntoView({block:'center',inline:'center'}));
