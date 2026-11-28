@@ -19,7 +19,7 @@ if h.count(old_v40)!=1: raise SystemExit('V61_FAIL: scheduleRender V40 não corr
 h=h.replace(old_v40,new_v40,1)
 
 # V42 must stop publishing its stale Favorites view after V43 has taken ownership.
-old_v42pk="const f=function(){const result=oldPk.apply(this,arguments);renderAll();setTimeout(renderAll,60);return result};"
+old_v42pk="const wrapped=function(){const result=oldPk.apply(this,arguments);renderAll();setTimeout(renderAll,60);return result};"
 new_v42pk="const f=function(){const result=oldPk.apply(this,arguments);if(typeof window.rimaV43ShowFavorites!=='function'){renderAll();setTimeout(renderAll,60)}return result};"
 if h.count(old_v42pk)!=1: raise SystemExit('V61_FAIL: wrapper pk V42 não corresponde')
 h=h.replace(old_v42pk,new_v42pk,1)
