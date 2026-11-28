@@ -84,6 +84,8 @@ on:
       - 'tools/teste_visual_v53.js'
       - 'tools/patch_visual_v54.py'
       - 'tools/teste_visual_v54.js'
+      - 'tools/patch_visual_v55.py'
+      - 'tools/teste_visual_v55.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -395,6 +397,13 @@ jobs:
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Unificar lista, Favoritos e player sem alterar navegação V54
         run: python3 tools/patch_visual_v54.py "$BUILD_DIR"
+      - name: Corrigir interface, categoria do player e palco horizontal V55
+        run: python3 tools/patch_visual_v55.py "$BUILD_DIR"
+      - name: Validar correções V55
+        shell: bash
+        run: |
+          node tools/teste_visual_v55.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Testes intensivos de catálogo, Favoritos, reprodução e abas V54
         shell: bash
         run: |
