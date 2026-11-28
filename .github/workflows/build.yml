@@ -108,6 +108,7 @@ on:
       - 'tools/patch_visual_v68.py'
       - 'tools/patch_visual_v69.py'
       - 'tools/patch_visual_v70.py'
+      - 'tools/patch_visual_v71.py'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -299,6 +300,12 @@ jobs:
       - name: Limpar erro ao selecionar novo beat e padronizar favoritos V70 (3.4.8)
         run: python3 tools/patch_visual_v70.py "$BUILD_DIR"
       - name: Validar V70
+        shell: bash
+        run: |
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Estabilizar palco, corrigir marquee, título e status do player V71 (3.4.9)
+        run: python3 tools/patch_visual_v71.py "$BUILD_DIR"
+      - name: Validar V71
         shell: bash
         run: |
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
