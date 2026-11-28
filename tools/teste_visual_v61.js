@@ -9,7 +9,7 @@ check('versão 3.3.9/code81',/versionCode\s*(?:=\s*)?81/.test(g)&&/versionName\s
 check('V40 legacy renderer yields to V43',html.includes("function scheduleRender(){if(typeof window.rimaV43ShowFavorites==='function')return;"));
 check('V42 delayed rerender yields to V43',html.includes("if(typeof window.rimaV43ShowFavorites!=='function'){renderAll();setTimeout(renderAll,60)}"));
 check('V43 preserves Favorites DOM on player updates',html.includes('function syncToolbarOnly()')&&html.includes('oldPk.apply(this,arguments);syncToolbarOnly()')&&html.includes('oldBar.apply(this,arguments);syncToolbarOnly()'));
-check('Favorites shares the catalog bsl container',html.includes('class="bsl rima-v43-favlist"'));
+check('both populated and empty Favorites lists share the catalog bsl container',html.split('class="bsl rima-v43-favlist"').length===3);
 check('Favorites rows reuse catalog bi and mc components',html.includes('class="bi rima-v43-fav-row"')&&html.includes('class="mc rima-v43-fav-play'));
 check('Favorites selected state matches regular .mc state',html.includes('background:var(--ac)!important;color:var(--on)!important')&&html.includes('box-shadow:3px 3px 0 var(--ink)!important'));
 check('landscape has fixed three-row selector layout',html.includes('grid-template-rows:40px minmax(0,1fr) 40px!important'));
@@ -39,7 +39,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await page.waitForFunction(()=>!!document.querySelector('#bp>.rima-v43-favlist .rima-v43-fav-play'),{timeout:10000});
   const first=page.locator('#bp>.rima-v43-favlist .rima-v43-fav-play').first();
   const firstKey=await first.getAttribute('data-v43-play');
-  const before=await page.evaluate(()=>{window.__v61FavoriteNode=document.querySelector('#bp>.rima-v43-favlist .rima-v43-fav-play');window.__v61ZlpCalls=0;const old=window.zLP;window.zLP=function(){window.__v61ZlpCalls++;return old.apply(this,arguments)};return {key:window.__v61FavoriteNode?.getAttribute('data-v43-play'),listCount:document.querySelectorAll('#bp>.rima-v43-favlist').length,toolbarHearts:document.querySelectorAll('#bp .rima-v43-toggle .rima-v60-heart-glyph').length}});
+  const before=await page.evaluate(()=>{window.__v61FavoriteNode=document.querySelector('#bp>.rima-v43-favlist .rima-v43-fav-play');window.__v61ZlpCalls=0;const old=window.zLP;window.zLP=function(){window.__v61ZlpCalls++;return old.apply(this,arguments)};return {key:window.__v61FavoriteNode?.getAttribute('data-v43-play'),listCount:document.querySelectorAll('#bp>.rima-v43-favlist').length,toolbarHearts:document.querySelectorAll('#bp .rima-v43-toggle .rima-v60-heart-glyph').length,toolbarButtons:document.querySelectorAll('#bp>.rima-v43-tools>button').length}});
   await first.click({timeout:10000});
   await page.waitForFunction(k=>ZS.key===k,firstKey,{timeout:7000});
   await page.waitForTimeout(700);
@@ -47,7 +47,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   check('first tap on Favorites starts the intended beat once',after.key===firstKey&&after.zlpCalls===1,JSON.stringify({firstKey,after}));
   check('first favorite card is not rebuilt or visually deselected',after.nodeStillConnected&&after.sameNode&&after.selected&&after.pressed==='true',JSON.stringify(after));
   check('Favorites view and hidden category remain stable after player update',after.lists===1&&after.catalogHidden===true,JSON.stringify(after));
-  check('toolbar renders exactly one heart icon',before.toolbarHearts===1&&after.toolbarHearts===1,JSON.stringify({before,after}));
+  check('toolbar renders exactly one heart icon',before.toolbarHearts===1&&after.toolbarHearts===1&&before.toolbarButtons===1&&after.toolbarButtons===1,JSON.stringify({before,after}));
   const favList=await page.evaluate(()=>{const e=document.querySelector('#bp>.rima-v43-favlist');const r=e.getBoundingClientRect();return{isBsl:e.classList.contains('bsl'),height:r.height,maxHeight:getComputedStyle(e).maxHeight,overflowY:getComputedStyle(e).overflowY}});
   check('stage 2 Favorites uses the same bounded scroll list as categories',favList.isBsl&&favList.height>40&&favList.overflowY==='auto',JSON.stringify(favList));
   await tap('#bp .rima-v50-category-row .tag.chip');
