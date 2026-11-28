@@ -14,16 +14,16 @@ async function api(params){
 }
 function isExactCommercialCCBY(t){
   const u=String(t.license_ccurl||'').toLowerCase().replace(/\\/g,'');
-  return /creativecommons\\.org\\/licenses\\/by\\/(3\\.0|4\\.0)\\/?$/.test(u);
+  return u.includes('/licenses/by/3.0/') || u.includes('/licenses/by/4.0/');
 }
 function styleScore(t){
  const s=[t.name,t.album_name,t.musicinfo?.tags?.genres?.join(' '),t.musicinfo?.tags?.instruments?.join(' ')].join(' ').toLowerCase();
  if(/lofi|lo-fi|ambient|chillout|sleep|relax|meditation|background/.test(s)) return -100;
  let n=0;
- if(/boom\\s?bap|boom-bap/.test(s)) n+=10;
- if(/old school|90s|underground|east coast|hardcore|hip hop|hip-hop/.test(s)) n+=3;
- if(/instrumental|beat/.test(s)) n+=2;
- if(/trap|phonk|drill/.test(s)) n-=5;
+ if(s.includes('boom bap') || s.includes('boom-bap')) n+=10;
+ if(['old school','90s','underground','east coast','hardcore','hip hop','hip-hop'].some(x=>s.includes(x))) n+=3;
+ if(s.includes('instrumental') || s.includes('beat')) n+=2;
+ if(['trap','phonk','drill'].some(x=>s.includes(x))) n-=5;
  return n;
 }
 (async()=>{
