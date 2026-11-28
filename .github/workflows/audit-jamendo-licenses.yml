@@ -6,6 +6,7 @@ on:
       - audit/jamendo-boombap-licenses
     paths:
       - 'tools/audit_jamendo_licenses.js'
+      - 'tools/search_jamendo_boombap_ccby.js'
       - '.github/workflows/audit-jamendo-licenses.yml'
 
 permissions:
@@ -24,6 +25,10 @@ jobs:
         env:
           JAMENDO_CLIENT_ID: a0ff80ec
         run: node tools/audit_jamendo_licenses.js
+      - name: Buscar Boom Bap CC BY e validar licença individual
+        env:
+          JAMENDO_CLIENT_ID: a0ff80ec
+        run: node tools/search_jamendo_boombap_ccby.js
       - name: Publicar relatório completo
         uses: actions/upload-artifact@v4
         with:
