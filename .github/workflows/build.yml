@@ -86,6 +86,8 @@ on:
       - 'tools/teste_visual_v54.js'
       - 'tools/patch_visual_v56.py'
       - 'tools/teste_visual_v56.js'
+      - 'tools/patch_visual_v57.py'
+      - 'tools/teste_visual_v57.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -408,6 +410,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v56.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Remover bloqueio de inicialização V57 (3.3.5)
+        run: python3 tools/patch_visual_v57.py "$BUILD_DIR"
+      - name: Validar inicialização sem observer global V57
+        shell: bash
+        run: |
+          node tools/teste_visual_v57.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Validar sintaxe final após correções V52
         run: (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
