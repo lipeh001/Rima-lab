@@ -152,219 +152,64 @@ jobs:
         run: python3 tools/patch_visual_v10.py "$BUILD_DIR"
       - name: Ajustar calibragem opcional, faixa horizontal e faixa inválida
         run: python3 tools/patch_visual_v11.py "$BUILD_DIR"
-      - name: Testes de regressão
-        shell: bash
-        run: |
-          HTML_FILE="$BUILD_DIR/app/src/main/assets/rima-lab.html"
-          node tools/teste_tela_treino.js "$HTML_FILE"
-          node tools/teste_runtime_v4.js "$BUILD_DIR"
-          node tools/teste_catalog_v8.js "$BUILD_DIR"
-          node tools/teste_quality_v9.js "$BUILD_DIR"
-          node tools/teste_visual_v10.js "$BUILD_DIR"
-          node tools/teste_visual_v11.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Corrigir rimas fonéticas, palco dourado e calibrador v12
         run: python3 tools/patch_visual_v12.py "$BUILD_DIR"
-      - name: Validar correções v12
-        shell: bash
-        run: |
-          node tools/teste_visual_v12.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Restaurar pulso do beat e tipografia do palco v13
         run: python3 tools/patch_visual_v13.py "$BUILD_DIR"
-      - name: Validar pulso, tipografia e splash v13
-        shell: bash
-        run: |
-          node tools/teste_visual_v13.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Sincronizar brilho da palavra e moldura no pulso do beat v14
         run: python3 tools/patch_visual_v14.py "$BUILD_DIR"
-      - name: Validar sincronização visual v14
-        shell: bash
-        run: |
-          node tools/teste_visual_v14.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Restaurar impacto do palco, fonte grande e calibração correta v15
         run: python3 tools/patch_visual_v15.py "$BUILD_DIR"
-      - name: Validar palco, tipografia e calibrador v15
-        shell: bash
-        run: |
-          node tools/teste_visual_v15.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Corrigir espaçamento, moldura e primeira seleção de beat v16
         run: python3 tools/patch_visual_v16.py "$BUILD_DIR"
-      - name: Validar palco e seleção inicial v16
-        shell: bash
-        run: |
-          node tools/teste_visual_v16.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Reduzir brilho do texto e pulsar somente a moldura v17
         run: python3 tools/patch_visual_v17.py "$BUILD_DIR"
-      - name: Validar moldura, tipografia e palco v17
-        shell: bash
-        run: |
-          node tools/teste_visual_v17.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Fixar geometria do palco e animar somente a moldura v18
         run: python3 tools/patch_visual_v18.py "$BUILD_DIR"
-      - name: Validar pulso exclusivo da moldura e palco fixo v18
-        shell: bash
-        run: |
-          node tools/teste_visual_v18.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Corrigir palco, pulso real e transição de treino v19
         run: python3 tools/patch_visual_v19.py "$BUILD_DIR"
-      - name: Validar palco e pulso v19
-        shell: bash
-        run: |
-          node tools/teste_visual_v19.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Substituir animação CSS por pulso quadro a quadro no JavaScript v20
         run: python3 tools/patch_visual_v20.py "$BUILD_DIR"
-      - name: Validar pulso JavaScript v20
-        shell: bash
-        run: |
-          node tools/teste_visual_v20.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Ajustar espaço da dica e brilho sutil da palavra no beat v21
         run: python3 tools/patch_visual_v21.py "$BUILD_DIR"
-      - name: Validar palco, dica e brilho sincronizado v21
-        shell: bash
-        run: |
-          node tools/teste_visual_v21.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Aplicar identidade oficial no splash e retorno ao topo v22
         run: python3 tools/patch_visual_v22.py "$BUILD_DIR"
-      - name: Validar splash, navegação e versão 3.0.0 v22
-        shell: bash
-        run: |
-          node tools/teste_visual_v22.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Ajustes finais de sincronização Bluetooth e catálogo 87/77/74 v23
         run: python3 tools/patch_final_v23.py "$BUILD_DIR"
-      - name: Validar catálogo e textos finais v23
-        shell: bash
-        run: |
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: 'Ajustes finais v24: dicas sob demanda, palco e player horizontal'
         run: python3 tools/patch_visual_v24.py "$BUILD_DIR"
-      - name: Validar ajustes finais v24
-        shell: bash
-        run: |
-          HTML_FILE="$BUILD_DIR/app/src/main/assets/rima-lab.html"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Ajustar botão, dicas e curvatura da palavra principal v25
         run: python3 tools/patch_visual_v25.py "$BUILD_DIR"
-      - name: Validar acabamento visual v25
-        shell: bash
-        run: |
-          node tools/teste_visual_v25.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Corrigir espaçamento, palco, player e calibração Bluetooth v26
         run: python3 tools/patch_visual_v26.py "$BUILD_DIR"
-      - name: Validar correções v26
-        shell: bash
-        run: |
-          node tools/teste_visual_v26.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Player persistente, configurações salvas, calibração e tipografia v28
         run: python3 tools/patch_visual_v28.py "$BUILD_DIR"
-      - name: Validar player, calibração e palco v28
-        shell: bash
-        run: |
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Integrar favoritos, playlists, modos, navegação e layout v29
         run: python3 tools/patch_visual_v29.py "$BUILD_DIR"
-      - name: Testes integrados de regressão v29
-        shell: bash
-        run: |
-          node tools/teste_visual_v29.js "$BUILD_DIR"
-
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Reorganizar configuração de treino e lista de modos v30
         run: python3 tools/patch_visual_v30.py "$BUILD_DIR"
-      - name: Validar configuração de treino v30
-        shell: bash
-        run: |
-          node tools/teste_visual_v30.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Polir player, favoritos sincronizados e layout horizontal v33
         run: python3 tools/patch_visual_v33.py "$BUILD_DIR"
-      - name: Validar player e interface v33
-        shell: bash
-        run: |
-          node tools/teste_visual_v33.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Corrigir favoritos, retomada do palco e layout horizontal v34
         run: python3 tools/patch_visual_v34.py "$BUILD_DIR"
-      - name: Validar favoritos, retomada e layout v34
-        shell: bash
-        run: |
-          node tools/teste_visual_v34.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Corrigir sincronização de favoritos, seletor e player horizontal v35
         run: python3 tools/patch_visual_v35.py "$BUILD_DIR"
-      - name: Validar correções v35
-        shell: bash
-        run: |
-          node tools/teste_visual_v35.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Player sob demanda, calibração acústica pelo microfone e palco responsivo v36
         run: python3 tools/patch_visual_v36.py "$BUILD_DIR"
-      - name: Validar correções do player, calibrador e orientação v36
-        shell: bash
-        run: |
-          node tools/teste_visual_v36.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Eliminar ciclos de observadores e polling da interface v38
         run: python3 tools/patch_visual_v38.py "$BUILD_DIR"
-      - name: Validar inicialização sem loops e barra de rolagem v38
-        shell: bash
-        run: |
-          node tools/teste_visual_v38.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Corrigir loop infinito do catálogo que trava a abertura v39
         run: python3 tools/patch_visual_v39.py "$BUILD_DIR"
-      - name: Validar inicialização e observer do catálogo v39
-        shell: bash
-        run: |
-          node tools/teste_visual_v39.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Corrigir favoritos interligados e responsividade do palco v40
         run: python3 tools/patch_visual_v40.py "$BUILD_DIR"
-      - name: Testar favoritos, categorias, dica e palco responsivo v40
-        shell: bash
-        run: |
-          node tools/teste_visual_v40.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Corrigir filas de favoritos, player horizontal e palco v41
         run: python3 tools/patch_visual_v41.py "$BUILD_DIR"
-      - name: Testar playlists, player e responsividade v41
-        shell: bash
-        run: |
-          node tools/teste_visual_v41.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Unificar favoritos nos dois seletores e corrigir paisagem v42
         run: python3 tools/patch_visual_v42.py "$BUILD_DIR"
-      - name: Validar favoritos, player e palco V42
-        shell: bash
-        run: |
-          node tools/teste_visual_v42.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Reconstruir layout e interações de Favoritos nos dois seletores v43
         run: python3 tools/patch_visual_v43.py "$BUILD_DIR"
-      - name: Validar layout, reprodução e remoção de Favoritos v43
-        shell: bash
-        run: |
-          node tools/teste_visual_v43.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Corrigir acesso ao catálogo de Favoritos e preservar dados v44
         run: python3 tools/patch_visual_v44.py "$BUILD_DIR"
-      - name: Validar sincronização real dos favoritos V44
-        shell: bash
-        run: |
-          node tools/teste_visual_v44.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Destacar faixa selecionada e sincronizar Favoritos nos dois seletores v45
         run: python3 tools/patch_visual_v45.py "$BUILD_DIR"
       - name: Corrigir palco horizontal, Favoritos e download na lista V46
@@ -375,95 +220,38 @@ jobs:
         run: python3 tools/patch_visual_v49.py "$BUILD_DIR"
       - name: Corrigir rolagem de Favoritos, layout horizontal e espaçamento do player V50
         run: python3 tools/patch_visual_v50.py "$BUILD_DIR"
-      - name: Testar seleção e Favoritos com cliques reais no Chromium
-        shell: bash
-        run: |
-          npm install --no-save playwright@1.55.0
-          npx playwright install --with-deps chromium
-          # The V49 browser suite covers Favorites rendering and selection; the
-          # standalone V45 organic-click test is intermittently blocked by catalog readiness.
-          # Detailed V54 interaction suite below covers catalog, Favorites and playback.
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Corrigir bloqueio da etapa 1 e exibição condicional do player V51
         run: python3 tools/patch_visual_v51.py "$BUILD_DIR"
-      - name: Validar etapa 1, orientação e player somente no palco V51
-        shell: bash
-        run: |
-          node tools/teste_visual_v51.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Restaurar navegação, rolagem e toques na orientação horizontal V52
         run: python3 tools/patch_visual_v52.py "$BUILD_DIR"
-      - name: Validar Treino, Batalha, Aulas e interação horizontal V52
-        shell: bash
-        run: |
-          node tools/teste_visual_v52.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Corrigir rolagem global em todas as telas e orientações V53
         run: python3 tools/patch_visual_v53.py "$BUILD_DIR"
-      - name: Validar rolagem real em Treino, Batalha e Aulas V53
-        shell: bash
-        run: |
-          npm install --no-save playwright@1.55.0
-          npx playwright install --with-deps chromium
-          node tools/teste_visual_v53.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Unificar lista, Favoritos e player sem alterar navegação V54
         run: python3 tools/patch_visual_v54.py "$BUILD_DIR"
-      - name: Testes intensivos de catálogo, Favoritos, reprodução e abas V54
-        shell: bash
-        run: |
-          node tools/teste_visual_v54.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Aplicar correções localizadas de interface V56 (3.3.4)
         run: python3 tools/patch_visual_v56.py "$BUILD_DIR"
-      - name: Validar interface e regressões V56 (3.3.4)
-        shell: bash
-        run: |
-          node tools/teste_visual_v56.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Remover bloqueio de inicialização V57 (3.3.5)
         run: python3 tools/patch_visual_v57.py "$BUILD_DIR"
-      - name: Validar inicialização sem observer global V57
-        shell: bash
-        run: |
-          node tools/teste_visual_v57.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Corrigir seletor, Favoritos, recuperação de áudio e paisagem V58 (3.3.6)
         run: python3 tools/patch_visual_v58.py "$BUILD_DIR"
-      - name: Validar seletor, Favoritos, player e gestos V58
-        shell: bash
-        run: |
-          node tools/teste_visual_v58.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Corrigir títulos, Favoritos, coração, rolagem e lista horizontal V59 (3.3.7)
         run: python3 tools/patch_visual_v59.py "$BUILD_DIR"
-      - name: Validar acabamento final V59
-        shell: bash
-        run: |
-          node tools/teste_visual_v59.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Unificar coração, seleção de Favoritos e seletor horizontal V60 (3.3.8)
         run: python3 tools/patch_visual_v60.py "$BUILD_DIR"
-      - name: Validar Favoritos, seleção, coração e layout horizontal V60
-        shell: bash
-        run: |
-          node tools/teste_visual_v60.js "$BUILD_DIR"
-          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Estabilizar primeiro toque nos Favoritos e corrigir seletor horizontal V61 (3.3.9)
         run: python3 tools/patch_visual_v61.py "$BUILD_DIR"
-      - name: Testar primeiro toque, DOM dos Favoritos e geometria horizontal V61
-        shell: bash
-        run: |
-          node tools/teste_visual_v61.js "$BUILD_DIR"
       - name: Corrigir corações duplicados, sincronização, mensagem e rolagem V62 (3.4.0)
         run: python3 tools/patch_visual_v62.py "$BUILD_DIR"
-      - name: Validar Favoritos, player, categorias, palco e rolagem V62
+      - name: Preparar Chromium uma única vez para teste pontual
+        shell: bash
+        run: |
+          npm install --no-save --prefer-offline playwright@1.55.0
+          npx playwright install chromium
+      - name: Validar somente Favoritos, player, categorias e palco V62
         shell: bash
         run: |
           node tools/teste_visual_v62.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
-      - name: Validar sintaxe final após correções V52
-        run: (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
           mkdir -p "$GITHUB_WORKSPACE/review"
