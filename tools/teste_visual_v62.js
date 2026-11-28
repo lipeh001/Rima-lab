@@ -12,7 +12,7 @@ check('V62 category selection updates active and pressed state',html.includes('f
 check('V62 restores saved scroll instead of resetting to top',html.includes('savedStageScroll')&&html.includes('window.rimaReturnPreviousScreenToTop=wrapped')&&html.includes('window.scrollTo(0,y)'));
 check('V62 republishes the first-entry turn message',html.includes('window.wStart=wrapped')&&html.includes('Virada detectada. Entrando um pouco antes dela.'));
 check('V62 increases portrait live selector viewport',html.includes('max-height:min(36vh,400px)!important')&&html.includes('min-height:min(22vh,240px)!important'));
-check('V62 heart controls use a single centered pseudo glyph',html.includes('rimalab-favorites-player-scroll-stage-style-v62')&&html.includes('place-items:center!important')&&html.includes('b.textContent=\\'\\''));
+check('V62 heart controls use a single centered pseudo glyph',html.includes('rimalab-favorites-player-scroll-stage-style-v62')&&html.includes('place-items:center!important')&&html.includes("b.textContent=''"));
 check('all inline scripts parse',(()=>{try{for(const m of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi))new Function(m[1]);return true}catch(e){return false}})());
 
 const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localStorage",{configurable:true,value:{getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>m.set(String(k),String(v)),removeItem:k=>m.delete(k),clear:()=>m.clear()}});window.RimaNative={baixar:()=>{},apagar:()=>{},lista:()=>"[]",mediaState:()=>{}}})()</script>';
