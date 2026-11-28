@@ -32,8 +32,18 @@ runtime=r'''<script id="rimalab-favorites-player-scroll-stage-v62">
  let savedStageScroll=null,stageActive=false;
  const readFav=()=>{try{const a=JSON.parse(localStorage.getItem(FAV_KEY)||'[]');return new Set(Array.isArray(a)?a.map(String):[])}catch(_){return new Set()}};
  const selectedKey=()=>window.ZS&&ZS.k==='lib'&&ZS.key?String(ZS.key):'';
+ function ensurePlayerHeart(){
+  const row=document.querySelector('#pbar .pwrow');if(!row)return null;
+  let b=document.getElementById('rima-v29-player-heart');
+  if(!b){
+   b=document.createElement('button');b.id='rima-v29-player-heart';b.type='button';b.className='pws';
+   b.addEventListener('click',()=>{const key=selectedKey();if(key&&typeof window.rimaV29ToggleFav==='function')window.rimaV29ToggleFav(key);settle()});
+   const after=row.querySelector('.pwi');if(after)after.insertAdjacentElement('afterend',b);else row.appendChild(b);
+  }
+  return b;
+ }
  function syncPlayerHeart(){
-  const b=document.getElementById('rima-v29-player-heart');if(!b)return;
+  const b=ensurePlayerHeart();if(!b)return;
   const key=selectedKey(),on=!!key&&readFav().has(key);
   b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on));
   b.setAttribute('aria-label',on?'Remover dos favoritos':'Adicionar aos favoritos');
