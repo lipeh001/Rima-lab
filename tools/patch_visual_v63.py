@@ -43,7 +43,7 @@ if a<0: raise SystemExit('V63_FAIL: runtime V62 ausente')
 b=a+len(tag62);z=h.find('</script>',b)
 js=h[b:z]
 old="const favOpen=!!document.querySelector('#bp>.rima-v43-tools .rima-v43-toggle.active,#bq>.rima-v43-tools .rima-v43-toggle.active');"
-new="const favOpen=!!document.querySelector('#bp>.rima-v43-favlist:not([hidden]),#bq>.rima-v43-favlist:not([hidden]),#bbq>.rima-v43-favlist:not([hidden]));"
+new="const favOpen=!!document.querySelector('#bp>.rima-v43-favlist:not([hidden]),#bq>.rima-v43-favlist:not([hidden]),#bbq>.rima-v43-favlist:not([hidden])');"
 if js.count(old)!=1: raise SystemExit('V63_FAIL: detector de Favorites V62 não corresponde')
 js=js.replace(old,new,1)
 h=h[:b]+js+h[z:]
