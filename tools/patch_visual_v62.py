@@ -31,7 +31,7 @@ runtime=r'''<script id="rimalab-favorites-player-scroll-stage-v62">
  const FAV_KEY='rimalab_favorites_v29';
  let savedStageScroll=null,stageActive=false;
  const readFav=()=>{try{const a=JSON.parse(localStorage.getItem(FAV_KEY)||'[]');return new Set(Array.isArray(a)?a.map(String):[])}catch(_){return new Set()}};
- const selectedKey=()=>window.ZS&&ZS.k==='lib'&&ZS.key?String(ZS.key):'';
+ const selectedKey=()=>typeof ZS!=='undefined'&&ZS&&ZS.k==='lib'&&ZS.key?String(ZS.key):'';
  function ensurePlayerHeart(){
   const row=document.querySelector('#pbar .pwrow');if(!row)return null;
   let b=document.getElementById('rima-v29-player-heart');
@@ -67,7 +67,7 @@ runtime=r'''<script id="rimalab-favorites-player-scroll-stage-v62">
  }
  function syncCategories(){
   const favOpen=!!document.querySelector('#bp>.rima-v43-tools .rima-v43-toggle.active,#bq>.rima-v43-tools .rima-v43-toggle.active');
-  const selected=String(window.ZS&&ZS.s||'').trim().toLowerCase();
+  const selected=String(typeof ZS!=='undefined'&&ZS&&ZS.s||'').trim().toLowerCase();
   document.querySelectorAll('#bp .rima-v50-category-row .tag.chip,#bq .rima-v50-category-row .tag.chip,#bbq .rima-v50-category-row .tag.chip').forEach(chip=>{
    const label=String(chip.textContent||'').trim().toLowerCase();
    const on=!favOpen&&!!selected&&label.startsWith(selected);
@@ -108,7 +108,7 @@ runtime=r'''<script id="rimalab-favorites-player-scroll-stage-v62">
  if(typeof oldWStart==='function'&&!oldWStart.__rimaV62){
   const wrapped=function(){
    const result=oldWStart.apply(this,arguments);
-   const msg=window.ZS&&ZS.k==='syn'?'':(window.ZS&&ZS.auto?'Beat sem introdução: já começa com tudo.':'Virada detectada. Entrando um pouco antes dela.');
+   const msg=typeof ZS!=='undefined'&&ZS&&ZS.k==='syn'?'':(typeof ZS!=='undefined'&&ZS&&ZS.auto?'Beat sem introdução: já começa com tudo.':'Virada detectada. Entrando um pouco antes dela.');
    const line=document.getElementById('cs');
    if(line&&msg)line.textContent=msg;
    return result;
