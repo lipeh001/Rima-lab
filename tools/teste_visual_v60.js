@@ -1,0 +1,30 @@
+#!/usr/bin/env node
+const fs=require('fs'),path=require('path');
+const root=path.resolve(process.argv[2]),hp=path.join(root,'app/src/main/assets/rima-lab.html');
+const gp=['app/build.gradle','app/build.gradle.kts'].map(x=>path.join(root,x)).find(fs.existsSync);
+if(!fs.existsSync(hp)||!gp)throw new Error('V60: HTML/Gradle ausentes');
+const h=fs.readFileSync(hp,'utf8'),g=fs.readFileSync(gp,'utf8'),pass=[],fail=[];
+const check=(n,ok,d='')=>(ok?pass:fail).push({n,d});
+check('versão 3.3.8/code80',/versionCode\s*(?:=\s*)?80/.test(g)&&/versionName\s*(?:=\s*)?["']3\.3\.8["']/.test(g));
+check('patch V60 aplicado uma vez',h.split('rimalab-consistent-heart-favorites-v60').length===2);
+check('validação de seleção percorre todas as categorias',h.includes('let selectedTrack=null;')&&h.includes('for(const cat of Object.keys(ZLIB||{}))')&&h.includes('if(selectedTrack){ZS.s=selectedTrack.cat;ZS.i=selectedTrack.index}'));
+check('Favorites preserva seleção antes de iniciar',h.includes("const selected=ZS.k==='syn'||!!selectedTrack;"));
+check('toolbar sem negrito em Favoritos e número',h.includes('rima-v60-fav-label')&&h.includes('.rima-v43-toggle .rima-v29-count')&&h.includes('font-weight:500!important'));
+check('chips com espaço entre categoria e contagem',h.includes('rima-v50-category-row>.tag.chip{')&&h.includes('gap:4px!important')&&h.includes('margin-left:3px!important'));
+check('Favorites usa mesma classe e cor do .mc selecionado',h.includes('.rima-v43-fav-play.is-selected')&&h.includes('background:var(--ac)!important;color:var(--on)!important')&&h.includes('box-shadow:3px 3px 0 var(--ink)!important'));
+check('fonte Favorites sem negrito e igual à lista',h.includes('font-family:Anton,Impact,sans-serif!important;font-size:20px!important;font-weight:400!important'));
+check('espaçamento vertical de metadados reduzido',h.includes('.rima-v43-fav-row .beat-meta')&&h.includes('flex-wrap:nowrap!important')&&h.includes('white-space:nowrap!important;font-size:11px!important'));
+check('mesmo coração centralizado nos botões e no player',h.includes('#pbar #rima-v29-player-heart::before')&&h.includes('.rima-v29-fav::before')&&h.includes('place-items:center!important'));
+check('coração do player mantém tamanho 30px',h.includes('#pbar #rima-v29-player-heart{width:30px!important')&&h.includes('height:30px!important'));
+check('layout horizontal usa coluna flex estável',h.includes('display:flex!important;position:relative!important;flex:1 1 0%!important;flex-direction:column!important'));
+check('lista horizontal visível e desliza sem sobreposição',h.includes('overflow-x:auto!important;overflow-y:hidden!important')&&h.includes('flex:0 0 clamp(190px,25vw,280px)!important'));
+check('gestos preservam movimento nos dois eixos',h.includes('touch-action:pan-x pan-y!important'));
+check('normalizador de títulos reforçado',h.includes('for(let i=0;i<10;i++)')&&h.includes('function rimaV59CleanTitle(value)'));
+const scripts=[...h.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)];
+let syntax=true,errors=[];
+for(let i=0;i<scripts.length;i++){try{new Function(scripts[i][1])}catch(e){syntax=false;errors.push('script '+i+': '+e.message)}}
+check('sintaxe de todos os scripts inline',syntax,errors.join('; '));
+for(const x of pass)console.log('PASS '+x.n+(x.d?' — '+x.d:''));
+for(const x of fail)console.log('FAIL '+x.n+(x.d?' — '+x.d:''));
+console.log('V60_RESULT '+pass.length+' passed; '+fail.length+' failed');
+if(fail.length)process.exit(1);
