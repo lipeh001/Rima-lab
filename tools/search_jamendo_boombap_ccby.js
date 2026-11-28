@@ -6,7 +6,7 @@ if(!clientId) throw new Error('JAMENDO_CLIENT_ID não configurado');
 const searches=['boom bap','boom-bap','old school hip hop beat','underground hip hop instrumental','90s hip hop instrumental'];
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function api(params){
-  const p=new URLSearchParams({client_id:clientId,format:'json',limit:'200',include:'licenses,musicinfo',...params});
+  const p=new URLSearchParams({client_id:clientId,format:'json',limit:'200',include:'licenses musicinfo',...params});
   const res=await fetch('https://api.jamendo.com/v3.0/tracks/?'+p,{headers:{accept:'application/json', 'user-agent':'RimaLab-license-audit/1.0'}});
   const body=await res.text(); if(!res.ok) throw new Error('HTTP '+res.status+' '+body.slice(0,200));
   const j=JSON.parse(body); if(j.headers?.status!=='success') throw new Error(JSON.stringify(j.headers));
