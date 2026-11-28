@@ -11,6 +11,20 @@ if 'rimalab-favorites-player-scroll-stage-v62' in h: raise SystemExit('V62_FAIL:
 if 'function fixLandscapeList()' not in h or 'rimalab-player-state-settle-v54' not in h or 'rimalab-consistent-heart-favorites-v60' not in h:
  raise SystemExit('V62_FAIL: base V60/V61/V54 ausente')
 
+# The original V31 catalog decorator predates the Favorites .bsl/.bi markup and
+# was injecting a second data-rima-fav button into every Favorites row.
+v31_tag='<script id="rimalab-complete-runtime-v31">'
+v31_a=h.find(v31_tag)
+if v31_a<0: raise SystemExit('V62_FAIL: runtime V31 ausente')
+v31_b=v31_a+len(v31_tag);v31_z=h.find('</script>',v31_b)
+if v31_z<0: raise SystemExit('V62_FAIL: fechamento V31 ausente')
+v31_js=h[v31_b:v31_z]
+v31_old="$('.bsl .bi').forEach(row=>{\\n  if(row.querySelector('[data-rima-fav]'))return;"
+v31_new="$('.bsl .bi').forEach(row=>{\\n  if(row.classList.contains('rima-v43-fav-row')||row.closest('.rima-v43-favlist')||row.querySelector('[data-rima-fav]'))return;"
+if v31_js.count(v31_old)!=1: raise SystemExit('V62_FAIL: decorator V31 não corresponde')
+v31_js=v31_js.replace(v31_old,v31_new,1)
+h=h[:v31_b]+v31_js+h[v31_z:]
+
 # V54's generic catalog decorator also sees Favorites rows after V61 gave them
 # the .bsl > .bi catalog structure. It was injecting a second heart into each row.
 tag='<script id="rimalab-player-state-settle-v54">'
@@ -126,7 +140,10 @@ runtime=r'''<script id="rimalab-favorites-player-scroll-stage-v62">
     savedStageScroll=Number.isFinite(window.scrollY)?window.scrollY:(sc?sc.scrollTop:0);
     stageActive=true;
    }
-   return oldLvStart.apply(this,arguments);
+   const result=oldLvStart.apply(this,arguments);
+   requestAnimationFrame(()=>{fixStageList();requestAnimationFrame(fixStageList)});
+   setTimeout(fixStageList,90);
+   return result;
   };
   wrapped.__rimaV62=true;window.lvStart=wrapped;
  }
@@ -152,8 +169,8 @@ runtime=r'''<script id="rimalab-favorites-player-scroll-stage-v62">
   if(!live||live.hidden||document.body.classList.contains('rima-live-landscape'))return;
   const list=document.querySelector('#lv:not([hidden]) #bq>.bsl:not([hidden]),#lv:not([hidden]) #bq>.rima-v43-favlist:not([hidden])');
   if(!list)return;
-  list.style.setProperty('max-height','min(36vh,400px)','important');
-  list.style.setProperty('min-height','min(22vh,240px)','important');
+  list.style.setProperty('max-height','min(40vh,440px)','important');
+  list.style.setProperty('min-height','min(28vh,300px)','important');
   list.style.setProperty('overflow-y','auto','important');
   list.style.setProperty('overflow-x','hidden','important');
  }
@@ -213,7 +230,7 @@ css=r'''<style id="rimalab-favorites-player-scroll-stage-style-v62">
  body.pl:not(.pv) #lv:not([hidden]) #bq>.bsl:not([hidden]),
  body.pl:not(.pv) #lv:not([hidden]) #bq>.rima-v43-favlist:not([hidden]){
   display:block!important;box-sizing:border-box!important;
-  max-height:min(36vh,400px)!important;min-height:min(22vh,240px)!important;
+  max-height:min(40vh,440px)!important;min-height:min(28vh,300px)!important;
   height:auto!important;overflow-y:auto!important;overflow-x:hidden!important;
   overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch!important
  }
