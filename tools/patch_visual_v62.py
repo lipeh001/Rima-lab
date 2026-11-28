@@ -19,8 +19,8 @@ if v31_a<0: raise SystemExit('V62_FAIL: runtime V31 ausente')
 v31_b=v31_a+len(v31_tag);v31_z=h.find('</script>',v31_b)
 if v31_z<0: raise SystemExit('V62_FAIL: fechamento V31 ausente')
 v31_js=h[v31_b:v31_z]
-v31_old="$('.bsl .bi').forEach(row=>{\\n  if(row.querySelector('[data-rima-fav]'))return;"
-v31_new="$('.bsl .bi').forEach(row=>{\\n  if(row.classList.contains('rima-v43-fav-row')||row.closest('.rima-v43-favlist')||row.querySelector('[data-rima-fav]'))return;"
+v31_old="$$('.bsl .bi').forEach(row=>{\\n  if(row.querySelector('[data-rima-fav]'))return;"
+v31_new="$$('.bsl .bi').forEach(row=>{\\n  if(row.classList.contains('rima-v43-fav-row')||row.closest('.rima-v43-favlist')||row.querySelector('[data-rima-fav]'))return;"
 if v31_js.count(v31_old)!=1: raise SystemExit('V62_FAIL: decorator V31 não corresponde')
 v31_js=v31_js.replace(v31_old,v31_new,1)
 h=h[:v31_b]+v31_js+h[v31_z:]
