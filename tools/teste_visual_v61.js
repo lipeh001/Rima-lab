@@ -29,7 +29,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await tap('#md .mc');await tap('#train-step-1 .go');
   await page.waitForFunction(()=>!document.querySelector('#train-step-2').hidden,{timeout:10000});
   await page.evaluate(async()=>{if(window.rimaCatalogReady&&typeof window.rimaCatalogReady.then==='function')await window.rimaCatalogReady; if(typeof zBuild==='function'){zBuild('Boom bap');zBuild('Trap');zBuild('Drill')}});
-  await page.waitForFunction(()=>Array.isArray(window.ZLIB?.['Boom bap']?.[1])&&window.ZLIB['Boom bap'][1].length>3&&!!document.querySelector('#bp .bsl .bi .mc'),{timeout:20000});
+  await page.waitForFunction(()=>typeof ZLIB!=='undefined'&&Array.isArray(ZLIB['Boom bap']?.[1])&&ZLIB['Boom bap'][1].length>3&&!!document.querySelector('#bp .bsl .bi .mc'),{timeout:20000});
   const favoriteData=await page.evaluate(()=>{
    const c=ZLIB['Boom bap'][1],idx=Math.min(2,c.length-1),key='jm-'+String(c[idx][4]);
    localStorage.setItem('rimalab_favorites_v29',JSON.stringify([key,'jm-'+String(c[Math.min(3,c.length-1)][4])]));
