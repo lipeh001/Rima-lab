@@ -103,6 +103,7 @@ on:
       - 'tools/patch_visual_v64.py'
       - 'tools/teste_visual_v64.js'
       - 'tools/patch_visual_v65.py'
+      - 'tools/patch_visual_v66.py'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -264,6 +265,12 @@ jobs:
       - name: Corrigir espaçamento, introdução, coração e contagem real dos Favoritos V65 (3.4.3)
         run: python3 tools/patch_visual_v65.py "$BUILD_DIR"
       - name: Validar sintaxe após V65
+        shell: bash
+        run: |
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Corrigir contagem exata, mensagem de preparação e espaçamento do palco V66 (3.4.4)
+        run: python3 tools/patch_visual_v66.py "$BUILD_DIR"
+      - name: Validar V66
         shell: bash
         run: |
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
