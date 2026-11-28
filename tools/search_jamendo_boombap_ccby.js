@@ -3,7 +3,7 @@
 const fs=require('node:fs');
 const clientId=process.env.JAMENDO_CLIENT_ID;
 if(!clientId) throw new Error('JAMENDO_CLIENT_ID não configurado');
-const searches=['boom bap','boom-bap','old school hip hop beat','underground hip hop instrumental','90s hip hop instrumental'];
+const searches=['boom-bap','boombap','boom bap instrumental','old school hip hop beat','hip hop instrumental','rap beat instrumental','underground hip hop','90s hip hop','east coast hip hop'];
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function api(params){
   const p=new URLSearchParams({client_id:clientId,format:'json',limit:'200',include:'licenses musicinfo',...params});
@@ -20,9 +20,9 @@ function styleScore(t){
  const s=[t.name,t.album_name,t.musicinfo?.tags?.genres?.join(' '),t.musicinfo?.tags?.instruments?.join(' ')].join(' ').toLowerCase();
  if(/lofi|lo-fi|ambient|chillout|sleep|relax|meditation|background/.test(s)) return -100;
  let n=0;
- if(s.includes('boom bap') || s.includes('boom-bap')) n+=10;
- if(['old school','90s','underground','east coast','hardcore','hip hop','hip-hop'].some(x=>s.includes(x))) n+=3;
- if(s.includes('instrumental') || s.includes('beat')) n+=2;
+ if(s.includes('boom bap') || s.includes('boom-bap') || s.includes('boombap')) n+=10;
+ if(['old school','90s','underground','east coast','hardcore','hip hop','hip-hop','rap'].some(x=>s.includes(x))) n+=4;
+ if(s.includes('instrumental') || s.includes('beat')) n+=3;
  if(['trap','phonk','drill'].some(x=>s.includes(x))) n-=5;
  return n;
 }
@@ -31,12 +31,12 @@ function styleScore(t){
  for(const term of searches){
   try{
    const rows=await api({search:term,vocalinstrumental:'instrumental',ccnc:'false',ccnd:'false',ccsa:'false',type:'single albumtrack'});
-   for(const t of rows) if(isExactCommercialCCBY(t) && t.audiodownload_allowed===true && Number(t.duration)>=90 && styleScore(t)>=10) all.set(String(t.id),t);
+   for(const t of rows) if(isExactCommercialCCBY(t) && t.audiodownload_allowed===true && Number(t.duration)>=90 && styleScore(t)>=3) all.set(String(t.id),t);
    console.log('Consulta',term,'retornou',rows.length,'candidatos acumulados',all.size);
   }catch(e){console.log('ERRO consulta',term,String(e));}
   await sleep(300);
  }
- const tracks=[...all.values()].sort((a,b)=>styleScore(b)-styleScore(a)||Number(b.duration)-Number(a.duration)).slice(0,40).map(t=>({
+ const tracks=[...all.values()].sort((a,b)=>styleScore(b)-styleScore(a)||Number(b.duration)-Number(a.duration)).slice(0,20).map(t=>({
   id:String(t.id),name:t.name,artist:t.artist_name,duration:t.duration,
   license:t.license_ccurl,download_allowed:t.audiodownload_allowed,
   url:'https://www.jamendo.com/track/'+t.id,
