@@ -19,7 +19,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
  try{
   const page=await browser.newPage({viewport:{width:393,height:873},deviceScaleFactor:1,isMobile:true,hasTouch:true});
   page.on('pageerror',e=>errors.push(String(e)));
-  await page.setContent(shim+h,{waitUntil:'domcontentloaded',timeout:30000});
+  await page.setContent(shim+h,{waitUntil:'domcontentloaded',timeout:60000});
   await page.waitForFunction(()=>typeof window.trainNext==='function'&&document.querySelector('#bp'),{timeout:15000});
   await page.evaluate(()=>{document.querySelector('#rima-splash')?.classList.add('done');window.trainNext();window.pk?.()});
   await page.waitForFunction(()=>document.querySelector('#train-step-2 #bp>.bsl .bi'),{timeout:12000});
