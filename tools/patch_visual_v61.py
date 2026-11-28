@@ -210,7 +210,7 @@ css=r'''<style id="rimalab-favorites-stable-render-v61">
  html body.pl:not(.pv).rima-live-landscape #lv:not([hidden]) #bq>.bsl:not([hidden]){
   display:flex!important;flex:0 0 112px!important;height:112px!important;flex-direction:row!important;flex-wrap:nowrap!important;
   align-items:stretch!important;gap:8px!important;box-sizing:border-box!important;width:100%!important;
-  max-width:100%!important;min-width:0!important;min-height:112px!important;max-height:112px!important;
+  max-width:100%!important;min-width:0!important;min-height:112px!important;max-height:112px!important;flex-shrink:0!important;align-self:stretch!important;
   margin:0!important;padding:4px 5px!important;overflow-x:auto!important;overflow-y:hidden!important;
   overscroll-behavior-x:contain!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-x pan-y!important
  }
