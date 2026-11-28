@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+const fs=require('fs'),path=require('path');
+const root=path.resolve(process.argv[2]),hp=path.join(root,'app/src/main/assets/rima-lab.html');
+const gp=['app/build.gradle','app/build.gradle.kts'].map(x=>path.join(root,x)).find(fs.existsSync);
+if(!fs.existsSync(hp)||!gp)throw new Error('V58: HTML/Gradle ausentes');
+const h=fs.readFileSync(hp,'utf8'),g=fs.readFileSync(gp,'utf8'),pass=[],fail=[];
+const check=(n,ok,d='')=>(ok?pass:fail).push({n,d});
+check('versão 3.3.6/code78',/versionCode\s*(?:=\s*)?78/.test(g)&&/versionName\s*(?:=\s*)?["']3\.3\.6["']/.test(g));
+check('patch único V58',h.split('rimalab-stage-selector-favorites-v58').length===2&&h.includes('rimalab-stage-selector-favorites-style-v58'));
+check('fallback não substitui tela do palco',h.includes('window.__rimaV58RecoveryPending=true')&&h.includes('Escolha outra faixa na lista abaixo.')&&!/function zFallback\(msg\)[\s\S]{0,800}document\.getElementById\('lv'\)\.hidden=false/.test(h));
+check('seleção reinicia o treino após falha',h.includes('if(pending&&window.ZS&&ZS.k===\\'lib\\'')&&h.includes('window.lvStart()'));
+check('player da prévia da etapa 2 liberado',h.includes('const setupPreview=!!(setup&&!setup.hidden')&&h.includes('const eligible=(live||setupPreview)&&audio;'));
+check('Favoritos usa o mesmo destaque da categoria',h.includes('.rima-v43-fav-play.on')&&h.includes('border-left:4px solid #e5c45b!important'));
+check('Favoritos sem cartão com CSS separado',h.includes('.rima-v43-fav-row.is-selected')&&h.includes('background:transparent!important;box-shadow:none!important'));
+check('coração quadrado e sem esticar fonte',h.includes('font-family:Arial,sans-serif!important')&&h.includes('font-stretch:normal!important')&&h.includes('aspect-ratio:1/1'));
+check('categorias e Favoritos em faixas independentes',h.includes('grid-template-rows:34px 38px 12px minmax(0,1fr)!important')&&h.includes('grid-row:1!important')&&h.includes('grid-row:2!important'));
+check('lista horizontal mostra vários beats',h.includes('grid-auto-flow:column!important')&&h.includes('grid-auto-columns:clamp(190px,27vw,310px)!important')&&h.includes('overflow-x:auto!important')&&h.includes('touch-action:pan-x pan-y!important'));
+check('barra Treino/Batalha/Aulas oculta só no palco horizontal',h.includes('rima-live-landscape nav{display:none!important'));
+check('rolagem vertical continua habilitada',h.includes('overflow-y:auto!important;overflow-x:hidden!important;touch-action:pan-y!important'));
+check('sem novo MutationObserver/polling global V58',!h.includes('new MutationObserver')&&!h.includes('setInterval('));
+const scripts=[...h.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)];
+let syntax=true,errors=[];
+for(let i=0;i<scripts.length;i++){try{new Function(scripts[i][1])}catch(e){syntax=false;errors.push('script '+i+': '+e.message)}}
+check('sintaxe dos scripts inline',syntax,errors.join('; '));
+for(const x of pass)console.log('PASS '+x.n+(x.d?' — '+x.d:''));
+for(const x of fail)console.log('FAIL '+x.n+(x.d?' — '+x.d:''));
+console.log('V58_RESULT '+pass.length+' passed; '+fail.length+' failed');
+if(fail.length)process.exit(1);
