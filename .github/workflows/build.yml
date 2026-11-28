@@ -92,6 +92,8 @@ on:
       - 'tools/teste_visual_v58.js'
       - 'tools/patch_visual_v59.py'
       - 'tools/teste_visual_v59.js'
+      - 'tools/patch_visual_v60.py'
+      - 'tools/teste_visual_v60.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -435,6 +437,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v59.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Unificar coração, seleção de Favoritos e seletor horizontal V60 (3.3.8)
+        run: python3 tools/patch_visual_v60.py "$BUILD_DIR"
+      - name: Validar Favoritos, seleção, coração e layout horizontal V60
+        shell: bash
+        run: |
+          node tools/teste_visual_v60.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Validar sintaxe final após correções V52
         run: (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
