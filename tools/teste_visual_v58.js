@@ -17,7 +17,10 @@ check('categorias e Favoritos em faixas independentes',h.includes('grid-template
 check('lista horizontal mostra vários beats',h.includes('grid-auto-flow:column!important')&&h.includes('grid-auto-columns:clamp(190px,27vw,310px)!important')&&h.includes('overflow-x:auto!important')&&h.includes('touch-action:pan-x pan-y!important'));
 check('barra Treino/Batalha/Aulas oculta só no palco horizontal',h.includes('rima-live-landscape nav{display:none!important'));
 check('rolagem vertical continua habilitada',h.includes('overflow-y:auto!important;overflow-x:hidden!important;touch-action:pan-y!important'));
-const runtimeStart=h.indexOf('<script id="rimalab-stage-selector-favorites-v58">');\nconst runtimeEnd=runtimeStart>=0?h.indexOf('</script>',runtimeStart):-1;\nconst runtime=runtimeStart>=0&&runtimeEnd>runtimeStart?h.slice(runtimeStart,runtimeEnd):'';\ncheck('sem observer ou polling novo no runtime V58',!!runtime&&!runtime.includes('MutationObserver')&&!runtime.includes('setInterval('));
+const runtimeStart=h.indexOf('<script id="rimalab-stage-selector-favorites-v58">');
+const runtimeEnd=runtimeStart>=0?h.indexOf('</script>',runtimeStart):-1;
+const runtime=runtimeStart>=0&&runtimeEnd>runtimeStart?h.slice(runtimeStart,runtimeEnd):'';
+check('sem observer ou polling novo no runtime V58',!!runtime&&!runtime.includes('MutationObserver')&&!runtime.includes('setInterval('));
 const scripts=[...h.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)];
 let syntax=true,errors=[];
 for(let i=0;i<scripts.length;i++){try{new Function(scripts[i][1])}catch(e){syntax=false;errors.push('script '+i+': '+e.message)}}
