@@ -19,10 +19,14 @@ if v31_a<0: raise SystemExit('V62_FAIL: runtime V31 ausente')
 v31_b=v31_a+len(v31_tag);v31_z=h.find('</script>',v31_b)
 if v31_z<0: raise SystemExit('V62_FAIL: fechamento V31 ausente')
 v31_js=h[v31_b:v31_z]
-v31_old="$$('.bsl .bi').forEach(row=>{\\n  if(row.querySelector('[data-rima-fav]'))return;"
-v31_new="$$('.bsl .bi').forEach(row=>{\\n  if(row.classList.contains('rima-v43-fav-row')||row.closest('.rima-v43-favlist')||row.querySelector('[data-rima-fav]'))return;"
-if v31_js.count(v31_old)!=1: raise SystemExit('V62_FAIL: decorator V31 não corresponde')
-v31_js=v31_js.replace(v31_old,v31_new,1)
+decor_start=v31_js.find('function decorateCatalog(){')
+if decor_start<0: raise SystemExit('V62_FAIL: decorateCatalog V31 ausente')
+loop_start=v31_js.find('.forEach(row=>{',decor_start)
+if loop_start<0 or loop_start-decor_start>500: raise SystemExit('V62_FAIL: loop de decorateCatalog V31 ausente')
+guard="if(row.classList.contains('rima-v43-fav-row')||row.closest('.rima-v43-favlist'))return;"
+guard_pos=loop_start+len('.forEach(row=>{')
+if guard not in v31_js[guard_pos:guard_pos+300]:
+ v31_js=v31_js[:guard_pos]+'\\n  '+guard+v31_js[guard_pos:]
 h=h[:v31_b]+v31_js+h[v31_z:]
 
 # V54's generic catalog decorator also sees Favorites rows after V61 gave them
