@@ -31,3 +31,5 @@ jobs:
           path: audit-output/*
           if-no-files-found: error
           retention-days: 14
+
+# Trigger read-only license audit retry with per-track requests
