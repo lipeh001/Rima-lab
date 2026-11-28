@@ -94,6 +94,8 @@ on:
       - 'tools/teste_visual_v59.js'
       - 'tools/patch_visual_v60.py'
       - 'tools/teste_visual_v60.js'
+      - 'tools/patch_visual_v61.py'
+      - 'tools/teste_visual_v61.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -444,6 +446,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v60.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Estabilizar primeiro toque nos Favoritos e corrigir seletor horizontal V61 (3.3.9)
+        run: python3 tools/patch_visual_v61.py "$BUILD_DIR"
+      - name: Testar primeiro toque, DOM dos Favoritos e geometria horizontal V61
+        shell: bash
+        run: |
+          node tools/teste_visual_v61.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Validar sintaxe final após correções V52
         run: (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
