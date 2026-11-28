@@ -102,6 +102,7 @@ on:
       - 'tools/teste_visual_v63.js'
       - 'tools/patch_visual_v64.py'
       - 'tools/teste_visual_v64.js'
+      - 'tools/patch_visual_v65.py'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -259,6 +260,12 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v64.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Corrigir espaçamento, introdução, coração e contagem real dos Favoritos V65 (3.4.3)
+        run: python3 tools/patch_visual_v65.py "$BUILD_DIR"
+      - name: Validar sintaxe após V65
+        shell: bash
+        run: |
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
