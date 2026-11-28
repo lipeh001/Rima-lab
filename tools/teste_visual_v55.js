@@ -9,7 +9,7 @@ const checks=[
  ['step 2 overflow is not clipped',h.includes('#train-step-2{box-sizing:border-box!important;min-width:0!important;max-width:100%!important;overflow:visible!important')],
  ['landscape navigation hidden only during live stage',h.includes('body.rima-live-landscape nav{display:none!important')],
  ['rhyme tip spacing added',h.includes('#lv:not([hidden]) #stg.stage .v3bar{margin-top:12px!important')],
- ['version 3.3.5/code77',/versionCode\s*(?:=\s*)?76/.test(g)&&/versionName\s*(?:=\s*)?["']3\.3\.4["']/.test(g)]
+ ['version 3.3.5/code77',/versionCode\s*(?:=\s*)?77/.test(g)&&/versionName\s*(?:=\s*)?["']3\.3\.5["']/.test(g)],
  ['V56 SVG heart runtime',h.includes('rimalab-heart-svg-runtime-v56')&&h.includes("setAttribute('viewBox','0 0 24 24')")],
  ['V56 step2 inset prevents left crop',h.includes('#train-step-2 #bp{padding:0 3px!important;overflow-x:hidden!important')&&h.includes('padding:6px 7px 7px!important')],
  ['V56 compact favorite titles',h.includes('padding:7px 10px 6px!important;line-height:1.1!important')&&h.includes('-webkit-line-clamp:2!important')],
