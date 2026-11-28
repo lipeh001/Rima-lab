@@ -71,7 +71,7 @@ function sync(){document.querySelectorAll('.rima-v29-count').forEach(e=>e.textCo
 if h.count(sync_anchor)!=1: raise SystemExit('V61_FAIL: sync V43 não corresponde')
 h=h.replace(sync_anchor,sync_add,1)
 old_v43pk="const f=function(){const r=oldPk.apply(this,arguments);render();return r};"
-new_v43pk="const f=function(){const r=oldPk.apply(this,arguments);syncToolbarOnly();return r};"
+new_v43pk="const f=function(){ids.forEach(id=>{const v=document.querySelector('#'+id+' > .rima-v43-favlist');if(v)favoriteViews.set(id,v)});const r=oldPk.apply(this,arguments);syncToolbarOnly();return r};"
 if h.count(old_v43pk)!=1: raise SystemExit('V61_FAIL: wrapper pk V43 não corresponde')
 h=h.replace(old_v43pk,new_v43pk,1)
 old_v43bar="const f=function(){const r=oldBar.apply(this,arguments);render();return r};"
