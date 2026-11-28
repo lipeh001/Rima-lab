@@ -9,7 +9,7 @@ const checks=[
  ['step 2 overflow is not clipped',h.includes('#train-step-2{box-sizing:border-box!important;min-width:0!important;max-width:100%!important;overflow:visible!important')],
  ['landscape navigation hidden only during live stage',h.includes('body.rima-live-landscape nav{display:none!important')],
  ['rhyme tip spacing added',h.includes('#lv:not([hidden]) #stg.stage .v3bar{margin-top:12px!important')],
- ['version 3.3.4/code76',/versionCode\s*=\s*76/.test(g)&&/versionName\s*=\s*["']3\.3\.4["']/.test(g)]
+ ['version 3.3.4/code76',/versionCode\s*(?:=\s*)?76/.test(g)&&/versionName\s*(?:=\s*)?["']3\.3\.4["']/.test(g)]
 ];
 let bad=0;for(const [n,ok] of checks){console.log((ok?'PASS ':'FAIL ')+n);if(!ok)bad++}
 if(bad)process.exit(1);
