@@ -7,6 +7,12 @@ gp=next((p for p in (root/'app/build.gradle',root/'app/build.gradle.kts') if p.e
 if not hp.is_file() or gp is None: raise SystemExit('V66_FAIL: HTML/Gradle ausente')
 h=hp.read_text(encoding='utf-8');g=gp.read_text(encoding='utf-8')
 if 'rimalab-favorites-entry-fix-v66' in h: raise SystemExit('V66_FAIL: patch já aplicado')
+# Remove late message publishers from V64/V65. The original wLoop already
+# displays WD.info during phase 0 and clears it when the first word starts.
+for script_id in ('rimalab-stage-selector-gap-entry-message-runtime-v64','rimalab-stage-entry-copy-runtime-v65'):
+    pattern=r'<script id="'+re.escape(script_id)+r'">[\\s\\S]*?</script>'
+    h,n=re.subn(pattern,'',h,count=1)
+    if n!=1: raise SystemExit('V66_FAIL: runtime tardio não encontrado: '+script_id)
 # Count exactly the unique tracks that are rendered in the Favorites view.
 needle=" const read=()=>{try{const a=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(a)?[...new Set(a.map(String).filter(Boolean))]:[]}catch(_){return[]}};"
 if h.count(needle)!=1: raise SystemExit('V66_FAIL: reader de favoritos não localizado')
@@ -26,7 +32,7 @@ old=""" function count(){
  }"""
 if h.count(old)!=1: raise SystemExit('V66_FAIL: contador V65 não localizado')
 h=h.replace(old," function count(){return favoriteItems().length}",1)
-old2=" const saved=new Set(read()),items=allTracks().filter(t=>saved.has(t.key));"
+old2=" const saved=new Set(read()),seen=new Set(),items=allTracks().filter(t=>{if(!saved.has(t.key)||seen.has(t.key))return false;seen.add(t.key);return true});"
 if h.count(old2)!=1: raise SystemExit('V66_FAIL: montagem da lista não localizada')
 h=h.replace(old2," const items=favoriteItems();",1)
 # Never republish the intro message after the first word is on stage.
