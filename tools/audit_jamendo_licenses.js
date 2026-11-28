@@ -70,3 +70,5 @@ function classify(url) {
   fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,summary+'\n');
   console.log(JSON.stringify({requested:ids.length,returned:report.returnedCount,counts},null,2));
 })().catch(e=>{console.error(e);process.exit(1);});
+
+// Keep audit branch workflow trigger aligned with Jamendo discovery audit.
