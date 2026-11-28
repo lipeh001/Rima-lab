@@ -13,7 +13,7 @@ check('both populated and empty Favorites lists share the catalog bsl container'
 check('Favorites rows reuse catalog bi and mc components',html.includes('class="bi rima-v43-fav-row"')&&html.includes('class="mc rima-v43-fav-play'));
 check('Favorites selected state matches regular .mc state',html.includes('background:var(--ac)!important;color:var(--on)!important')&&html.includes('box-shadow:3px 3px 0 var(--ink)!important'));
 check('landscape has fixed three-row selector layout',html.includes('grid-template-rows:40px minmax(0,1fr) 40px!important'));
-check('landscape beats get a visible horizontal scrolling strip',html.includes('min-height:112px!important')&&html.includes('overflow-x:auto!important;overflow-y:hidden!important')&&html.includes('flex:0 0 clamp(190px,25vw,280px)!important'));
+check('landscape beats get a fixed-height horizontal scrolling strip',html.includes('height:112px!important')&&html.includes('flex-shrink:0!important')&&html.includes('overflow-x:auto!important;overflow-y:hidden!important')&&html.includes('flex:0 0 clamp(190px,25vw,280px)!important'));
 check('all inline scripts parse',(()=>{try{for(const m of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi))new Function(m[1]);return true}catch(e){return false}})());
 
 const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localStorage",{configurable:true,value:{getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>m.set(String(k),String(v)),removeItem:k=>m.delete(k),clear:()=>m.clear()}});window.RimaNative={baixar:()=>{},apagar:()=>{},lista:()=>"[]",mediaState:()=>{}}})()</script>';
@@ -43,7 +43,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   await first.click({timeout:10000});
   await page.waitForFunction(k=>ZS.key===k,firstKey,{timeout:7000});
   await page.waitForTimeout(700);
-  const after=await page.evaluate(()=>{const n=window.__v61FavoriteNode;const b=document.querySelector('#bp>.rima-v43-favlist .rima-v43-fav-play');return {key:ZS.key,nodeStillConnected:!!(n&&n.isConnected),sameNode:n===b,selected:!!b&&b.classList.contains('is-selected'),pressed:b?.getAttribute('aria-pressed'),lists:document.querySelectorAll('#bp>.rima-v43-favlist').length,catalogHidden:document.querySelector('#bp>.bsl:not(.rima-v43-favlist)')?.hidden,toolbarHearts:document.querySelectorAll('#bp .rima-v43-toggle .rima-v60-heart-glyph').length,zlpCalls:window.__v61ZlpCalls}});
+  const after=await page.evaluate(()=>{const n=window.__v61FavoriteNode;const b=document.querySelector('#bp>.rima-v43-favlist .rima-v43-fav-play');return {key:ZS.key,nodeStillConnected:!!(n&&n.isConnected),sameNode:n===b,selected:!!b&&b.classList.contains('is-selected'),pressed:b?.getAttribute('aria-pressed'),lists:document.querySelectorAll('#bp>.rima-v43-favlist').length,catalogHidden:document.querySelector('#bp>.bsl:not(.rima-v43-favlist)')?.hidden,toolbarHearts:document.querySelectorAll('#bp .rima-v43-toggle .rima-v60-heart-glyph').length,toolbarButtons:document.querySelectorAll('#bp>.rima-v43-tools>button').length,zlpCalls:window.__v61ZlpCalls}});
   check('first tap on Favorites starts the intended beat once',after.key===firstKey&&after.zlpCalls===1,JSON.stringify({firstKey,after}));
   check('first favorite card is not rebuilt or visually deselected',after.nodeStillConnected&&after.sameNode&&after.selected&&after.pressed==='true',JSON.stringify(after));
   check('Favorites view and hidden category remain stable after player update',after.lists===1&&after.catalogHidden===true,JSON.stringify(after));
