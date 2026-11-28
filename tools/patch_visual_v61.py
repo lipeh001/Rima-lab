@@ -58,7 +58,12 @@ sync_add="""function syncToolbarOnly(){
     root.querySelectorAll(':scope > .bsl:not(.rima-v43-favlist)').forEach(list=>{list.hidden=false});
     root.querySelectorAll(':scope > .catalog-attribution').forEach(note=>{note.hidden=false});
     root.querySelectorAll(':scope > .rima-v40-favlist,:scope > .rima-v42-favlist').forEach(old=>old.remove());
-    restoreCategoryChips(root);
+    const selected=String(window.ZS&&ZS.s||'').trim().toLowerCase();
+    root.querySelectorAll('.row .tag.chip').forEach(chip=>{
+     const label=String(chip.textContent||'').trim().toLowerCase();
+     const active=!!selected&&label.startsWith(selected);
+     chip.classList.toggle('on',active);chip.setAttribute('aria-pressed',String(active));
+    });
    }
   });
 }
