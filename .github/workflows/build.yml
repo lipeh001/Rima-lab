@@ -98,6 +98,8 @@ on:
       - 'tools/teste_visual_v61.js'
       - 'tools/patch_visual_v62.py'
       - 'tools/teste_visual_v62.js'
+      - 'tools/patch_visual_v63.py'
+      - 'tools/teste_visual_v63.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -242,15 +244,12 @@ jobs:
         run: python3 tools/patch_visual_v61.py "$BUILD_DIR"
       - name: Corrigir corações duplicados, sincronização, mensagem e rolagem V62 (3.4.0)
         run: python3 tools/patch_visual_v62.py "$BUILD_DIR"
-      - name: Preparar Chromium uma única vez para teste pontual
+      - name: Corrigir seleção e cores dos Favoritos e seletor V63 (3.4.1)
+        run: python3 tools/patch_visual_v63.py "$BUILD_DIR"
+      - name: Validar somente as três correções V63
         shell: bash
         run: |
-          npm install --no-save --prefer-offline playwright@1.55.0
-          npx playwright install chromium
-      - name: Validar somente Favoritos, player, categorias e palco V62
-        shell: bash
-        run: |
-          node tools/teste_visual_v62.js "$BUILD_DIR"
+          node tools/teste_visual_v63.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
