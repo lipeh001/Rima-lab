@@ -109,6 +109,7 @@ on:
       - 'tools/patch_visual_v69.py'
       - 'tools/patch_visual_v70.py'
       - 'tools/patch_visual_v71.py'
+      - 'tools/patch_visual_v72.py'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -306,6 +307,12 @@ jobs:
       - name: Estabilizar palco, corrigir marquee, título e status do player V71 (3.4.9)
         run: python3 tools/patch_visual_v71.py "$BUILD_DIR"
       - name: Validar V71
+        shell: bash
+        run: |
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Restaurar pulsação original e corrigir retomada do palco/player V72 (3.5.0)
+        run: python3 tools/patch_visual_v72.py "$BUILD_DIR"
+      - name: Validar V72
         shell: bash
         run: |
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
