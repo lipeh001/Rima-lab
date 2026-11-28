@@ -75,75 +75,63 @@ if h.count(old_v43bar)!=1: raise SystemExit('V61_FAIL: wrapper bar V43 não corr
 h=h.replace(old_v43bar,new_v43bar,1)
 
 css=r'''<style id="rimalab-favorites-stable-render-v61">
-/* Favorites rows now use the same bsl > bi > beat-info > mc component as each category. */
-#bp .rima-v43-favlist .rima-v43-fav-row,
-#bq .rima-v43-favlist .rima-v43-fav-row,
-#bbq .rima-v43-favlist .rima-v43-fav-row{
- display:flex!important;align-items:stretch!important;gap:9px!important;
- box-sizing:border-box!important;width:100%!important;min-width:0!important;
- margin:0!important;padding:7px 0!important;border:0!important;
- border-bottom:1px solid var(--ln)!important;border-radius:0!important;
+/* Favorites uses the same bsl > bi > mc structure as each regular category. */
+#bp .rima-v43-favlist,#bq .rima-v43-favlist,#bbq .rima-v43-favlist{
+ display:block!important;box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+ min-width:0!important;max-height:46vh!important;overflow-y:auto!important;overflow-x:hidden!important;
+ padding:2px 4px 2px 0!important;margin:8px 0!important;border-radius:14px!important;
+ -webkit-overflow-scrolling:touch!important;overscroll-behavior:contain!important
+}
+#bp .rima-v43-fav-row,#bq .rima-v43-fav-row,#bbq .rima-v43-fav-row{
+ display:flex!important;align-items:stretch!important;gap:8px!important;box-sizing:border-box!important;
+ width:100%!important;min-width:0!important;margin:7px 0!important;padding:0 0 7px!important;
+ border:0!important;border-bottom:1px solid var(--ln)!important;border-radius:0!important;
  background:transparent!important;box-shadow:none!important
 }
-#bp .rima-v43-favlist .rima-v43-fav-row>.beat-info,
-#bq .rima-v43-favlist .rima-v43-fav-row>.beat-info,
-#bbq .rima-v43-favlist .rima-v43-fav-row>.beat-info{
- display:flex!important;flex:1 1 auto!important;flex-direction:column!important;
- min-width:0!important;max-width:100%!important;gap:3px!important
+#bp .rima-v43-fav-row.is-selected,#bq .rima-v43-fav-row.is-selected,#bbq .rima-v43-fav-row.is-selected{
+ border:0!important;border-bottom:1px solid var(--ln)!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;outline:0!important
 }
-#bp .rima-v43-favlist .rima-v43-fav-play,
-#bq .rima-v43-favlist .rima-v43-fav-play,
-#bbq .rima-v43-favlist .rima-v43-fav-play{
- display:flex!important;flex:1 1 auto!important;flex-direction:column!important;
- justify-content:center!important;box-sizing:border-box!important;width:100%!important;
- min-width:0!important;max-width:100%!important;min-height:54px!important;height:auto!important;
- margin:0!important;padding:10px 14px!important;border:2px solid var(--ink)!important;
- border-radius:10px!important;background:var(--card)!important;color:var(--ink)!important;
- box-shadow:none!important;outline:0!important;text-align:left!important;
- font-family:inherit!important;font-size:inherit!important;font-weight:400!important;
- line-height:normal!important;letter-spacing:normal!important;text-transform:none!important;
- white-space:normal!important;overflow-wrap:anywhere!important;touch-action:manipulation!important
+#bp .rima-v43-fav-row>.beat-info,#bq .rima-v43-fav-row>.beat-info,#bbq .rima-v43-fav-row>.beat-info{
+ display:flex!important;flex:1 1 0%!important;flex-direction:column!important;
+ min-width:0!important;max-width:100%!important;gap:0!important
 }
-#bp .rima-v43-favlist .rima-v43-fav-play b,
-#bq .rima-v43-favlist .rima-v43-fav-play b,
-#bbq .rima-v43-favlist .rima-v43-fav-play b{
- display:block!important;max-width:100%!important;margin:0!important;overflow-wrap:anywhere!important;
- font-family:Anton,Impact,sans-serif!important;font-size:20px!important;font-weight:400!important;
- line-height:1.15!important;letter-spacing:normal!important
+#bp .rima-v43-fav-play,#bq .rima-v43-fav-play,#bbq .rima-v43-fav-play{
+ display:flex!important;flex:1 1 auto!important;align-items:center!important;justify-content:center!important;
+ box-sizing:border-box!important;width:100%!important;min-width:0!important;max-width:100%!important;
+ min-height:54px!important;height:auto!important;margin:0!important;padding:10px 14px!important;
+ text-align:left!important;white-space:normal!important;overflow-wrap:anywhere!important;
+ font-family:inherit!important;font-weight:400!important;line-height:normal!important;
+ border:2px solid var(--ink)!important;border-radius:6px!important;
+ background:var(--card)!important;color:var(--ink)!important;box-shadow:none!important
 }
-#bp .rima-v43-favlist .rima-v43-fav-play.on,
-#bq .rima-v43-favlist .rima-v43-fav-play.on,
-#bbq .rima-v43-favlist .rima-v43-fav-play.on,
-#bp .rima-v43-favlist .rima-v43-fav-play.is-selected,
-#bq .rima-v43-favlist .rima-v43-fav-play.is-selected,
-#bbq .rima-v43-favlist .rima-v43-fav-play.is-selected{
- background:var(--ac)!important;color:var(--on)!important;
- border:2px solid var(--ink)!important;box-shadow:3px 3px 0 var(--ink)!important;
- outline:0!important
+#bp .rima-v43-fav-play.on,#bq .rima-v43-fav-play.on,#bbq .rima-v43-fav-play.on,
+#bp .rima-v43-fav-play.is-selected,#bq .rima-v43-fav-play.is-selected,#bbq .rima-v43-fav-play.is-selected{
+ background:var(--ac)!important;color:var(--on)!important;border:2px solid var(--ink)!important;
+ box-shadow:3px 3px 0 var(--ink)!important
 }
-#bp .rima-v43-favlist .rima-v43-fav-play.on b,
-#bq .rima-v43-favlist .rima-v43-fav-play.on b,
-#bbq .rima-v43-favlist .rima-v43-fav-play.on b,
-#bp .rima-v43-favlist .rima-v43-fav-play.is-selected b,
-#bq .rima-v43-favlist .rima-v43-fav-play.is-selected b,
-#bbq .rima-v43-favlist .rima-v43-fav-play.is-selected b{color:var(--on)!important}
-#bp .rima-v43-favlist .beat-meta,#bq .rima-v43-favlist .beat-meta,#bbq .rima-v43-favlist .beat-meta{
+#bp .rima-v43-fav-play b,#bq .rima-v43-fav-play b,#bbq .rima-v43-fav-play b{
+ display:block!important;margin:0!important;font-family:Anton,Impact,sans-serif!important;
+ font-size:20px!important;font-weight:400!important;line-height:1.15!important;letter-spacing:normal!important
+}
+#bp .rima-v43-fav-row .beat-meta,#bq .rima-v43-fav-row .beat-meta,#bbq .rima-v43-fav-row .beat-meta{
  display:flex!important;align-items:center!important;gap:8px!important;min-width:0!important;
- padding:0 12px 7px!important;border:1px solid rgba(255,255,255,.08)!important;
- border-top:0!important;border-radius:0 0 14px 14px!important;background:rgba(255,255,255,.018)!important
+ margin:0!important;padding:3px 10px 0!important;border:0!important;background:transparent!important
 }
-#bp .rima-v43-favlist .beat-artist,#bq .rima-v43-favlist .beat-artist,#bbq .rima-v43-favlist .beat-artist{
- min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important
+#bp>.rima-v43-tools,#bq>.rima-v43-tools,#bbq>.rima-v43-tools{
+ display:flex!important;align-items:stretch!important;width:100%!important;min-width:0!important
 }
-
-/* Horizontal stage: allocate a real middle grid row to the selector and a flexible strip to beats. */
+#bp>.rima-v43-tools button,#bq>.rima-v43-tools button,#bbq>.rima-v43-tools button{
+ display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important
+}
+/* Landscape: separate stage, selector card and stop button; make the beat strip tall enough to use. */
 @media(orientation:landscape) and (min-width:560px){
  html body.pl:not(.pv).rima-live-landscape #lv:not([hidden]){
-  display:grid!important;box-sizing:border-box!important;width:100vw!important;height:100vh!important;
-  min-height:100vh!important;max-height:100vh!important;
+  display:grid!important;position:fixed!important;inset:0!important;box-sizing:border-box!important;
+  width:100vw!important;height:100vh!important;min-height:100vh!important;max-height:100vh!important;
   grid-template-columns:minmax(0,1.42fr) minmax(0,1fr)!important;
-  grid-template-rows:40px minmax(0,1fr) 40px!important;
-  gap:6px 10px!important;padding:6px 12px calc(var(--rima-stage-bottom,108px) + 4px)!important;
+  grid-template-rows:40px minmax(0,1fr) 40px!important;gap:6px 10px!important;
+  padding:6px 12px calc(var(--rima-stage-bottom,108px) + 4px)!important;
   align-items:stretch!important;overflow:hidden!important
  }
  html body.pl:not(.pv).rima-live-landscape #lv:not([hidden])>.bk{
@@ -151,26 +139,24 @@ css=r'''<style id="rimalab-favorites-stable-render-v61">
  }
  html body.pl:not(.pv).rima-live-landscape #lv:not([hidden])>#stg.stage{
   grid-column:1!important;grid-row:1 / 4!important;align-self:stretch!important;
-  width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;margin:0!important;
-  box-sizing:border-box!important
+  width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;margin:0!important;box-sizing:border-box!important
  }
  html body.pl:not(.pv).rima-live-landscape #lv:not([hidden])>.card:not(.stage){
   display:flex!important;flex-direction:column!important;align-items:stretch!important;
-  grid-column:2!important;grid-row:2!important;align-self:stretch!important;
-  box-sizing:border-box!important;width:100%!important;height:100%!important;
-  min-width:0!important;min-height:0!important;max-height:none!important;
+  grid-column:2!important;grid-row:2!important;align-self:stretch!important;box-sizing:border-box!important;
+  width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;max-height:none!important;
   margin:0!important;padding:8px 9px!important;overflow:hidden!important
  }
  html body.pl:not(.pv).rima-live-landscape #lv:not([hidden])>.card:not(.stage)>.row.nw{
   flex:0 0 auto!important;min-height:0!important;margin:0 0 2px!important;gap:5px!important
  }
  html body.pl:not(.pv).rima-live-landscape #lv:not([hidden])>.card:not(.stage)>p.mut{
-  flex:0 0 auto!important;margin:1px 0 2px!important;font-size:11px!important;line-height:1.15!important
+  flex:0 0 auto!important;margin:1px 0 2px!important;font-size:10px!important;line-height:1.12!important
  }
  html body.pl:not(.pv).rima-live-landscape #lv:not([hidden]) #bq{
-  display:flex!important;position:relative!important;flex:1 1 auto!important;flex-direction:column!important;
-  gap:4px!important;box-sizing:border-box!important;width:100%!important;max-width:100%!important;
-  min-width:0!important;min-height:0!important;height:auto!important;max-height:none!important;overflow:hidden!important
+  display:flex!important;position:relative!important;flex:1 1 auto!important;flex-direction:column!important;gap:4px!important;
+  box-sizing:border-box!important;width:100%!important;max-width:100%!important;min-width:0!important;
+  min-height:0!important;height:auto!important;max-height:none!important;overflow:hidden!important
  }
  html body.pl:not(.pv).rima-live-landscape #lv:not([hidden]) #bq>.rima-v50-category-row{
   display:flex!important;flex:0 0 36px!important;flex-wrap:nowrap!important;align-items:stretch!important;
@@ -204,10 +190,9 @@ css=r'''<style id="rimalab-favorites-stable-render-v61">
   overscroll-behavior-x:contain!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-x pan-y!important
  }
  html body.pl:not(.pv).rima-live-landscape #lv:not([hidden]) #bq>.bsl:not([hidden])>.bi{
-  display:flex!important;flex:0 0 clamp(190px,25vw,280px)!important;flex-direction:row!important;
-  align-items:center!important;box-sizing:border-box!important;width:clamp(190px,25vw,280px)!important;
-  min-width:0!important;max-width:none!important;height:100%!important;min-height:0!important;
-  margin:0!important;padding:5px!important;gap:7px!important
+  display:flex!important;flex:0 0 clamp(190px,25vw,280px)!important;flex-direction:row!important;align-items:center!important;
+  box-sizing:border-box!important;width:clamp(190px,25vw,280px)!important;min-width:0!important;max-width:none!important;
+  height:100%!important;min-height:0!important;margin:0!important;padding:5px!important;gap:7px!important
  }
  html body.pl:not(.pv).rima-live-landscape #lv:not([hidden]) #bq>.bsl:not([hidden])>.bi>.beat-info{
   flex:1 1 0%!important;min-width:0!important;max-width:100%!important
@@ -222,10 +207,6 @@ css=r'''<style id="rimalab-favorites-stable-render-v61">
  }
 }
 </style>'''
-pos=h.lower().rfind('</body>')
-if pos<0: raise SystemExit('V61_FAIL: </body> ausente')
-h=h[:pos]+css+'\n'+h[pos:]
-
 m=re.search(r'\bversionCode\s*(?:=\s*)?(\d+)',g)
 if not m or m.group(1)!='80': raise SystemExit('V61_FAIL: versionCode base não é 80')
 g=g[:m.start(1)]+'81'+g[m.end(1):]
