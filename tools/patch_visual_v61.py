@@ -30,7 +30,7 @@ h=h.replace(old_v42toggle,new_v42toggle,1)
 
 # V43 list gets the same .bsl container class as the regular category list,
 # so both views inherit the same scrolling, card spacing and sizing rules.
-h=h.replace('<div class="rima-v43-favlist" aria-label="Nenhum beat','<div class="bsl rima-v43-favlist" aria-label="Nenhum beat',1)
+h=h.replace("return '<div class=\"rima-v43-favlist\"><div class=\"rima-v43-empty mut\">","return '<div class=\"bsl rima-v43-favlist\"><div class=\"rima-v43-empty mut\">",1)
 h=h.replace('<div class="rima-v43-favlist" aria-label="Seus beats favoritos">','<div class="bsl rima-v43-favlist" aria-label="Seus beats favoritos">',1)
 if h.count('class="bsl rima-v43-favlist"')!=2: raise SystemExit('V61_FAIL: markup da lista Favorites não foi padronizado')
 
@@ -40,12 +40,26 @@ sync_add="""function syncToolbarOnly(){
   const n=String(count());
   ids.forEach(id=>{
    const root=document.getElementById(id);if(!root)return;
-   let bar=root.querySelector(':scope > .rima-v43-tools');
-   if(!bar)bar=ensureToolbar(root);
+   let bar=ensureToolbar(root);
    const b=bar&&bar.querySelector('button.rima-v43-toggle');if(!b)return;
-   const counter=b.querySelector('.rima-v29-count');if(counter)counter.textContent=n;
+   // Remove stale duplicate controls/icons left by legacy V40/V42 toolbars.
+   Array.from(bar.querySelectorAll(':scope > button')).filter(x=>x!==b).forEach(x=>x.remove());
+   b.innerHTML='<span class="rima-v60-heart-glyph" aria-hidden="true">♥</span><span class="rima-v60-fav-label">Favoritos</span><span class="rima-v29-count">'+n+'</span>';
    b.classList.toggle('active',showing);b.setAttribute('aria-pressed',String(showing));
-   if(showing)root.querySelectorAll('.row .tag.chip').forEach(chip=>{chip.classList.remove('on');chip.setAttribute('aria-pressed','false')});
+   const view=root.querySelector(':scope > .rima-v43-favlist');
+   if(showing){
+    if(!view){renderRoot(root);return}
+    root.querySelectorAll(':scope > .bsl:not(.rima-v43-favlist)').forEach(list=>{list.hidden=true});
+    root.querySelectorAll(':scope > .catalog-attribution').forEach(note=>{note.hidden=true});
+    view.hidden=false;
+    root.querySelectorAll('.row .tag.chip').forEach(chip=>{chip.classList.remove('on');chip.setAttribute('aria-pressed','false')});
+   }else{
+    if(view)removeView(root);
+    root.querySelectorAll(':scope > .bsl:not(.rima-v43-favlist)').forEach(list=>{list.hidden=false});
+    root.querySelectorAll(':scope > .catalog-attribution').forEach(note=>{note.hidden=false});
+    root.querySelectorAll(':scope > .rima-v40-favlist,:scope > .rima-v42-favlist').forEach(old=>old.remove());
+    restoreCategoryChips(root);
+   }
   });
 }
 function sync(){document.querySelectorAll('.rima-v29-count').forEach(e=>e.textContent=String(count()));if(showing)render()}"""
