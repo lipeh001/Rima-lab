@@ -26,7 +26,7 @@ if loop_start<0 or loop_start-decor_start>500: raise SystemExit('V62_FAIL: loop 
 guard="if(row.classList.contains('rima-v43-fav-row')||row.closest('.rima-v43-favlist'))return;"
 guard_pos=loop_start+len('.forEach(row=>{')
 if guard not in v31_js[guard_pos:guard_pos+300]:
- v31_js=v31_js[:guard_pos]+'\\n  '+guard+v31_js[guard_pos:]
+ v31_js=v31_js[:guard_pos]+'\n  '+guard+v31_js[guard_pos:]
 h=h[:v31_b]+v31_js+h[v31_z:]
 
 # V54's generic catalog decorator also sees Favorites rows after V61 gave them
