@@ -100,6 +100,8 @@ on:
       - 'tools/teste_visual_v62.js'
       - 'tools/patch_visual_v63.py'
       - 'tools/teste_visual_v63.js'
+      - 'tools/patch_visual_v64.py'
+      - 'tools/teste_visual_v64.js'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -250,6 +252,13 @@ jobs:
         shell: bash
         run: |
           node tools/teste_visual_v63.js "$BUILD_DIR"
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Corrigir espaçamento do seletor e mensagem inicial do palco V64 (3.4.2)
+        run: python3 tools/patch_visual_v64.py "$BUILD_DIR"
+      - name: Validar correções pontuais V64
+        shell: bash
+        run: |
+          node tools/teste_visual_v64.js "$BUILD_DIR"
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
       - name: Exportar HTML e catálogo para revisão
         run: |
