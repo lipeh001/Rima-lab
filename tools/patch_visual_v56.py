@@ -106,7 +106,7 @@ runtime = r'''<script id="rimalab-centered-heart-runtime-v56">
   while((n=w.nextNode()))if(/[\u2665\u2661]/.test(n.nodeValue||'')){seen=true;if(/\u2665/.test(n.nodeValue))solid=true;nodes.push(n)}
   if(!matches&&!seen)return;
   const existing=b.querySelector(':scope > svg.rima-heart-icon');
-  if(existing){nodes.forEach(x=>x.nodeValue=x.nodeValue.replace(/[\u2665\u2661]/g,''));return}
+  if(existing){nodes.forEach(x=>x.nodeValue=x.nodeValue.replace(/[\u2665\u2661]/g,''));const on=solid||b.classList.contains('on')||b.getAttribute('aria-pressed')==='true';existing.setAttribute('data-filled',on?'true':'false');b.classList.add('rima-heart-host');return}
   if(!seen)return;
   nodes.forEach(x=>x.nodeValue=x.nodeValue.replace(/[\u2665\u2661]/g,''));
   const filled=solid||b.classList.contains('on')||b.getAttribute('aria-pressed')==='true';
@@ -115,7 +115,7 @@ runtime = r'''<script id="rimalab-centered-heart-runtime-v56">
  }
  function scan(root){const scope=root&&root.querySelectorAll?root:document;if(root&&root.matches&&root.matches('button'))apply(root);scope.querySelectorAll('button').forEach(apply)}
  scan(document);
- if(document.body&&window.MutationObserver){new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(n=>{if(n.nodeType===1)scan(n);else if(n.nodeType===3&&n.parentElement)apply(n.parentElement.closest('button'))}))).observe(document.body,{subtree:true,childList:true})}
+ if(document.body&&window.MutationObserver){const observer=new MutationObserver(records=>{for(const r of records){if(r.type==='attributes'||r.type==='characterData'){const target=r.target.nodeType===1?r.target:r.target.parentElement;const b=target&&target.closest?target.closest('button'):null;if(b)apply(b);continue}r.addedNodes.forEach(n=>{if(n.nodeType===1)scan(n);else if(n.nodeType===3&&n.parentElement)apply(n.parentElement.closest('button'))})}});observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class','aria-pressed']})}
  window.rimaV56RefreshHearts=()=>scan(document);
 })();
 </script>'''
