@@ -23,6 +23,9 @@ old_v42pk="const wrapped=function(){const result=oldPk.apply(this,arguments);ren
 new_v42pk="const f=function(){const result=oldPk.apply(this,arguments);if(typeof window.rimaV43ShowFavorites!=='function'){renderAll();setTimeout(renderAll,60)}return result};"
 if h.count(old_v42pk)!=1: raise SystemExit('V61_FAIL: wrapper pk V42 não corresponde')
 h=h.replace(old_v42pk,new_v42pk,1)
+old_v42pk_tail='wrapped.__rimaV42=true;window.pk=wrapped;'
+if h.count(old_v42pk_tail)!=1: raise SystemExit('V61_FAIL: finalização wrapper V42 não corresponde')
+h=h.replace(old_v42pk_tail,'f.__rimaV42=true;window.pk=f;',1)
 old_v42toggle="const wrapped=function(){const result=oldToggle.apply(this,arguments);setTimeout(updateFavorites,0);return result};"
 new_v42toggle="const wrapped=function(){const result=oldToggle.apply(this,arguments);if(typeof window.rimaV43ShowFavorites!=='function')setTimeout(updateFavorites,0);return result};"
 if h.count(old_v42toggle)!=1: raise SystemExit('V61_FAIL: wrapper toggle V42 não corresponde')
@@ -36,6 +39,9 @@ if h.count('class="bsl rima-v43-favlist"')!=2: raise SystemExit('V61_FAIL: marku
 
 # Toolbar-only sync: never replace the Favorites card nodes on every player update.
 sync_anchor="function sync(){document.querySelectorAll('.rima-v29-count').forEach(e=>e.textContent=String(count()));if(showing)render()}"
+view_anchor="let showing=false,activeRoot='bp',busy=false;"
+if h.count(view_anchor)!=1: raise SystemExit('V61_FAIL: estado V43 não corresponde')
+h=h.replace(view_anchor,view_anchor+'\\n const favoriteViews=new Map();',1)
 sync_add="""function syncToolbarOnly(){
   const n=String(count());
   ids.forEach(id=>{
@@ -46,15 +52,19 @@ sync_add="""function syncToolbarOnly(){
    Array.from(bar.querySelectorAll(':scope > button')).filter(x=>x!==b).forEach(x=>x.remove());
    b.innerHTML='<span class="rima-v60-heart-glyph" aria-hidden="true">♥</span><span class="rima-v60-fav-label">Favoritos</span><span class="rima-v29-count">'+n+'</span>';
    b.classList.toggle('active',showing);b.setAttribute('aria-pressed',String(showing));
-   const view=root.querySelector(':scope > .rima-v43-favlist');
+   let view=root.querySelector(':scope > .rima-v43-favlist');
    if(showing){
+    if(!view){view=favoriteViews.get(id)||null;if(view&&!view.isConnected)bar.insertAdjacentElement('afterend',view)}
     if(!view){renderRoot(root);return}
+    favoriteViews.set(id,view);
+    const selectedKey=String(window.ZS&&ZS.k==='lib'&&ZS.key||'');
+    view.querySelectorAll('[data-v43-play]').forEach(card=>{const active=!!selectedKey&&card.getAttribute('data-v43-play')===selectedKey;card.classList.toggle('is-selected',active);card.classList.toggle('on',active);card.setAttribute('aria-pressed',String(active))});
     root.querySelectorAll(':scope > .bsl:not(.rima-v43-favlist)').forEach(list=>{list.hidden=true});
     root.querySelectorAll(':scope > .catalog-attribution').forEach(note=>{note.hidden=true});
     view.hidden=false;
     root.querySelectorAll('.row .tag.chip').forEach(chip=>{chip.classList.remove('on');chip.setAttribute('aria-pressed','false')});
    }else{
-    if(view)removeView(root);
+    if(view)removeView(root);favoriteViews.delete(id);
     root.querySelectorAll(':scope > .bsl:not(.rima-v43-favlist)').forEach(list=>{list.hidden=false});
     root.querySelectorAll(':scope > .catalog-attribution').forEach(note=>{note.hidden=false});
     root.querySelectorAll(':scope > .rima-v40-favlist,:scope > .rima-v42-favlist').forEach(old=>old.remove());
@@ -129,6 +139,16 @@ css=r'''<style id="rimalab-favorites-stable-render-v61">
 #bp>.rima-v43-tools button,#bq>.rima-v43-tools button,#bbq>.rima-v43-tools button{
  display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important
 }
+/* V43 markup includes a literal heart; V60 also draws ::before. Hide the text glyph. */
+#bp .rima-v43-fav-heart,#bq .rima-v43-fav-heart,#bbq .rima-v43-fav-heart,
+#bp .rima-v29-fav,#bq .rima-v29-fav,#bbq .rima-v29-fav{font-size:0!important;line-height:0!important}
+#bp .rima-v43-fav-heart::before,#bq .rima-v43-fav-heart::before,#bbq .rima-v43-fav-heart::before{font-size:21px!important;line-height:1!important}
+#bp .rima-v43-fav-play.is-selected,#bq .rima-v43-fav-play.is-selected,#bbq .rima-v43-fav-play.is-selected,
+#bp .rima-v43-fav-play.on,#bq .rima-v43-fav-play.on,#bbq .rima-v43-fav-play.on{
+ background:var(--ac)!important;color:var(--on)!important;border:2px solid var(--ink)!important;box-shadow:3px 3px 0 var(--ink)!important
+}
+#bp .rima-v43-fav-play.is-selected b,#bq .rima-v43-fav-play.is-selected b,#bbq .rima-v43-fav-play.is-selected b,
+#bp .rima-v43-fav-play.on b,#bq .rima-v43-fav-play.on b,#bbq .rima-v43-fav-play.on b{color:var(--on)!important}
 /* Landscape: separate stage, selector card and stop button; make the beat strip tall enough to use. */
 @media(orientation:landscape) and (min-width:560px){
  html body.pl:not(.pv).rima-live-landscape #lv:not([hidden]){
@@ -188,9 +208,9 @@ css=r'''<style id="rimalab-favorites-stable-render-v61">
   text-overflow:ellipsis!important;font-size:8px!important;line-height:12px!important
  }
  html body.pl:not(.pv).rima-live-landscape #lv:not([hidden]) #bq>.bsl:not([hidden]){
-  display:flex!important;flex:1 1 auto!important;flex-direction:row!important;flex-wrap:nowrap!important;
+  display:flex!important;flex:0 0 112px!important;height:112px!important;flex-direction:row!important;flex-wrap:nowrap!important;
   align-items:stretch!important;gap:8px!important;box-sizing:border-box!important;width:100%!important;
-  max-width:100%!important;min-width:0!important;min-height:112px!important;height:auto!important;max-height:none!important;
+  max-width:100%!important;min-width:0!important;min-height:112px!important;max-height:112px!important;
   margin:0!important;padding:4px 5px!important;overflow-x:auto!important;overflow-y:hidden!important;
   overscroll-behavior-x:contain!important;-webkit-overflow-scrolling:touch!important;touch-action:pan-x pan-y!important
  }
