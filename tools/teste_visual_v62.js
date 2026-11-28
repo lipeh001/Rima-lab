@@ -6,7 +6,7 @@ if(!fs.existsSync(hp)||!gp)throw new Error('V62: HTML/Gradle ausentes');
 const html=fs.readFileSync(hp,'utf8'),g=fs.readFileSync(gp,'utf8'),pass=[],fail=[],errors=[];
 const check=(n,ok,d='')=>(ok?pass:fail).push({n,d});
 check('versão 3.4.0/code82',/versionCode\s*(?:=\s*)?82/.test(g)&&/versionName\s*(?:=\s*)?["']3\.4\.0["']/.test(g));
-check('V54 decorator ignores Favorites rows',html.includes("row.classList.contains('rima-v43-fav-row')||row.closest('.rima-v43-favlist')"));
+check('V31 and V54 decorators ignore Favorites rows',html.split("row.classList.contains('rima-v43-fav-row')||row.closest('.rima-v43-favlist')").length>=3);
 check('V62 player heart synchronizes from current selected key and saved Favorites',html.includes('function syncPlayerHeart()')&&html.includes("b.setAttribute('aria-pressed',String(on))"));
 check('V62 category selection updates active and pressed state',html.includes('function syncCategories()')&&html.includes("chip.classList.toggle('active',on)")&&html.includes("chip.setAttribute('aria-pressed',String(on))"));
 check('V62 restores saved scroll instead of resetting to top',html.includes('savedStageScroll')&&html.includes('window.rimaReturnPreviousScreenToTop=wrapped')&&html.includes('window.scrollTo(0,y)'));
