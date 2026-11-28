@@ -8,8 +8,8 @@ gp=next((p for p in (root/'app/build.gradle',root/'app/build.gradle.kts') if p.e
 if not hp.is_file() or gp is None: raise SystemExit('V62_FAIL: HTML/Gradle ausente')
 h=hp.read_text(encoding='utf-8');g=gp.read_text(encoding='utf-8')
 if 'rimalab-favorites-player-scroll-stage-v62' in h: raise SystemExit('V62_FAIL: patch já aplicado')
-if 'rimalab-favorites-stable-render-v61' not in h or 'rimalab-player-state-settle-v54' not in h:
- raise SystemExit('V62_FAIL: base V61/V54 ausente')
+if 'function fixLandscapeList()' not in h or 'rimalab-player-state-settle-v54' not in h or 'rimalab-consistent-heart-favorites-v60' not in h:
+ raise SystemExit('V62_FAIL: base V60/V61/V54 ausente')
 
 # V54's generic catalog decorator also sees Favorites rows after V61 gave them
 # the .bsl > .bi catalog structure. It was injecting a second heart into each row.
