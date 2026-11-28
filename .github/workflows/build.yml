@@ -106,6 +106,7 @@ on:
       - 'tools/patch_visual_v66.py'
       - 'tools/patch_visual_v67.py'
       - 'tools/patch_visual_v68.py'
+      - 'tools/patch_visual_v69.py'
       - 'tools/teste_visual_v22.js'
       - 'tools/patch_visual_v18.py'
       - 'tools/teste_visual_v18.js'
@@ -285,6 +286,12 @@ jobs:
       - name: Corrigir recuperação de falha de áudio e ajustar espaçamento V68 (3.4.6)
         run: python3 tools/patch_visual_v68.py "$BUILD_DIR"
       - name: Validar V68
+        shell: bash
+        run: |
+          (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
+      - name: Corrigir status de falha, marquee do player e tipografia dos favoritos V69 (3.4.7)
+        run: python3 tools/patch_visual_v69.py "$BUILD_DIR"
+      - name: Validar V69
         shell: bash
         run: |
           (cd "$BUILD_DIR" && node tools/teste_html_sintaxe.js)
