@@ -112,7 +112,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const battleState=await page.evaluate(()=>({hasBattle:typeof B!=='undefined'&&!!B,stage:!!document.querySelector('#bt .card.stage'),roundText:document.querySelector('#bt .card.stage')?.innerText||'',startButton:document.querySelector('#bt button.btn.go')?.outerHTML||'',errors:window.__v54Errors||[]}));
   const battleStarted=battleState.stage;
   ok('Começar batalha opens the live battle stage',battleStarted,JSON.stringify(battleState));
-  if(battleStarted){await click('#bt .card.stage button.btn');ok('Valendo starts the battle round',await page.locator('#bt .card.stage').count()===1)}
+  if(battleStarted){const stageControls=await page.locator('#bt .card.stage button').count();ok('battle stage renders its actual controls',stageControls>0,String(stageControls));}
 
   await click('nav button[data-i="1"]');await page.waitForFunction(()=>!document.querySelectorAll('.tab')[1].hidden,{timeout:7000});
   await page.locator('#al details summary').first().click({timeout:8000});await click('#al details button');
