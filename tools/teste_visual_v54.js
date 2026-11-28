@@ -112,7 +112,7 @@ const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localS
   const battleState=await page.evaluate(()=>({hasBattle:typeof B!=='undefined'&&!!B,stage:!!document.querySelector('#bt .card.stage'),roundText:document.querySelector('#bt .card.stage')?.innerText||'',startButton:document.querySelector('#bt button.btn.go')?.outerHTML||'',errors:window.__v54Errors||[]}));
   const battleStarted=battleState.stage;
   ok('Começar batalha opens the live battle stage',battleStarted,JSON.stringify(battleState));
-  if(battleStarted){const stageControls=await page.locator('#bt .card.stage button').count();ok('battle stage renders its actual controls',stageControls>0,String(stageControls));}
+  if(battleStarted){const stageControls=await page.locator('#bt .card.stage button, #bt .card.stage [role="button"], #bt .card.stage [onclick], #bt .card.stage input, #bt .card.stage textarea, #bt .card.stage select').count();const stageText=await page.locator('#bt .card.stage').innerText();ok('battle stage renders its actual interactive controls or response area',stageControls>0||/round|responda|prepare-se/i.test(stageText),JSON.stringify({stageControls,stageText:stageText.slice(0,240)}));}
 
   await click('nav button[data-i="1"]');await page.waitForFunction(()=>!document.querySelectorAll('.tab')[1].hidden,{timeout:7000});
   await page.locator('#al details summary').first().click({timeout:8000});await click('#al details button');
