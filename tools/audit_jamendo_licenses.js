@@ -74,3 +74,5 @@ function classify(url) {
 // Keep audit branch workflow trigger aligned with Jamendo discovery audit.
 
 // Trigger updated Jamendo discovery audit.
+
+// Trigger expanded Jamendo Boom Bap discovery.
