@@ -13,5 +13,7 @@ const checks=[
 ];
 let failed=0;
 for(const [name,ok] of checks){console.log((ok?'PASS ':'FAIL ')+name);if(!ok)failed++}
-console.log('V63_RESULT '+(checks.length-failed)+'/'+checks.length);
+const scripts=[...html.matchAll(/<script\\b[^>]*>([\\s\\S]*?)<\\/script>/gi)];
+for(let i=0;i<scripts.length;i++){try{new Function(scripts[i][1])}catch(e){console.log('INLINE_JS_ERROR script '+(i+1)+': '+e.message);failed++}}
+console.log('V63_RESULT '+(checks.length+scripts.length-failed)+'/'+(checks.length+scripts.length));
 if(failed)process.exit(1);
