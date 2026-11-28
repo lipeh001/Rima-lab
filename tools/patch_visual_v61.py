@@ -41,7 +41,7 @@ if h.count('class="bsl rima-v43-favlist"')!=2: raise SystemExit('V61_FAIL: marku
 sync_anchor="function sync(){document.querySelectorAll('.rima-v29-count').forEach(e=>e.textContent=String(count()));if(showing)render()}"
 view_anchor="let showing=false,activeRoot='bp',busy=false;"
 if h.count(view_anchor)!=1: raise SystemExit('V61_FAIL: estado V43 não corresponde')
-h=h.replace(view_anchor,view_anchor+'\\n const favoriteViews=new Map();',1)
+h=h.replace(view_anchor,view_anchor+'\n const favoriteViews=new Map();',1)
 sync_add="""function syncToolbarOnly(){
   const n=String(count());
   ids.forEach(id=>{
