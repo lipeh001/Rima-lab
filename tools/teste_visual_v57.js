@@ -11,7 +11,7 @@ check('sem observador global V56',!h.includes("attributeFilter:['class','aria-pr
 check('runtime de inicialização V57 instalado',h.includes('rimalab-startup-unfreeze-v57')&&h.includes('__rimaStartupUnfreeze'));
 check('sistema de favoritos V54 preservado',h.includes('rimalab-unified-catalog-favorites-v54')&&h.includes('rimalab-favorites-layout-runtime-v43'));
 check('observer do catálogo limitado a filhos diretos',/observe\(root,\{childList:true,subtree:false\}\)/.test(h));
-const startup=h.match(/<script id="rimalab-startup-unfreeze-v57">([\\s\\S]*?)<\\/script>/);\ncheck('sem loop de polling adicionado pelo V57',!!startup&&!startup[1].includes('setInterval(')&&!startup[1].includes('setTimeout('));
+const startupStart=h.indexOf('<script id="rimalab-startup-unfreeze-v57">');\nconst startupEnd=startupStart>=0?h.indexOf('</script>',startupStart):-1;\nconst startup=startupStart>=0&&startupEnd>startupStart?h.slice(startupStart,startupEnd):'';\ncheck('sem loop de polling adicionado pelo V57',!!startup&&!startup.includes('setInterval(')&&!startup.includes('setTimeout('));
 check('correções de layout V56 preservadas',h.includes('rimalab-layout-and-heart-system-v56')&&h.includes('grid-template-rows:30px 12px minmax(0,1fr)!important')&&h.includes('max-height:min(26vh,220px)!important'));
 const scripts=[...h.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)];
 let syntax=true,errors=[];
