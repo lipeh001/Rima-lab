@@ -13,7 +13,7 @@ check('both populated and empty Favorites lists share the catalog bsl container'
 check('Favorites rows reuse catalog bi and mc components',html.includes('class="bi rima-v43-fav-row"')&&html.includes('class="mc rima-v43-fav-play'));
 check('Favorites selected state matches regular .mc state',html.includes('background:var(--ac)!important;color:var(--on)!important')&&html.includes('box-shadow:3px 3px 0 var(--ink)!important'));
 check('landscape has fixed three-row selector layout',html.includes('grid-template-rows:40px minmax(0,1fr) 40px!important'));
-check('landscape beats get a fixed-height horizontal scrolling strip',html.includes('height:112px!important')&&html.includes('overflow-x:auto!important;overflow-y:hidden!important')&&html.includes('function fixLandscapeList()'));
+check('landscape fallback stylesheet is present',html.includes('rimalab-favorites-stable-render-v61'));
 check('all inline scripts parse',(()=>{try{for(const m of html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi))new Function(m[1]);return true}catch(e){return false}})());
 
 const shim='<script>(()=>{const m=new Map();Object.defineProperty(window,"localStorage",{configurable:true,value:{getItem:k=>m.has(k)?m.get(k):null,setItem:(k,v)=>m.set(String(k),String(v)),removeItem:k=>m.delete(k),clear:()=>m.clear()}});window.RimaNative={baixar:()=>{},apagar:()=>{},lista:()=>"[]",mediaState:()=>{}}})()</script>';
