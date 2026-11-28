@@ -60,3 +60,51 @@ if not m or m.group(1)!='3.4.9': raise SystemExit('V72_FAIL: versionName base in
 g=g[:m.start(1)]+'3.5.0'+g[m.end(1):]
 hp.write_text(h,encoding='utf-8');gp.write_text(g,encoding='utf-8')
 print('V72_OK: pulse restored, responsive stage, restart-safe word clock, clean favorite title; 3.5.0/code92')
+
+#!/usr/bin/env python3
+from pathlib import Path
+import re,sys
+root=Path(sys.argv[1]).resolve()
+hp=root/'app/src/main/assets/rima-lab.html'
+h=hp.read_text(encoding='utf-8')
+if 'rimalab-player-title-rebuild-v72' in h: raise SystemExit('V72_MARQUEE_FAIL: já aplicado')
+css=r'''<style id="rimalab-player-title-rebuild-v72">
+#pbar #pwn .rima-title-track{animation-play-state:running!important}
+#pbar #pwn .rima-title-track.is-long{animation:rima-title-marquee-v69 linear infinite!important}
+@keyframes rima-title-marquee-v69{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+</style>'''
+js=r'''<script id="rimalab-player-title-rebuild-v72">
+(function(){
+ const esc=s=>String(s||'Beat').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ let pending=false;
+ function refresh(){
+  pending=false;const e=document.getElementById('pwn'),name=String(window.ZS&&ZS.name||'Beat');if(!e)return;
+  if(!e.querySelector('.rima-title-track')||e.dataset.rimaTitle!==name){
+   const safe=esc(name);e.dataset.rimaTitle=name;
+   e.innerHTML='<span class="rima-title-track"><span>'+safe+'</span><i></i><span aria-hidden="true">'+safe+'</span><i></i></span>';
+  }
+  const track=e.querySelector('.rima-title-track'),first=track&&track.firstElementChild;if(!first)return;
+  const width=Math.max(first.scrollWidth,first.getBoundingClientRect().width),long=width>e.clientWidth+4;
+  track.classList.toggle('is-long',long);
+  track.style.animationDuration=long?Math.max(9,Math.min(28,(width+76)/34))+'s':'0s';
+ }
+ function schedule(){if(pending)return;pending=true;requestAnimationFrame(()=>requestAnimationFrame(refresh))}
+ function install(){
+  const e=document.getElementById('pwn');if(!e||e.dataset.rimaV72Title)return;e.dataset.rimaV72Title='1';
+  new MutationObserver(schedule).observe(e,{childList:true,subtree:true,characterData:true});
+  const old=window.zBarUI;if(typeof old==='function'&&!old.__rimaV72Title){
+   const wrapped=function(){const r=old.apply(this,arguments);schedule();return r};
+   wrapped.__rimaV72Title=true;window.zBarUI=wrapped;
+  }
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(schedule).catch(()=>{});
+  window.addEventListener('resize',schedule,{passive:true});schedule();
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
+ window.rimaPlayerTitleRefreshV72=schedule;
+})();
+</script>'''
+pos=h.lower().rfind('</body>')
+if pos<0: raise SystemExit('V72_MARQUEE_FAIL: body ausente')
+h=h[:pos]+css+js+h[pos:]
+hp.write_text(h,encoding='utf-8')
+print('V72_MARQUEE_OK: player title rebuilt after player UI text updates')
